@@ -1,11 +1,11 @@
 ---
 layout: post
-title: This is a test blog by rec : )
-author: Songzi Vong
-tags:
-- jekyll
-date: 2022-01-13 19:32 +0800
+title: This is just for fun!
+date: 2022-01-13 23:18 +0800
+last_modified_at: 2020-10-01 01:08:25 +0800
+tags: [tutorial]
+toc:  true
 ---
-#Hi, I'm rec!
-
-This is a testing context for fun, enjoy it!
+hello
+if u can read this
+then nothing will happen (*laughter
