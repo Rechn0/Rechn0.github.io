@@ -1,7 +1,7 @@
 # Setup
-title: Not Pure Poole
-description: A simple, beautiful, and powerful Jekyll theme for blogs
-url: https://vszhub.github.io
+title: Rec
+description: And then there were none.
+url: https://chenvoid.github.io/Rechn0.github.io/
 avatar: /avatar.jpeg
 paginate: 5
 permalink: pretty
@@ -54,6 +54,5 @@ sass:
 
 # Specify the author for blog posts
 author:
-  name: Songzi Vong
-  url: https://github.com/vszhub/
-  email: vszhub@gmail.com
+  name: Rechn0
+  url: https://github.com/Chenvoid
