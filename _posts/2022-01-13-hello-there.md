@@ -4,7 +4,6 @@ title: This is a test blog by rec : )
 author: ReChn0
 tags:
 - jekyll
-- test
 date: 2022-01-13 19:32 +0800
 ---
 #Hi, I'm rec!
