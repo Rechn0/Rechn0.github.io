@@ -1,50 +1,73 @@
-// Copyright (c) 2017 Florian Klampfer <https://qwtel.com/>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+:root {
+  --gray-000: #f8f9fa;
+  --gray-100: #f1f3f5;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #868e96;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
 
-$gray: #888;
-$gray-bg: rgba(0,0,0,.025);
-$gray-text: #666;
+  --red: #fa5252;
+  --pink: #e64980;
+  --grape: #be4bdb;
+  --purple: #7950f2;
+  --indigo: #4c6ef5;
+  --blue: #228be6;
+  --cyan: #15aabf;
+  --teal: #12b886;
+  --green: #40c057;
+  --yellow: #fab005;
+  --orange: #fd7e14;
 
-$root-font-size: 16px;
-$root-font-size-medium: 17px;
-$root-font-size-large: 18px;
-$root-font-size-print: 11pt;
-$root-line-height: 1.75;
+  --blue-300: #74c0fc;
+  --blue-400: #4dabf7;
+  --yellow-100: #fff3bf;
 
-$font-weight: 400;
-$font-weight-bold: 700;
-$font-weight-heading: 700;
+  --body-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --body-font-size: 18px;
+  --body-line-height: 1.5;
+  --body-color: var(--gray-700);
+  --body-bg: #fff;
 
-$body-color: #444;
-$body-bg: #fff;
+  --text-font: Times, "Times New Roman", "Free Serif", "Noto Serif", TimesNewRomanPSMT, "Droid Serif";
 
-$border-color: #eee;
+  --link-color: var(--blue);
+  --link-hover-color: #1c7ed6;
 
-$code-font-family: Menlo, Monaco, Consolas, monospace;
-$code-color: inherit;
-$code-bg: $gray-bg;
+  --heading-color: var(--gray-900);
 
-$break-point-1: 42em;
-$break-point-2: 54em;
-$break-point-3: 64em;
-$break-point-4: 72em;
-$break-point-5: 90em;
-$break-point-dynamic: 98.5em;
-$break-point-font-large: 125em;
+  --border-color: var(--gray-300);
+  --border-radius: .25rem;
+
+  --code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --code-color: var(--grape);
+  --code-bg: #fbf1c7;
+
+  --spacer: 1rem;
+  --spacer-2: calc(var(--spacer) * 1.5);
+  --spacer-3: calc(var(--spacer) * 3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --body-color: var(--gray-300);
+    --body-bg: var(--gray-800);
+
+    --heading-color: #fff;
+
+    --link-color: var(--blue-300);
+    --link-hover-color: var(--blue-400);
+
+    --border-color: rgba(255,255,255,.15);
+
+    --code-bg: #282828;
+  }
+}
+
+$sm-width: 35.5rem;
+$md-width: 48rem;
+$lg-width: 64rem;
+$xl-width: 80rem;

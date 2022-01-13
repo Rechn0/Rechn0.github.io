@@ -1,7 +1,9 @@
 # Ignore docs files
 _gh_pages
-_site*
+_site
 .ruby-version
+.sass-cache
+.jekyll-cache
 
 # Numerous always-ignore extensions
 *.diff
@@ -11,6 +13,7 @@ _site*
 *.rej
 *.swo
 *.swp
+*.zip
 *.vi
 *~
 
@@ -38,9 +41,6 @@ validation-report.json
 
 # Folders to ignore
 node_modules
-vendor/bundle
-.bundle
-.sass-cache
-.jekyll-metadata
+
+# Ruby gems
 *.gem
-_zip
