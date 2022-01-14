@@ -9,9 +9,7 @@ toc:  true
 math:  true
 ---
 
-<font size=2>
-
-# 流密码
+# 流密码概述
 
 ## Intro
 
@@ -53,4 +51,3 @@ $$
 > There's a secret passcode hidden in the robot's "history of cryptography" module. But it's encrypted! Here it is, hex-encoded: [encrypted.txt](https://github.com/ctfs/write-ups-2014/blob/master/pico-ctf-2014/crypto/repeated-xor-70/encrypted.txt). Can you find the hidden passcode?
 > **思路：** 使用kasiski试验得到密钥的长度，利用字频统计分析密钥
 
-</font>

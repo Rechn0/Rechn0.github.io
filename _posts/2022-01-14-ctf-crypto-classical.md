@@ -9,8 +9,6 @@ toc:  true
 math:  true
 ---
 
-<font size=2>
-
 # 古典密码概述
 
 ## Intro
@@ -125,4 +123,3 @@ Playfair
 
 [Railfence](https://ctf.bugku.com/tool/railfence)栅栏密码枚举工具
 
-</font>
