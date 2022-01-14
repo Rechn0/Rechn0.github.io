@@ -19,15 +19,15 @@ math:  true
 
 ## 单表替换密码
 
-### Caesar密码 $\Rightarrow$ 仿射密码
+### Caesar密码 $ \Rightarrow $ 仿射密码
 
-仿射密码使用加密函数 $E(x)=(ax+b)\pmod{m}$ ，其中 $gcd(a,m)=1$
+仿射密码使用加密函数 $ E(x)=(ax+b)\pmod{m} $ ，其中 $ gcd(a,m)=1 $
 
 **攻击方法**
 
-由于 $\phi(26)=\phi(2)*\phi(13)=12$ ，故密钥空间为 $ 12*26=312 $ ，安全性较低
+由于 $ \phi(26)=\phi(2)*\phi(13)=12 $ ，故密钥空间为 $ 12*26=312 $ ，安全性较低
 
-对于已知部分仿射关系 $x_{i}\rightarrow y_{i}$ 的情况：
+对于已知部分仿射关系 $ x_{i}\rightarrow y_{i} $ 的情况：
 
 $$
 a=(y_{1}-y_{2})*(x_{1}-x_{2})^{-1}\pmod{m}
@@ -39,7 +39,7 @@ $$
 
 ### 简单替换密码
 
-使用无序字母映射表进行加密，密钥空间为$ 26! $
+使用无序字母映射表进行加密，密钥空间为 $ 26! $ 
 
 ### 攻击方法
 
@@ -51,7 +51,7 @@ $$
 
 ### Hill密码
 
-使用 $\mathbb{Z}_{m}^{n}$ 上的n阶可逆方阵A作为密钥，将明文映射为n维向量x
+使用 $ \mathbb{Z}_{m}^{n} $ 上的n阶可逆方阵A作为密钥，将明文映射为n维向量x
 
 $$
 E(x)=Ax, D(x)=A^{-1}y \pmod{m}
@@ -59,15 +59,21 @@ $$
 
 **攻击方法**
 
-在 $\mathbb{Z}_{m}^{n}$ 上对矩阵A求逆即可得到解密函数
+在 $ \mathbb{Z}_{m}^{n} $ 上对矩阵A求逆即可得到解密函数
 
 [Hill-cipher](http://www.practicalcryptography.com/ciphers/hill-cipher/)希尔密码工具
 
 Cryptool
 
 > **[[例题]Bugku-小山丘的秘密](https://ctf.bugku.com/challenges/detail/id/169.html?page=2)**
-> $A=\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 4 \\ 5 & 6 & 0 \end{bmatrix} \pmod{26}$
-> $enc=PLGTGBQHM, A=1$
+> 
+> $$
+> A=\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 4 \\ 5 & 6 & 0 \end{bmatrix} \pmod{26}
+> $$
+> 
+> $$
+> enc=PLGTGBQHM, A=1
+> $$
 > 
 > **思路：** 使用sympy求出矩阵A的模逆，进行解密即可
 > 
@@ -87,7 +93,7 @@ Cryptool
 
 维吉尼亚密码使用多个移位变换字母表进行加密，由于同一字符可以被加密成不同字符，因此可以掩盖明文的字频特性
 
-维吉尼亚密码循环使用密钥 $z=z_{0}z_{1}...z_{len}$ 进行加密。在使用第i位密钥时，使用字符 $z_{i}$ 对应的行作为替换表
+维吉尼亚密码循环使用密钥 $ z=z_{0}z_{1}...z_{len} $ 进行加密。在使用第i位密钥时，使用字符 $ z_{i} $ 对应的行作为替换表
 
 ![vigenere](https://ctf-wiki.org/crypto/classical/figure/vigenere1.jpg)
 
@@ -96,15 +102,18 @@ Cryptool
 [vigenere-solver](https://www.guballa.de/vigenere-solver)维吉尼亚攻击工具
 
 **1.Kasiski试验**
+
 卡西斯基试验考虑相同的文段可能被同一段密钥进行加密，例如英文单词the可能被加密成同样的密文。
 
 利用卡西斯基试验可以估计密钥的长度（或其约数）
 
 **2.Friedman试验（重合指数攻击）**
 
-> [[例题]MRCTF2020-vigenere](https://buuoj.cn/challenges#[MRCTF2020]vigenere)
+> **[[例题]MRCTF2020-vigenere](https://buuoj.cn/challenges#[MRCTF2020]vigenere)**
+> 
 > 给出Vigenere加密脚本与密文，密钥长度 $ 5<len<10 $
-> **思路：** 卡西斯基试验估计密钥长度，利用字频统计猜测密钥（‘e'字频最高）
+> 
+> **思路：** 卡西斯基试验估计密钥长度，利用字频统计猜测密钥
 > 
 > ```
 > # 卡西斯基试验
@@ -117,7 +126,7 @@ Cryptool
 > 		cnt+=1
 > 	print(l,cnt)
 > 
-> # 字频统计，将最高字频作为e解密
+> # 字频统计，将最高字频作为e字母进行解密
 > for i in range(l):
 > 	fq={}
 > 	while i < len(c):
