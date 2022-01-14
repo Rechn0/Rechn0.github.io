@@ -19,11 +19,11 @@ math:  true
 
 ## 单表替换密码
 
-### Caesar密码$\Rightarrow$仿射密码
+### Caesar密码$ \Rightarrow $仿射密码
 
 仿射密码使用加密函数$E(x)=(ax+b)\pmod{m}$，其中$gcd(a,m)=1$
 
-* ### 攻击方法
+**攻击方法**
 
 由于$\phi(26)=\phi(2)*\phi(13)=12$，故密钥空间为$ 12*26=312 $，安全性较低
 
@@ -41,7 +41,7 @@ $$
 
 使用无序字母映射表进行加密，密钥空间为$ 26! $
 
-* ### 攻击方法
+### 攻击方法
 
 词频分析工具[quipquip](https://quipqiup.com/)
 
@@ -57,7 +57,7 @@ $$
 E(x)=Ax, D(x)=A^{-1}y \pmod{m}
 $$
 
-* ### 攻击方法
+**攻击方法**
 
 在$\mathbb{Z}_{m}^{n}$上对矩阵A求逆即可得到解密函数
 
@@ -88,5 +88,4 @@ Playfair
 将明文分为n个字符一组按行排列（占位符补齐），依次读取每列字符
 
 [Railfence](https://ctf.bugku.com/tool/railfence)栅栏密码枚举工具
-
 
