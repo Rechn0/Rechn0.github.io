@@ -19,7 +19,7 @@ math:  true
 
 ## 单表替换密码
 
-### Caesar密码$ \Rightarrow $仿射密码
+### Caesar密码\\\( \Rightarrow \\\)仿射密码
 
 仿射密码使用加密函数$ E(x)=(ax+b)\pmod{m} $，其中$ gcd(a,m)=1 $
 
@@ -162,5 +162,3 @@ Playfair
 将明文分为n个字符一组按行排列（占位符补齐），依次读取每列字符
 
 [Railfence](https://ctf.bugku.com/tool/railfence)栅栏密码枚举工具
-
-
