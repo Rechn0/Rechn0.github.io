@@ -8,7 +8,11 @@ categories: ctf
 toc:  true
 math:  true
 ---
+
 <font size=2>
+
+# 流密码
+
 ## Intro
 
 流密码（序列密码）基本思想是利用密钥k产生密钥流z，对明文x进行加密。
@@ -30,8 +34,6 @@ $$
 
 ## XOR Encrypt
 
-#### 简介
-
 流密码经常使用密钥流通过异或加密得到密文，此处讨论使用循环密钥流的异或加密。
 异或加密可以视为维吉尼亚密码的变体。
 
@@ -39,15 +41,16 @@ $$
 c_{i}=z_{i \% len} \oplus m_{i}
 $$
 
-#### 攻击方法
+**攻击方法**
 
 异或分析工具：[xortools](https://github.com/hellman/xortool)
 
 可以使用类似维吉尼亚密码的攻击方法，通过字频特性进行攻击。
+
 英文字频最高字符为'e'；文本字频最高字符为' '；二进制文本字频最高字符为'\x00'
 
 > **[例题][PicoCTF2014 RepeatedXOR](https://github.com/ctfs/write-ups-2014/tree/master/pico-ctf-2014/crypto/repeated-xor-70)**
 > There's a secret passcode hidden in the robot's "history of cryptography" module. But it's encrypted! Here it is, hex-encoded: [encrypted.txt](https://github.com/ctfs/write-ups-2014/blob/master/pico-ctf-2014/crypto/repeated-xor-70/encrypted.txt). Can you find the hidden passcode?
+> **思路：** 使用kasiski试验得到密钥的长度，利用字频统计分析密钥
 
-> 思路
-<\font>
+</font>
