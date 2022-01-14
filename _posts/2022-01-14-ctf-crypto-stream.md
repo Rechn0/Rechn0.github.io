@@ -8,7 +8,7 @@ categories: ctf
 toc:  true
 math:  true
 ---
-
+<font size=2>
 ## Intro
 
 流密码（序列密码）基本思想是利用密钥k产生密钥流z，对明文x进行加密。
@@ -50,3 +50,4 @@ $$
 > There's a secret passcode hidden in the robot's "history of cryptography" module. But it's encrypted! Here it is, hex-encoded: [encrypted.txt](https://github.com/ctfs/write-ups-2014/blob/master/pico-ctf-2014/crypto/repeated-xor-70/encrypted.txt). Can you find the hidden passcode?
 
 > 思路
+<\font>
