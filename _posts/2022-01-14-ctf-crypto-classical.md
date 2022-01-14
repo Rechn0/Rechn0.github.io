@@ -43,7 +43,7 @@ $$
 
 ### 攻击方法
 
-词频分析工具[quipquip](https://quipqiup.com/)
+[quipquip](https://quipqiup.com/)词频分析工具
 
 ---
 
@@ -83,7 +83,6 @@ Cryptool
 > # flag: whatahill
 > ```
 
-
 ### Vigenere密码
 
 维吉尼亚密码使用多个移位变换字母表进行加密，由于同一字符可以被加密成不同字符，因此可以掩盖明文的字频特性
@@ -94,12 +93,44 @@ Cryptool
 
 **攻击方法**
 
+[vigenere-solver](https://www.guballa.de/vigenere-solver)维吉尼亚攻击工具
+
 **1.Kasiski试验**
 卡西斯基试验考虑相同的文段可能被同一段密钥进行加密，例如英文单词the可能被加密成同样的密文。
 
 利用卡西斯基试验可以估计密钥的长度（或其约数）
 
 **2.Friedman试验（重合指数攻击）**
+
+> [[例题]MRCTF2020-vigenere](https://buuoj.cn/challenges#[MRCTF2020]vigenere)
+> 给出Vigenere加密脚本与密文，密钥长度 $ 5<len<10 $
+> **思路：** 卡西斯基试验估计密钥长度，利用字频统计猜测密钥（‘e'字频最高）
+> 
+> ```
+> # 卡西斯基试验
+> c=open(hpath+"cipher.txt",'r').read()
+> c="".join(filter(str.isalpha,c))
+> for l in range(6,10):
+> 	cnt=0
+> 	for i in range(len(c)-l):
+> 		if c[i:i+3]==c[i+l:i+l+3]:
+> 		cnt+=1
+> 	print(l,cnt)
+> 
+> # 字频统计，将最高字频作为e解密
+> for i in range(l):
+> 	fq={}
+> 	while i < len(c):
+> 	if c[i] in fq:
+> 		fq[c[i]]+=1
+> 	else:
+> 		fq[c[i]]=1
+> 	i+=l
+> 	tmp=ord(max(fq,key=lambda x:fq[x]))
+> 	print(chr((tmp-ord('e')+26)%26+ord('a')),end="")
+> # key=gsfezn, 正确的key为gsfepn
+> # 使用Vigenere攻击网站效果较好
+> ```
 
 ---
 
@@ -122,4 +153,5 @@ Playfair
 将明文分为n个字符一组按行排列（占位符补齐），依次读取每列字符
 
 [Railfence](https://ctf.bugku.com/tool/railfence)栅栏密码枚举工具
+
 
