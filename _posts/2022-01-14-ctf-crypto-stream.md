@@ -46,18 +46,14 @@ $$
 
 ```
 # LCG example
-class lcg: 
-    A = 672257317069504227
-    B = 7382843889490547368
-    M = 9223372036854775783
-
-    def __init__(self, seed): 
+class lcg():
+    def __init__(self, A, B, M, seed):
+        self.A, self.B, self.M = A, B, M
         self.state = seed
-    
-    def next(self): 
+
+    def next(self):
         self.state = (self.state * self.A + self.B) % self.M
         return self.state
-
 ```
 
 LCG的最大周期为M，需要满足如下条件：
@@ -91,6 +87,26 @@ $$
 根据反馈函数的线性or非线性特性，可以分为LFSR与NFSR
 
 ### **LFSR**
+
+```
+# LFSR example
+class lfsr():
+    def __init__(self, init, mask, length):
+        self.mask = mask
+        self.state = init
+        self.lengthmask = 2**length - 1
+
+    def next(self):
+        nextdata = (self.state << 1) & self.lengthmask
+        i = self.state & self.mask & self.lengthmask
+        output = 0
+        while i != 0:
+            output ^= (i & 1)
+            i = i >> 1
+        nextdata ^= output
+        self.state = nextdata
+        return output
+```
 
 ### **NFSR**
 
