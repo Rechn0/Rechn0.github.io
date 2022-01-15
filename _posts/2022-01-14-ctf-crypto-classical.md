@@ -3,7 +3,8 @@ layout: post
 title: crypto#古典密码
 author: Rechn0
 date: 2022-01-14 17:00 +0800
-tags: [ctf, crypto]
+last_modified_at: 2022-01-15 23:00 +0800
+tags: [crypto, 古典密码]
 categories: ctf
 toc:  true
 math:  true
@@ -13,7 +14,7 @@ math:  true
 
 ## **Intro**
 
-主要学习经典替换密码，记录见到的古典密码、编码杂项
+主要学习经典的古典密码
 
 ---
 
@@ -103,11 +104,24 @@ Cryptool
 
 **1.Kasiski试验**
 
-卡西斯基试验考虑相同的文段可能被同一段密钥进行加密，例如英文单词the可能被加密成同样的密文。
+卡西斯基试验考虑相同的文段可能被同一段密钥进行加密，例如英文单词the可能被加密成同样的密文
 
 利用卡西斯基试验可以估计密钥的长度（或其约数）
 
 **2.Friedman试验（重合指数攻击）**
+
+重合指数CI主要表示文段中两个字符相等的概率
+
+$$
+CI = \sum \frac{fi*(fi-1)}{L*(L-1)}
+$$
+
+L表示文段长度，fi表示第i个字符出现的次数
+
+经过分析，对于一段随机英文文段 \\\( CI \approx 0.0385 \\\) ；而对于有意义的英文文段\\\( CI \approx 0.065 \\\) 
+
+将密文按照测试密钥长度进行分组，通过重合指数可以判断当前测试密钥长度的可靠性
+
 
 > **[[例题]MRCTF2020-vigenere](https://buuoj.cn/challenges#[MRCTF2020]vigenere)**
 > 
@@ -142,24 +156,4 @@ Cryptool
 > ```
 
 ---
-
-## **古典密码与编码杂项**
-
-### **单表替换**
-
-[Atbash码](https://wtool.com.cn/atbash.html)字母表倒序映射
-
-### **多表替换**
-
-Polybius
-
-Playfair
-
-### **base-type**
-
-### **栅栏密码**
-
-将明文分为n个字符一组按行排列（占位符补齐），依次读取每列字符
-
-[Railfence](https://ctf.bugku.com/tool/railfence)栅栏密码枚举工具
 

@@ -3,15 +3,16 @@ layout: post
 title: crypto#流密码
 author: Rechn0
 date: 2022-01-14 17:00 +0800
-tags: [ctf, crypto]
+last_modified_at: 2022-01-15 23:00 +0800
+tags: [crypto, 流密码]
 categories: ctf
 toc:  true
-math:  true
+math: true
 ---
 
-# 流密码概述
+流密码概述与伪随机数发生器
 
-## Intro
+## **Intro**
 
 流密码（序列密码）基本思想是利用密钥k产生密钥流z，对明文x进行加密。
 
@@ -24,16 +25,88 @@ c=E_{z_{0}}(m_{0})E_{z_{1}}(m_{1})E_{z_{2}}(m_{2})...
 $$
 
 流密码具有记忆性，当前密钥\\\( z_{i} \\\)与之前的状态有关。目前的流密码多采用对称加密，只需要通信双方产生相同密钥流即可。
+
 同步流密码：加密器状态独立于明文；否则为自同步密码。
 
-## PRG
+**PRG：** 伪随机数发生器
 
-## LFSR
+流密码的密钥产生往往需要以随机数作为基础。
 
-## XOR Encrypt
+常用PRG包括：线性同余生成器LCG、线性回归发生器、Mersenne-Twister、xorshift-generators、WELL-family-of-generators、线性反馈移位寄存器LFSR等
 
-流密码经常使用密钥流通过异或加密得到密文，此处讨论使用循环密钥流的异或加密。
-异或加密可以视为维吉尼亚密码的变体。
+---
+
+## **LCG**
+
+线性同余发生器(Linear Congruential Generator)使用参数A、B、M，线性同余迭代
+
+$$
+X_{n+1}=(A*X_{n}+B)\pmod{M}
+$$
+
+```
+# LCG example
+class lcg: 
+    A = 672257317069504227
+    B = 7382843889490547368
+    M = 9223372036854775783
+
+    def __init__(self, seed): 
+        self.state = seed
+    
+    def next(self): 
+        self.state = (self.state * self.A + self.B) % self.M
+        return self.state
+
+```
+
+LCG的最大周期为M，需要满足如下条件：
+
+B,M互质；M的所有质因数都能整除A-1；若M是4的倍数，A-1也是；A,B,N[0]都比M小；A,B是正整数
+
+**攻击方法**
+
+参考[LCG介绍与攻击](https://www.codercto.com/a/35743.html)
+
+---
+
+## **FSR**
+
+反馈移位寄存器(Feedback Shift Register)使用寄存器状态 \\\( \sigma_{i} \\\)与反馈函数 \\\( F(\sigma_{i}) \\\)
+
+根据寄存器状态，FSR通过输出函数得到当前输出，通过反馈函数更新到下一状态
+
+$$
+\sigma_{i}=(a_{i},a_{i+1},...,a_{i+n-1})
+$$
+
+$$
+a_{i+n}=F(\sigma_{i})=F(a_{i},a_{i+1},...,a_{i+n-1})
+$$
+
+$$
+\Rightarrow \sigma_{i+1}=(a_{i+1},a_{i+2},...,a_{i+n})
+$$
+
+根据反馈函数的线性or非线性特性，可以分为LFSR与NFSR
+
+### **LFSR**
+
+### **NFSR**
+
+---
+
+## **MT**
+
+---
+
+## **RC4**
+
+---
+
+## **Repeat-XOR**
+
+此处讨论使用循环密钥流的异或加密Repeat-XOR，可以视为维吉尼亚密码的变体。
 
 $$
 c_{i}=z_{i \% len} \oplus m_{i}
@@ -48,6 +121,9 @@ $$
 英文字频最高字符为'e'；文本字频最高字符为' '；二进制文本字频最高字符为'\x00'
 
 > **[例题][PicoCTF2014 RepeatedXOR](https://github.com/ctfs/write-ups-2014/tree/master/pico-ctf-2014/crypto/repeated-xor-70)**
+>
 > There's a secret passcode hidden in the robot's "history of cryptography" module. But it's encrypted! Here it is, hex-encoded: [encrypted.txt](https://github.com/ctfs/write-ups-2014/blob/master/pico-ctf-2014/crypto/repeated-xor-70/encrypted.txt). Can you find the hidden passcode?
+>
 > **思路：** 使用kasiski试验得到密钥的长度，利用字频统计分析密钥
 
+---
