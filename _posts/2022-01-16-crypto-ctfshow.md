@@ -14,16 +14,18 @@ ctfshow密码学部分习题wp
 
 ## easyrsa
 
-**[easyrsa1](/store/easyrsa1.txt)**
-> **题目：** 给出e，c，n
+**[easyrsa1](https://ctf.show/files/64a01fb552ddd4bd18109507515e4c35/easyrsa1.txt)**
+> 给出一组公钥(e, n)与密文c
 >
 > **思路：** n的规模较小，使用工具分解n
 >
 > flag{fact0r_sma11_N}
 
 **easyrsa2**
+> 给出两组rsa公钥(e, n)与密文c
 >
 > **思路：** 
+> 
 > 
 
 **easyrsa3**
