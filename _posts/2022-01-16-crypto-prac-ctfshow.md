@@ -168,9 +168,11 @@ flag{p&q_4re_t00_c1o5ed}
 
 coppersmith攻击
 
-已知 \\\( p=high_p+x \\\)，只需求解方程 \\\( p=0 \pmod{p, factor of n} \\\) 小根即可
+已知 \\\( p=high_p+x \\\)，只需求解方程 \\\( high_p+x=0 \pmod{p} \\\) 小根即可
 
-使用sage的small_roots(X,beta)可以求解，其中X为根的上界， \\\( n^{beta} \\\) 为式中因子的上界
+在coppersmith攻击中，此处p的实际意义为n的一个因子，满足 \\\( p \geq n^{beta} \\\)
+
+使用sage的small_roots(X,beta)可以求解，其中X为根的上界， \\\( n^{beta} \\\) 为式中因子的下界
 
 ```
 # sage
