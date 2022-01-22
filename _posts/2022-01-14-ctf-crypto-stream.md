@@ -38,7 +38,7 @@ $$
 
 ## **LCG**
 
-线性同余发生器(Linear Congruential Generator)使用参数A、B、M，线性同余迭代
+线性同余发生器(Linear Congruential Generator)使用参数A、B、M，线性同余迭代产生随机数
 
 $$
 X_{n+1}=(A*X_{n}+B)\pmod{M}
@@ -64,6 +64,63 @@ B,M互质；M的所有质因数都能整除A-1；若M是4的倍数，A-1也是�
 
 参考[LCG介绍与攻击](https://www.codercto.com/a/35743.html)
 
+**1.已知A、B、M**
+
+在三个参数均已知的情况下，通过LCG的当前输出即可推出后续所有输出状态
+
+**2.B未知**
+
+对于两个相邻的输出状态 \\\( X_{i},X_{i+1} \\\) 已知：
+
+$$
+X_{i+1} = A * X_{i} + B \pmod{M} \\
+\Rightarrow B = X_{i+1} - A * X_{i} \pmod{M}
+$$
+
+故通过一组相邻输出状态，即可得到B的值
+
+**3.A、B未知**
+
+对于三个相邻的输出状态 \\\( X_{i},X_{i+1},X_{i+2} \\\) 已知：
+
+$$
+X_{i+2} - X_{i+1} = A * (X_{i+1} - X_{i}) \pmod{M} \\
+\Rightarrow A = (X_{i+2} - X_{i+1}) * (X_{i+1} - X_{i})^{-1} \pmod{M}
+$$
+
+通过三个相邻的输出状态即可得到A的值，进而求出B的值
+
+**4.A、B、M、未知**
+
+对于若干随机数 \\\( r_{1},...r_{n} \\\) 满足 \\\( r_{i} = 0 \pmod{M} \\\) ，则有很大概率出现：
+
+$$
+gcd(r_{1},...,r_{n}) = M
+$$
+
+对于若干连续的LCG状态，已知：
+
+$$
+\left\{
+    \begin{array}{l}
+        s_{i} = X_{i+1} - X_{i} \\
+        s_{i+1} = X_{i+2} - X_{i+1} = A * s_{i} \\
+        s_{i+2} = X_{i+3} - X_{i+2} = A * s_{i+1} \\
+    \end{array}
+\right.  
+\pmod{M}
+$$
+
+$$
+\Rightarrow 
+\begin{array}{l}
+    t_{i} = s_{i+2} * s_{i} - s_{i+1} * s_{i+1} = 0 \pmod{M} \\
+    t_{i} = k_{i} * M \\
+\end{array}
+$$
+
+因此，利用若干连续状态计算出多个 \\\( t_{i} \\\) ，求解gcd即可恢复模数M，进而求出A、B
+
 ---
 
 ## **FSR**
@@ -87,6 +144,12 @@ $$
 根据反馈函数的线性or非线性特性，可以分为LFSR与NFSR
 
 ### **LFSR**
+
+线性反馈移位寄存器使用线性函数作为反馈函数，其性质较易于探讨
+
+$$
+a_{i+n}=F(a_{i},a_{i+1},...,a_{i+n-1})=c_{n} * a_{i} \oplus ... \oplus c_{1} * a_{i+n-1}
+$$
 
 ```
 # LFSR example
