@@ -3,7 +3,7 @@ layout: post
 title: crypto#流密码
 author: Rechn0
 date: 2022-01-14 17:00 +0800
-last_modified_at: 2022-01-22 16:00 +0800
+last_modified_at: 2022-01-15 23:00 +0800
 tags: [crypto, 流密码]
 categories: ctf
 toc:  true
@@ -171,7 +171,65 @@ class lfsr():
         return output
 ```
 
+**攻击方法**
+
+**1.已知反馈函数**
+
+通过已知输出序列与反馈函数，可以还原出LFSR的所有前驱状态
+
+$$
+a_{i}=F(a_{i},a_{i+1},...,a_{i+n-1})=c_{n-1} * a_{i+1} \oplus ... \oplus c_{1} * a_{i+n-1} \oplus a_{i+n}
+$$
+
+> **[例题][2018 CISCN 线上赛 oldstreamgame]()**
+>
+> 题目给出LFSR的反馈函数与800bit的密钥，求32bit初始状态
+>
+> **思路：** 逆推LFSR还原seed
+>
+>```
+>key=open(hpath+'key','rb').read()
+> mask=0b10100100000010000000100010010100
+> s,r=bytes_to_long(key[0:4]),0
+> for _ in range(32):
+>     output=s&1
+>     s>>=1
+>     r>>=1
+>     x=0
+>     tmp=s&mask&0xffffffff
+>     while tmp>0:
+>         x^=tmp&1
+>         tmp>>=1
+>     if x != output:
+>     s^=(x^output)<<31
+>     r^=(x^output)<<31
+> print('flag{'+format(r,'x')+'}')
+># flag{926201d7}
+>```
+
+**2.已知LFSR阶数n，未知反馈函数**
+
+对于n阶LFSR，已知长度为2n的输出序列，即得到了LFSR的n+1个连续状态，此时可构造矩阵求出反馈函数
+
+**3.LFSR阶数n与反馈函数均未知**
+
+使用B-M算法，利用已知输出序列可以对LFSR的线性复杂度与极小多项式进行分析，进而得到LFSR的阶数n
+
 ### **NFSR**
+
+通过引入非线性函数，可以增强流密码输出序列的复杂性
+
+常用的NFSR：
+
+1.非线性组合生成器：多个LFSR使用非线性函数综合输出（Geffe、Press）
+
+2.非线性滤波生成器：一个LFSR使用非线性函数得到输出
+
+3.钟控生成器：使用LFSR的输出，作为另一个LFSR的时钟信号
+
+**攻击方法**
+
+**快速相关攻击FCA**
 
 ---
 
