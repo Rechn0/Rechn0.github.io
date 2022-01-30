@@ -3,7 +3,7 @@ layout: post
 title: crypto#流密码
 author: Rechn0
 date: 2022-01-14 17:00 +0800
-last_modified_at: 2022-01-15 23:00 +0800
+last_modified_at: 2022-01-30 15:00 +0800
 tags: [crypto, 流密码]
 categories: ctf
 toc:  true
@@ -151,6 +151,8 @@ $$
 a_{i+n}=F(a_{i},a_{i+1},...,a_{i+n-1})=c_{n} * a_{i} \oplus ... \oplus c_{1} * a_{i+n-1}
 $$
 
+此处不为零的 \\\( c_{i} \\\) 数目为抽头数，可能影响到LFSR的性质
+
 ```
 # LFSR example
 class lfsr():
@@ -199,8 +201,7 @@ $$
 >     tmp=s&mask&0xffffffff
 >     while tmp>0:
 >         x^=tmp&1
->         tmp>>=1
->     if x != output:
+>         tmp>>=1Z
 >     s^=(x^output)<<31
 >     r^=(x^output)<<31
 > print('flag{'+format(r,'x')+'}')
@@ -210,6 +211,26 @@ $$
 **2.已知LFSR阶数n，未知反馈函数**
 
 对于n阶LFSR，已知长度为2n的输出序列，即得到了LFSR的n+1个连续状态，此时可构造矩阵求出反馈函数
+
+令反馈函数 \\\( c=(c_{n},...,c_{1}) \\\) ，已知连续状态 \\\( \sigma_{1},...,\sigma_{n+1} \\\)
+
+$$
+a_{n+i}=c*\sigma_{i}^{T}=c_{n}*a_{i} \oplus ... \oplus c_{1}*a_{n+i-1}
+$$
+
+$$
+\Rightarrow \sigma_{n+1}=c*(\sigma_{1}^{T},...,\sigma_{n}^{T})=c*\Sigma
+$$
+
+易证明矩阵 \\\( \Sigma \\\) 在 \\\( \mathbb{Z}_{2}^{n} \\\) 上可逆（只需证明n个状态线性无关即可，证明略）
+
+故：
+
+$$
+c=\sigma_{n+1}*\Sigma^{-1}
+$$
+
+此时即得到了反馈函数c
 
 **3.LFSR阶数n与反馈函数均未知**
 
@@ -221,11 +242,11 @@ $$
 
 常用的NFSR：
 
-1.非线性组合生成器：多个LFSR使用非线性函数综合输出（Geffe、Press）
+1.非线性组合生成器：多个LFSR使用非线性函数综合输出（Geffe、Pless）
 
 2.非线性滤波生成器：一个LFSR使用非线性函数得到输出
 
-3.钟控生成器：使用LFSR的输出，作为另一个LFSR的时钟信号
+3.钟控生成器：使用一个LFSR的输出，作为另一个LFSR的时钟信号
 
 **攻击方法**
 
