@@ -3,7 +3,7 @@ layout: post
 title: prac#ctf-show密码学部分题解
 author: Rechn0
 date: 2022-01-16 11:00 +0800
-last_modified_at: 2022-01-18 00:30 +0800
+last_modified_at: 2022-02-07 12:00 +0800
 tags: [crypto, practice]
 categories: [ctf, practice]
 toc:  true
@@ -12,26 +12,33 @@ math:  true
 
 ctfshow密码学部分习题wp
 
-# easyrsa
+## easyrsa
 
-## **[easyrsa1](https://ctf.show/files/64a01fb552ddd4bd18109507515e4c35/easyrsa1.txt)**
+### easyrsa1
 
+[Problem:](https://ctf.show/files/64a01fb552ddd4bd18109507515e4c35/easyrsa1.txt)
 给出一组rsa公钥(e, n)与密文c，n规模较小
 
-**思路：** n的规模较小，使用工具分解n
+**思路：** 
+
+n的规模较小，使用工具分解n
 
 flag{fact0r_sma11_N}
 
-## **[easyrsa2](https://ctf.show/files/7bb2ace56b5b89c6e2ec3df27a762b9f/easyrsa2.txt)**
+### easyrsa2
 
+[Problem:](https://ctf.show/files/7bb2ace56b5b89c6e2ec3df27a762b9f/easyrsa2.txt)
 给出两组rsa公钥(e, n)与密文c
 
-**思路：** 对两组n求公因数，利用得到的因子p分解n
+**思路：** 
+
+对两组n求公因数，利用得到的因子p分解n
 
 flag{m0_bv_hv_sv}
 
-## **[easyrsa3](https://ctf.show/files/e919472e7aa16ebf16a108a13f07cb71/easyrsa3.txt)**
+### easyrsa3
 
+[Problem:](https://ctf.show/files/e919472e7aa16ebf16a108a13f07cb71/easyrsa3.txt)
 给出两组rsa公钥与密文，其中两组公钥使用相同的n
 
 **思路：** 
@@ -60,8 +67,9 @@ print(long_to_bytes( pow(c1,s1,n)*pow(c2,s2,n)%n ))
 
 flag{sh4r3_N} 
 
-## **[easyrsa4](https://ctf.show/files/3a44698ad82180681d83d8a4c5bd1ce1/easyrsa4.txt)**
+### easyrsa4
 
+[Problem:](https://ctf.show/files/3a44698ad82180681d83d8a4c5bd1ce1/easyrsa4.txt)
 给出一组rsa公钥与密文，e规模较小
 
 **思路：** 
@@ -85,8 +93,9 @@ while True:
 
 flag{Sm4ll_eee} 
 
-## **[easyrsa5](https://ctf.show/files/b48bc11aae9f5eb181467e51b69fe934/easyrsa5.txt)**
+### easyrsa5
 
+[Problem:](https://ctf.show/files/b48bc11aae9f5eb181467e51b69fe934/easyrsa5.txt)
 给出一组rsa公钥与密文，e的规模较大
 
 **思路：** 
@@ -130,8 +139,9 @@ for x in range(1, len(data) + 1):
 
 flag{very_biiiiig_e}
 
-## **[easyrsa6](https://ctf.show/files/e8ca1658f3fd8d7c73ac31a009611a2f/easyrsa6.py)**
- 
+### easyrsa6
+
+[Problem:](https://ctf.show/files/e8ca1658f3fd8d7c73ac31a009611a2f/easyrsa6.py)
 给出加密脚本，包括一组rsa公钥与密文，q与p为邻近的两个质数
 
 **思路：** 
@@ -160,8 +170,9 @@ print(long_to_bytes(pow(c,d,n)))
  
 flag{p&q_4re_t00_c1o5ed}
 
-## **[easyrsa7](https://ctf.show/files/c8959978d6dea2232594036a27deec93/easyrsa7.txt)**
- 
+### easyrsa7
+
+[Problem:](https://ctf.show/files/c8959978d6dea2232594036a27deec93/easyrsa7.txt)
 给出一组rsa公钥与密文，同时给出质因子p的高位比特
 
 **思路：** 
@@ -195,8 +206,9 @@ print(long_to_bytes(pow(c,d,n)))
 
 flag{Kn0wn_Hi9h_Bit5}
 
-## **[easyrsa8](https://ctf.show/files/0fa75843aa6bb598c6c7f2c20b999681/easyrsa8.zip)**
+### easyrsa8
 
+[Problem:](https://ctf.show/files/0fa75843aa6bb598c6c7f2c20b999681/easyrsa8.zip)
 给出rsa公钥文件与密文文件
 
 **思路：** 
@@ -225,10 +237,11 @@ flag{p_1s_5mall_num6er}
 
 ---
 
-# funnyrsa
+## funnyrsa
 
-## **[funnyrsa1](https://ctf.show/files/adb34444643b4bfd78051846d8c5b87f/funnyrsa1.txt)**
+### funnyrsa1
 
+[Problem:](https://ctf.show/files/adb34444643b4bfd78051846d8c5b87f/funnyrsa1.txt)
 给出两组rsa加密指数e，质因数p、q，与两组相应密文，其中 \\\( e_{i} \\\) 与 \\\( \phi (n_{i}) \\\) 不互质
 
 **思路：**
@@ -307,8 +320,9 @@ while True:
 
 flag{gcd_e&φ_isn't_1}
 
-## **[funnyrsa2](https://ctf.show/files/def4dd0099b5ef557967231377dd073f/funnyrsa2.py)**
+### funnyrsa2
 
+[Problem:](https://ctf.show/files/def4dd0099b5ef557967231377dd073f/funnyrsa2.py)
 给出一组rsa公钥与密文，其中大整数n由三个质因数计算得到
 
 **思路：**
@@ -319,8 +333,9 @@ n规模较小，工具分解得到质因子，对e求逆解密即可
 
 flag{what_that_fvck_r}
 
-## **[funnyrsa3](https://ctf.show/files/1591b488e939db5236940f786cce301c/funnyrsa3.txt)**
+### funnyrsa3
 
+[Problem:](https://ctf.show/files/1591b488e939db5236940f786cce301c/funnyrsa3.txt)
 给出一组rsa公钥与密文，以及 \\\( dp = d \pmod{p-1} \\\)
 
 **思路：**
@@ -365,21 +380,159 @@ flag{dp_i5_1eak}
 
 ---
 
-# unusualrsa
+## unusualrsa
 
-## **[unusualrsa1](https://ctf.show/files/d1357f1bcb30db058270bdf9bec80c6b/unusualrsa1.py)**
+### unusualrsa1
 
-## **[unusualrsa2](https://ctf.show/files/30302b76cff3af217e4c67e8c17b2f4f/unusualrsa2.py)**
+[Problem:](https://ctf.show/files/d1357f1bcb30db058270bdf9bec80c6b/unusualrsa1.py)
+给出n,e,c与明文m的高位bit，e=3较小
 
-## **[unusualrsa3](https://ctf.show/files/c05ea71a259ffeaf600c25a326a1fc51/unusualrsa3.txt)**
+**思路：**
 
-## **[unusualrsa4](https://ctf.show/files/0f7a18b7987209d40509f6ebdd13ff4e/unusualrsa4.py)**
+Coppersmith已知明文高位攻击
 
-## **[unusualrsa5](https://ctf.show/files/52a9d616801afe28767a55d16efefb76/unusualrsa5.py)**
+已知：
 
+$$
+m=hm+x \\
+c=m^{e}=(hm+x)^e \pmod{n} \\
+$$
+
+故对方程求解small_root即可恢复明文m
+
+```
+# sage
+from unusualrsa1 import n,c,hm
+e=3
+
+R.<x>=PolynomialRing(Zmod(n))
+f=(hm+x)^e-c
+ans=f.small_root(X=2**315)
+print(long_to_bytes(hm+ans))
+```
+
+flag{r54__c0pp3r5m17h_p4r714l_m_4774ck_15_c00l~}
+
+### unusualrsa2
+
+[Problem:](https://ctf.show/files/30302b76cff3af217e4c67e8c17b2f4f/unusualrsa2.py)
+给出n,e与两组密文c，两组明文之间存在线性关系
+
+**思路：**
+
+Coppersmith’s Short-pad Attack & Related Message Attack
+(Franklin-Reiter Attack)
+
+该攻击考虑到当padding较弱时安全性较差，利用消息相关性可以构建方程求解小根
+
+e的规模可能会影响提取公因式的过程与结果（不清楚）
+
+题目有一些问题，想表达的大概是这样的意思：
+
+$$
+M_{1}=2*m+3 \Rightarrow C_{1}=M_{1}^{e} \pmod{n} \\
+M_{2}=4*m+11 \Rightarrow C_{2}=M_{2}^{e} \pmod{n} \\
+$$
+
+$$
+\Rightarrow M_{2}=2*M_{1}+5 \pmod{n}
+$$
+
+两个明文之间存在线性关系，此时即可能求解明文。考虑以下方程：
+
+$$
+f_{1}=x^e-C_{1} \pmod{n} \\
+f_{2}=(2*x+5)^{e}-C_{2} \pmod{n} \\
+$$
+
+可以发现 \\\( x=M_{1} \\\) 为两个方程的公共根，即\\\( (x-M_{1}) \\\) 一定为两个方程的因式
+
+故可以利用gcd思想求出方程公因式，即恢复了消息 \\\( M_{1} \\\) 进而得到了明文m
+
+```
+# sage
+from unusualrsa2 import n,c1,c2
+# m1=2*m+3
+# m2=4*m+11=2*m1+5
+
+def _gcd(f1,f2):
+    while f2:
+        f1,f2=f2,f1%f2
+    return f1.monic()
+
+R.<x>=PolynomialRing(Zmod(n))
+f1=x^e-c1
+f2=(2*x+5)^e-c2
+M1=int(- _gcd(f1,f2)[0])
+m=inverse_mod(2,n)*(M1-3)
+print(long_to_bytes(m))
+```
+
+flag{r54__r3l473d_m355463_4774ck_4l50_c4ll3d_fr4nkl1n_r3173r_4774ck~}
+
+### unusualrsa3
+
+[Problem:](https://ctf.show/files/c05ea71a259ffeaf600c25a326a1fc51/unusualrsa3.txt)
+给出rsa公钥与密文c，形式为有限域GF(p)上的多项式
+
+**思路：**
+
+主要熟悉一下sage的操作
+
+另外注意在GF(p)上的n次多项式（最高次为 \\\( x^{n} \\\) ），其阶为 \\\( p^{n}-1 \\\)
+
+```
+# sage
+base=2470567871
+R.<x>=PolynomialRing(GF(base))
+from unusualrsa3 import n,c
+
+p,q=factor(n)
+phi=(pow(base,p[0].degree())-1)*(pow(base,q[0].degree())-1)
+d=inverse_mod(e,phi)
+m=pow(c,d,n)
+print("".join([chr(c)for c in m.list()]))
+```
+
+flag{h4v3_y0u_533n_p0lyn0m14l_b453d_r54??}
+
+### unusualrsa4
+
+[Problem:](https://ctf.show/files/0f7a18b7987209d40509f6ebdd13ff4e/unusualrsa4.py)
+
+### unusualrsa5
+
+[Problem:](https://ctf.show/files/52a9d616801afe28767a55d16efefb76/unusualrsa5.py)
 给出p，q，e与密文c，其中 \\\( gcd(e,\phi(n))=e \\\)
 
 **思路：**
+
+[unusualrsa参考](https://wp.ctf.show/d/180-unusual-rsa-writeup)提供了较明确的有限域开根思路
+
+有限域开根nth_root问题。使用AMM算法或CL算法，可以找到一个n次根，通过另一算法找到1的所有n次根，相乘即找到了所有的n次根
+
+考虑将n分解为p*q，分别求解有限域上的n次根，利用crt进行合并，在所有的解中筛选有效flag即可
+
+本题可以直接调用sage的f.roots()函数进行求解
+
+```
+# sage
+from unusualrsa5 import e,p,q,c
+def nth_solve(n,c,p):
+    R.<x>=PolynomialRing(GF(p))
+    f=x^n-c
+    f=f.monic()
+    return f.roots()
+
+m1=nth_solve(e,c,p)
+m2=nth_solve(e,c,q)
+for i in m1:
+    for j in m2:
+        m=crt([i[0],j[0]],[p,q])
+        m=long_to_bytes(m)
+        if b'flag' in m:
+            exit(print(m))
+```
 
 flag{r54__d34l1n6_w17h_3v3n_3 _&_f1nd1n6_n-7h_r0075~~}
 
