@@ -1,16 +1,16 @@
 ---
 layout: post
-title: crypto#流密码
+title: crypto#流密码与伪随机数
 author: Rechn0
 date: 2022-01-14 17:00 +0800
 last_modified_at: 2022-01-15 23:00 +0800
-tags: [crypto, 流密码]
+tags: [crypto, stream, PRNG]
 categories: ctf
 toc:  true
 math: true
 ---
 
-流密码概述与伪随机数发生器
+流密码概述与伪随机数发生器介绍
 
 ## **Intro**
 
