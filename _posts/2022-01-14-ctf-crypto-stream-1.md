@@ -131,6 +131,36 @@ $$
 
 ## **RC4**
 
+由Ron Rivest发明，面向字节流的加密机制，密钥长度可变1~256字节。包括初始化算法（KSA）和伪随机子密码生成算法（PRGA)两部分
+
+RC4使用256长度的S盒，KSA部分对S盒进行初始化
+
+```
+# RC4-KSA
+for i in range(256):
+    s[i]=i
+    t[i]=key[i%len(key)]
+j=0
+for i in range(256):
+    j=(j+s[i]+t[i])%256
+    s[i],s[j]=s[j],s[i]
+```
+
+PRGA部分利用混乱的S盒，生成流密钥。
+
+```
+# RC4-PRGA
+i,j=0,0
+for _ in range(len(msg)):
+    i=(i+1)%256
+    j=(j+s[i])%256
+    s[i],s[j]=s[j],s[i]
+    t=(s[i]+s[j])%256
+    print(s[t])
+```
+
+对于RC4目前尚无有效攻击方法，比较厉害()
+
 ---
 
 ## **Repeat-XOR**

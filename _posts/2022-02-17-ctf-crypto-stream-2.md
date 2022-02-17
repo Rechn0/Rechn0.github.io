@@ -40,7 +40,16 @@ $$
 a_{i+n}=F(a_{i},a_{i+1},...,a_{i+n-1})=c_{n} * a_{i} \oplus ... \oplus c_{1} * a_{i+n-1}
 $$
 
-此处不为零的 \\\( c_{i} \\\) 数目为抽头数，可能影响到LFSR的性质
+此处不为零的 \\\( c_{i} \\\) 数目为抽头数，会影响到LFSR的性质
+
+此外LFSR也可以视作\\\( \mathbb{Z}_{2}^{n} \\\)上的矩阵运算，特殊情况下可以求解矩阵方程得到某些参数
+
+$$
+\begin{bmatrix} a_{i+1}&...&a_{i+n} \end{bmatrix}
+=
+\begin{bmatrix} a_{i}&...&a_{i+n-1} \end{bmatrix} *
+\begin{bmatrix} 0&0&...&0&c_{n}  \\ 1&0&...&0&c_{n-1} \\ 0&1&...&0&c_{n-2} \\ ...&...&...&...&... \\ 0&0&...&1&c_{1} \end{bmatrix} \pmod{2}
+$$
 
 ```
 # LFSR example
@@ -60,17 +69,59 @@ class lfsr():
         nextdata ^= output
         self.state = nextdata
         return output
+    
+    def getrandbit(self, nbit):
+        output = 0
+        for _ in range(nbit):
+            output = (output << 1) ^ self.next()
+        return output
 ```
 
 **攻击方法**
 
-**1.已知反馈函数**
+**1.还原初始状态**
 
-通过已知输出序列与反馈函数，可以还原出LFSR的所有前驱状态
+通过已知输出序列与反馈函数，可以还原出LFSR的前驱状态
 
 $$
 a_{i}=F(a_{i},a_{i+1},...,a_{i+n-1})=c_{n-1} * a_{i+1} \oplus ... \oplus c_{1} * a_{i+n-1} \oplus a_{i+n}
 $$
+
+```
+# Recover pre-state
+# make sure the highest bit of mask is 1
+## bit operation
+def recover_state(bits,mask,n,step):
+    state=bits&((1<<n)-1)
+    while step:
+        step-=1
+        high=state&1
+        state>>=1
+        res=mask&state
+        while res:
+            high^=res&1
+            res>>=1
+        state^=high<<(n-1)
+    return state
+
+## matrix operation
+def recover_state(bits,mask,n,step):
+    mat=Matrix(GF(2),n,n)
+    for i in range(n-1):
+        mat[i+1,i]=1
+    for i in range(n):
+        mat[n-1-i,n-1]=(mask>>i)&1
+    v=Matrix(GF(2),1,n)
+    for i in range(n):
+        v[0,i]=(bits>>(n-i-1))&1
+    mat=mat**(-step)
+    v=(v*mat).list()
+    state=0
+    for i in v:
+        state<<=1
+        state+=int(i)
+    return state
+```
 
 > **[例题][2018 CISCN 线上赛 oldstreamgame]()**
 >
@@ -97,7 +148,7 @@ $$
 ># flag{926201d7}
 >```
 
-**2.已知LFSR阶数n，未知反馈函数**
+**2.还原反馈函数**
 
 对于n阶LFSR，已知长度为2n的输出序列，即得到了LFSR的n+1个连续状态，此时可构造矩阵求出反馈函数
 
@@ -121,7 +172,7 @@ $$
 
 此时即得到了反馈函数c
 
-**3.LFSR阶数n与反馈函数均未知**
+**3.求解LFSR的阶数n**
 
 使用B-M算法，利用已知输出序列可以对LFSR的线性复杂度与极小多项式进行分析，进而得到LFSR的阶数n
 
