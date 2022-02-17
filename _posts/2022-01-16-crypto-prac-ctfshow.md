@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Prac#ctf-show密码学部分题解
+title: Prac#ctf-show crypto
 author: Rechn0
 date: 2022-01-16 11:00 +0800
 last_modified_at: 2022-02-07 12:00 +0800

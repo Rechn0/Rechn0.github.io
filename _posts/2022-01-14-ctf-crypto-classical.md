@@ -1,10 +1,10 @@
 ---
 layout: post
-title: crypto#古典密码
+title: crypto#Classical
 author: Rechn0
 date: 2022-01-14 17:00 +0800
 last_modified_at: 2022-01-15 23:00 +0800
-tags: [crypto, 古典密码]
+tags: [crypto, classical]
 categories: ctf
 toc:  true
 math:  true
