@@ -12,9 +12,9 @@ math:  true
 
 ctfshow密码学部分习题wp
 
-# **easyrsa**
+## **easyrsa**
 
-## easyrsa1
+### easyrsa1
 
 [Problem:](https://ctf.show/files/64a01fb552ddd4bd18109507515e4c35/easyrsa1.txt)
 给出一组rsa公钥(e, n)与密文c，n规模较小
@@ -25,7 +25,7 @@ n的规模较小，使用工具分解n
 
 flag{fact0r_sma11_N}
 
-## easyrsa2
+### easyrsa2
 
 [Problem:](https://ctf.show/files/7bb2ace56b5b89c6e2ec3df27a762b9f/easyrsa2.txt)
 给出两组rsa公钥(e, n)与密文c
@@ -36,7 +36,7 @@ flag{fact0r_sma11_N}
 
 flag{m0_bv_hv_sv}
 
-## easyrsa3
+### easyrsa3
 
 [Problem:](https://ctf.show/files/e919472e7aa16ebf16a108a13f07cb71/easyrsa3.txt)
 给出两组rsa公钥与密文，其中两组公钥使用相同的n
@@ -67,7 +67,7 @@ print(long_to_bytes( pow(c1,s1,n)*pow(c2,s2,n)%n ))
 
 flag{sh4r3_N} 
 
-## easyrsa4
+### easyrsa4
 
 [Problem:](https://ctf.show/files/3a44698ad82180681d83d8a4c5bd1ce1/easyrsa4.txt)
 给出一组rsa公钥与密文，e规模较小
@@ -93,7 +93,7 @@ while True:
 
 flag{Sm4ll_eee} 
 
-## easyrsa5
+### easyrsa5
 
 [Problem:](https://ctf.show/files/b48bc11aae9f5eb181467e51b69fe934/easyrsa5.txt)
 给出一组rsa公钥与密文，e的规模较大
@@ -139,7 +139,7 @@ for x in range(1, len(data) + 1):
 
 flag{very_biiiiig_e}
 
-## easyrsa6
+### easyrsa6
 
 [Problem:](https://ctf.show/files/e8ca1658f3fd8d7c73ac31a009611a2f/easyrsa6.py)
 给出加密脚本，包括一组rsa公钥与密文，q与p为邻近的两个质数
@@ -170,7 +170,7 @@ print(long_to_bytes(pow(c,d,n)))
  
 flag{p&q_4re_t00_c1o5ed}
 
-## easyrsa7
+### easyrsa7
 
 [Problem:](https://ctf.show/files/c8959978d6dea2232594036a27deec93/easyrsa7.txt)
 给出一组rsa公钥与密文，同时给出质因子p的高位比特
@@ -206,7 +206,7 @@ print(long_to_bytes(pow(c,d,n)))
 
 flag{Kn0wn_Hi9h_Bit5}
 
-## easyrsa8
+### easyrsa8
 
 [Problem:](https://ctf.show/files/0fa75843aa6bb598c6c7f2c20b999681/easyrsa8.zip)
 给出rsa公钥文件与密文文件
@@ -237,9 +237,9 @@ flag{p_1s_5mall_num6er}
 
 ---
 
-# **funnyrsa**
+## **funnyrsa**
 
-## funnyrsa1
+### funnyrsa1
 
 [Problem:](https://ctf.show/files/adb34444643b4bfd78051846d8c5b87f/funnyrsa1.txt)
 给出两组rsa加密指数e，质因数p、q，与两组相应密文，其中 \\\( e_{i} \\\) 与 \\\( \phi (n_{i}) \\\) 不互质
@@ -320,7 +320,7 @@ while True:
 
 flag{gcd_e&φ_isn't_1}
 
-## funnyrsa2
+### funnyrsa2
 
 [Problem:](https://ctf.show/files/def4dd0099b5ef557967231377dd073f/funnyrsa2.py)
 给出一组rsa公钥与密文，其中大整数n由三个质因数计算得到
@@ -333,7 +333,7 @@ n规模较小，工具分解得到质因子，对e求逆解密即可
 
 flag{what_that_fvck_r}
 
-## funnyrsa3
+### funnyrsa3
 
 [Problem:](https://ctf.show/files/1591b488e939db5236940f786cce301c/funnyrsa3.txt)
 给出一组rsa公钥与密文，以及 \\\( dp = d \pmod{p-1} \\\)
@@ -380,9 +380,9 @@ flag{dp_i5_1eak}
 
 ---
 
-# **unusualrsa**
+## **unusualrsa**
 
-## unusualrsa1
+### unusualrsa1
 
 [Problem:](https://ctf.show/files/d1357f1bcb30db058270bdf9bec80c6b/unusualrsa1.py)
 给出n,e,c与明文m的高位bit，e=3较小
@@ -416,7 +416,7 @@ print(long_to_bytes(hm+ans))
 
 flag{r54__c0pp3r5m17h_p4r714l_m_4774ck_15_c00l~}
 
-## unusualrsa2
+### unusualrsa2
 
 [Problem:](https://ctf.show/files/30302b76cff3af217e4c67e8c17b2f4f/unusualrsa2.py)
 给出n,e与两组密文c，两组明文之间存在线性关系
@@ -479,7 +479,7 @@ print(long_to_bytes(m))
 
 flag{r54__r3l473d_m355463_4774ck_4l50_c4ll3d_fr4nkl1n_r3173r_4774ck~}
 
-## unusualrsa3
+### unusualrsa3
 
 [Problem:](https://ctf.show/files/c05ea71a259ffeaf600c25a326a1fc51/unusualrsa3.txt)
 给出rsa公钥与密文c，形式为有限域GF(p)上的多项式
@@ -505,11 +505,11 @@ print("".join([chr(c)for c in m.list()]))
 
 flag{h4v3_y0u_533n_p0lyn0m14l_b453d_r54??}
 
-## unusualrsa4
+### unusualrsa4
 
 [Problem:](https://ctf.show/files/0f7a18b7987209d40509f6ebdd13ff4e/unusualrsa4.py)
 
-## unusualrsa5
+### unusualrsa5
 
 [Problem:](https://ctf.show/files/52a9d616801afe28767a55d16efefb76/unusualrsa5.py)
 给出p，q，e与密文c，其中 \\\( gcd(e,\phi(n))=e \\\)
