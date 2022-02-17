@@ -36,7 +36,7 @@ $$
 
 ---
 
-# **LCG**
+## **LCG**
 
 线性同余发生器(Linear Congruential Generator)使用参数A、B、M，线性同余迭代产生随机数
 
@@ -129,11 +129,11 @@ $$
 
 ---
 
-# **RC4**
+## **RC4**
 
 ---
 
-# **Repeat-XOR**
+## **Repeat-XOR**
 
 此处讨论使用循环密钥流的异或加密Repeat-XOR，可以视为维吉尼亚密码的变体。
 
