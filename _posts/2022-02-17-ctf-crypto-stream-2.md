@@ -68,13 +68,13 @@ class lfsr():
             i = i >> 1
         nextdata ^= output
         self.state = nextdata
-        return output
+        return int(output)
     
     def getrandbit(self, nbit):
         output = 0
         for _ in range(nbit):
             output = (output << 1) ^ self.next()
-        return output
+        return int(output)
 ```
 
 **攻击方法**
@@ -171,6 +171,25 @@ c=\sigma_{n+1}*\Sigma^{-1}
 $$
 
 此时即得到了反馈函数c
+
+```
+# Recover mask
+def recover_mask(bits,n):
+    mat=Matrix(GF(2),n,n)
+    for i in range(n):
+        for j in range(n):
+            mat[j,i]=(bits>>(2*n-1-i-j))&1
+    s=Matrix(GF(2),1,n)
+    for i in range(n):
+        s[0,i]=(bits>>(n-1-i))&1
+    c=s*(mat**-1)
+    c=c.list()
+    mask=0
+    for i in c:
+        mask<<=1
+        mask+=int(i)
+    return mask
+```
 
 **3.求解LFSR的阶数n**
 
