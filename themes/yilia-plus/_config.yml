@@ -2,37 +2,37 @@
 menu:
   主页: /
   技术笔记: https://zhousiwei.gitee.io/ibooks/
-  随笔: /tags/随笔/
+  个人简历: https://zhousiwei.gitee.io/cv/
+  日记本: /tags/日记本/
+  Linux: /tags/Linux
 
 # subNav-子导航
 subNav:
-  - github: "#"
-  - github: "#" # (支持设置多个)
-  - gitee: "#" # 码云
-  - jianshu: "#" #简书
-  # - cnblog: "#"
-  # - blog: "#"
-  # - csdn: "#"
-  # - rss: "#"
-  # - zhihu: "#"
-  # - qq: "img/2434387555.jpg"
-  # - weixin: "img/weixin_.png"
-  # - weibo: "#"
-  # - douban: "#"
-  # - segmentfault: "#"
-  # - bilibili: "#"
-  # - acfun: "#"
-  # - mail: "mailto:zhousiwei0911@qq.com"
-  # - facebook: "#"
-  # - google: "#"
-  # - twitter: "#"
-  # - linkedin: "#"
+  github: "https://github.com/JoeyBling"
+  gitee: "https://gitee.com/zhousiwei" # 码云
+  jianshu: "https://www.jianshu.com/u/02cbf31a043a" #简书
+  csdn: "https://blog.csdn.net/qq_30930805"
+  #csdn: "#"
+  #rss: "#"
+  zhihu: "https://zhihu.com/people/joeybling"
+  qq: "img/2434387555.jpg"
+  weixin: "img/weixin_.png"
+  weibo: "http://weibo.com/jayinfo"
+  #douban: "#"
+  #segmentfault: "#"
+  #bilibili: "#"
+  #acfun: "#"
+  mail: "mailto:zhousiwei0911@qq.com"
+  #facebook: "#"
+  #google: "#"
+  #twitter: "#"
+  #linkedin: "#"
 
 # 悬停预览图片效果
 hover_effect:
   ## `global` 0: Set separately, 1: Enable global 2: Close global
   ## `global` 0: 分开设置, 1: 全局启用, 2: 全局关闭
-  global: 2
+  global: 1
   # SubNav-导航
   subNav: true
 
@@ -42,12 +42,11 @@ rss: /atom.xml
 # 是否需要修改 root 路径
 # 如果您的网站存放在子目录中，例如 http://yoursite.com/blog，
 # 请将您的 url 设为 http://yoursite.com/blog 并把 / 设为 /blog/。
-# 新版本已弃用，请在博客根目录文件进行配置
-# root: /
+root: /yilia-plus-demo/
 
 # Content
 
-# 文章太长，截断按钮文字(在需要截断的行增加此标记：<!--more-->)
+# 文章太长，截断按钮文字
 excerpt_link: more
 # 文章卡片右下角常驻链接，不需要请设置为false
 show_all_link: '展开全文'
@@ -108,13 +107,13 @@ disqus: false
 
 # 3、Gitment----基于GitHub的评论系统(关闭请设置gitment_owner为false)
 # 关于如何集成:https://www.jianshu.com/p/ac7658cc912f
-gitment_owner: false      #你的 GitHub ID
+gitment_owner: JoeyBling      #你的 GitHub ID
 # 是否使用官方js(false可以提升访问速度，本地修改过一部分的js，官方js可能会出现服务器不稳定，不太建议使用)
 gitment_remote: false
-gitment_repo: ''          #存储评论的 repo name(需要在Github创建)
+gitment_repo: 'yilia-plus-demo'          #存储评论的 repo name(需要在Github创建)
 gitment_oauth:
-  client_id: ''           #client ID
-  client_secret: ''       #client secret
+  client_id: '1062039060f4021e8ae2'           #client ID
+  client_secret: '6ffbfcbd49ef5b123d524664657145a662179f34'       #client secret
 
 # 4、Giteement----【国内用户建议使用这个，相对比较快】
 # 关于如何集成:https://www.jianshu.com/p/f5c4633524c7
@@ -123,15 +122,15 @@ giteement:
   enable: false  # 是否启用码云评论系统
   # 是否使用官方js(false可以提升访问速度)
   remote: false
-  redirect_uri: ''   # 应用回调地址(请和配置的第三方应用保持一致)
-  # 不能更改(网上开源项目`https://github.com/Rob--W/cors-anywhere`作者提供的专门用来跨域服务器的配置)
+  redirect_uri: 'https://zhousiwei.gitee.io/yilia-plus-demo'   # 应用回调地址(请和配置的第三方应用保持一致)
+  # 不能更改(网上开源项目https://github.com/Rob--W/cors-anywhere作者提供的专门用来跨域服务器的配置)
   oauth_uri: https://cors-anywhere.herokuapp.com/https://gitee.com/oauth/token
-  giteeID: ''  # 你的码云账号英文名
+  giteeID: 'zhousiwei'  # 你的码云账号英文名
   # 存储评论的 repo name(需要在码云仓库创建公开仓库)
-  repo: ''
+  repo: 'yilia-plus-demo'
   gitment_oauth:
-    client_id: ''           #client ID
-    client_secret: ''       #client secret
+    client_id: '91e05bd40f24e75e7a61e8e0aafc1b541f525851874fe5b0b4d25cc9ea0bf68c'           #client ID
+    client_secret: '70d725414c22dc29ca7291c9a853acb4d9de666126ba95dfcb3a186f1ff52d38'       #client secret
 
 # 访问量统计功能(不蒜子)
 busuanzi:
@@ -144,7 +143,7 @@ music:
   enable: false
   # 播放器尺寸类型(1：长尺寸、2：短尺寸)
   type: 2
-  #id: 1334445174  # 网易云分享的音乐ID(更换音乐请更改此配置项)
+  #id: 1332647902  # 网易云分享的音乐ID(更换音乐请更改此配置项)
   autoPlay: true  # 是否开启自动播放
   # 提示文本(关闭请设置为false)
   text: '这似乎是首纯音乐，请尽情的欣赏它吧！'
@@ -170,8 +169,6 @@ baidu_push: false
 # 版权声明
 # 版权声明type设定：0-关闭版权声明； 1-文章对应的md文件里有copyright: true属性，才有版权声明； 2-所有文章均有版权声明
 copyright_type: 2
-# 版权声明自定义文本(关闭请设置为false)
-copyright_text: 
 
 # 网站成立年份(默认为 2018，若填入年份小于当前年份，则显示为 2018-2019 类似的格式)
 since: 2018
@@ -184,7 +181,7 @@ since: 2018
 # color: black|blue|green|orange|pink|purple|red|silver|white|yellow|
 progressBar:
   enable: false
-  type: 'minimal'  # Keep Quotes | 保留引号避免出错(某些type会导致样式重叠排版错误)
+  type: 'flash'  # Keep Quotes | 保留引号避免出错(某些type会导致样式重叠排版错误)
   color: blue
 
 # Apple Touch icon 苹果图标(关闭请设置为false)
@@ -213,28 +210,24 @@ activate_power_mode:
   # 是否开启摇动
   shake: false
 
-# 飘雪特效
-# https://github.com/MlgmXyysd/snow.js
-snow: false
-
 # 看板娘动态模型插件
 ## https://github.com/JoeyBling/live2d-widget.js
 live2d:
   # (关闭请设置为false)
-  enable: false
+  enable: true
   # 模型名称(取值请参考：https://github.com/JoeyBling/hexo-theme-yilia-plus/wiki/live2d%E6%A8%A1%E5%9E%8B%E5%8C%85%E5%B1%95%E7%A4%BA)
-  model: hibiki
+  model: miku
   display:
     position: right # 显示位置：left/right(default: 'right')
     width: 145  # 模型的长度(default: 150)
-    height: 315 # 模型的高度(default: 300)
+    height: 320 # 模型的高度(default: 300)
     hOffset: 50 # 水平偏移(default: 0)
     #vOffset: -20 # 垂直偏移(default: -20)
   mobile:
     show: false # 是否在移动设备上显示(default: true)
     scale: 0.6 # 移动设备上的缩放(default: 0.5)
   react:
-    opacity: 0.8 # 模型透明度(default: 0.7)
+    opacity: 1 # 模型透明度(default: 0.7)
 
 # 样式定制 - 一般不需要修改，除非有很强的定制欲望…
 style:
@@ -252,7 +245,7 @@ style:
 # slider的设置
 slider:
   # 是否默认展开tags板块
-  showTags: true
+  showTags: false
 
 # 智能菜单
 # 如不需要，将该对应项置为false
@@ -266,12 +259,13 @@ smart_menu:
 
 # 友情链接
 friends:
-  技术笔记:  #网站名称
-    #网站地址
+  Liu_Cabbage（我徒弟，多多支持）:
+    url: http://www.baocaige.top
+    img: http://www.baocaige.top/favicon.ico
+    description: 一叶浮萍归大海，人生何处不相逢（我徒弟，多多支持）
+  技术笔记:
     url: https://zhousiwei.gitee.io/ibooks/
-    #网站图片(可忽略不写)
     img: https://zhousiwei.gitee.io/ibooks/favicon.ico
-    #网站简介(可忽略不写)
     description: 记录工作和学习过程中的笔记：Java、前端开发、Hexo博客、聚合支付、Linux笔记、ElasticSearch、ELK日志分析
   GitHub:
     url: https://github.com/JoeyBling
@@ -281,6 +275,18 @@ friends:
     url: https://www.jianshu.com/u/02cbf31a043a
   CSDN:
     url: https://blog.csdn.net/qq_30930805
+  知乎:
+    url: https://www.zhihu.com/people/joeybling
+  微博:
+    url: http://weibo.com/jayinfo
+  燕十三:
+    url: https://www.yanshisan.cn
+    img: https://www.yanshisan.cn/logo.png
+    description: 燕十三·一个人的江湖
+  悠溯志的技术小站:
+    url: https://www.yszh.ml/
+    img: https://www.yszh.ml/favicon.ico
+    description: 走自己的路，让别人说去吧。适合自己的才是最好的！
 
 # 关于我
 aboutme: 主要涉及技术：<br>Java后端开发、聚合支付、<br>公众号开发、开源爱好者、Linux<br><br>联系QQ:2434387555<br><br>很惭愧<br><br>只做了一点微小的工作<br>谢谢大家

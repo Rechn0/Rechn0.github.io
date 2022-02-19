@@ -35,10 +35,8 @@ subNav:
     segmentfault: segmentfault
     bilibili: bilibili
     acfun: 'NULL'
-    mail: 'Email'  # 邮件联系
+    mail: 'NULL'  # 邮件联系
     facebook: Facebook
     google: Google
     twitter: twitter
     linkedin: linkedin
-    cnblog: cnblog
-    blog: blog

@@ -7,15 +7,15 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<a href="<%- url_for('/') %>">
+				<a href="<%=theme.root%>">
 					<img src="<%- url_for(theme.avatar) %>" class="js-avatar">
 				</a>
 			</div>
 			<hgroup>
-			  <h1 class="header-author js-header-author"><%= config.author %></h1>
+			  <h1 class="header-author js-header-author"><%=theme.author%></h1>
 			</hgroup>
-			<% if (config.subtitle) { %>
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i><%= config.subtitle %><i class="icon icon-quo-right"></i></p>
+			<% if (theme.subtitle){ %>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i><%=theme.subtitle%><i class="icon icon-quo-right"></i></p>
 			<% } %>
 			<% var count = 0; %>
 			<% for (var i in theme.menu){ %>
@@ -26,11 +26,8 @@
 			<nav class="header-nav">
 				<div class="social">
 					<% for (var i in theme.subNav){ %>
-						<% for (var nav in theme.subNav[i]){ %>
-						<a class="<%= nav %>" target="_blank" 
-							href="<%- url_for(theme.subNav[i][nav]) %>" title="<% if (__('subNav.title.'+ nav)){ %><%= __('subNav.title.'+ nav) %><% } else { %><%= nav %><% } %>"><i class="icon-<%= nav %>"></i></a>
-						<%}%>
-					<%}%>
+						<a class="<%= i %>" target="_blank" href="<%- url_for(theme.subNav[i]) %>" title="<% if (__('subNav.title.'+ i)){ %><%= __('subNav.title.'+ i) %><% } else { %><%= i %><% } %>"><i class="icon-<%= i %>"></i></a>
+			        <%}%>
 				</div>
 			</nav>
 

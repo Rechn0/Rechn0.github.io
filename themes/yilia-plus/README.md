@@ -6,7 +6,7 @@ hexo-theme-yilia-plus
 ![GitHub Last Commit](https://img.shields.io/github/last-commit/JoeyBling/hexo-theme-yilia-plus.svg?label=commits "GitHub Last Commit")
 ![issues](https://img.shields.io/github/issues/JoeyBling/hexo-theme-yilia-plus "issues")
 [![Author](https://img.shields.io/badge/Author-JoeyBling-red.svg "Author")](https://zhousiwei.gitee.io "Author")
-[![Hexo Version](https://img.shields.io/badge/hexo-%3E%3D%203.0-blue.svg)](http://hexo.io)
+![hexo](https://img.shields.io/badge/hexo-blue.svg "hexo")
 [![博客搭建交流群](https://img.shields.io/badge/QQ群-422625065-red.svg "博客搭建交流群")](https://jq.qq.com/?_wv=1027&k=58Ypj9z "博客搭建交流群")
 [![LICENSE](https://img.shields.io/github/license/JoeyBling/hexo-theme-yilia-plus "LICENSE")](./LICENSE "LICENSE")
 
@@ -14,8 +14,6 @@ hexo-theme-yilia-plus
 &#160;&#160;&#160;&#160;此项目是根据[hexo-theme-yilia](https://github.com/litten/hexo-theme-yilia)主题做了一些优化和改动，写这个项目的初衷就是深入学习`Hexo`。使用`yilia`主题可以快速迁移到`yilia-plus`
 
 #### [立即体验](#三开始使用)
-
-#### [项目支持](#其它项目支持)
 
 > **欢迎使用和Star支持，如使用过程中碰到问题，可以提出Issue，我会尽力完善**
 
@@ -46,8 +44,6 @@ hexo-theme-yilia-plus
 22. 优化配置是否在新窗口打开链接
 23. [fix bugs](https://github.com/JoeyBling/hexo-theme-yilia-plus/wiki/fix-bugs-record%EF%BC%88%E4%BF%AE%E5%A4%8Dbug%E8%AE%B0%E5%BD%95%EF%BC%89)
 24. [添加看板娘动态模型插件](https://github.com/JoeyBling/live2d-widget.js)
-25. 添加飘雪特效
-26. 自定义文章版权声明文本
 
 > 如果有小伙伴有新功能的意见或者改进欢迎给我提意见和建议~
 
@@ -133,8 +129,6 @@ subNav:
   github: "#"
   gitee: "#" # 码云
   jianshu: "#" #简书
-  cnblog: "#"
-  #blog: "#"
   #csdn: "#"
   #rss: "#"
   #zhihu: "#"
@@ -169,7 +163,7 @@ root: /
 
 # Content
 
-# 文章太长，截断按钮文字(在需要截断的行增加此标记：<!--more-->)
+# 文章太长，截断按钮文字
 excerpt_link: more
 # 文章卡片右下角常驻链接，不需要请设置为false
 show_all_link: '展开全文'
@@ -246,7 +240,7 @@ giteement:
   # 是否使用官方js(false可以提升访问速度)
   remote: false
   redirect_uri: ''   # 应用回调地址(请和配置的第三方应用保持一致)
-  # 不能更改(网上开源项目`https://github.com/Rob--W/cors-anywhere`作者提供的专门用来跨域服务器的配置)
+  # 不能更改(网上开源项目https://github.com/Rob--W/cors-anywhere作者提供的专门用来跨域服务器的配置)
   oauth_uri: https://cors-anywhere.herokuapp.com/https://gitee.com/oauth/token
   giteeID: ''  # 你的码云账号英文名
   # 存储评论的 repo name(需要在码云仓库创建公开仓库)
@@ -286,7 +280,7 @@ github:
 pageFooter:
   litten: GitHub:<a href="https://github.com/JoeyBling/hexo-theme-yilia-plus" target="_blank">hexo-theme-yilia-plus</a>
 
-# 开启百度站长平台自动推送(https://ziyuan.baidu.com/linksubmit/index)
+# 开启百度站长平台主动推送(https://ziyuan.baidu.com/linksubmit/index)
 baidu_push: false
 
 # 版权声明
@@ -332,10 +326,6 @@ activate_power_mode:
   colorful: true
   # 是否开启摇动
   shake: false
-
-# 飘雪特效
-# https://github.com/MlgmXyysd/snow.js
-snow: false
 
 # 看板娘动态模型插件
 ## https://github.com/JoeyBling/live2d-widget.js
@@ -405,14 +395,6 @@ friends:
 # 关于我
 aboutme: 主要涉及技术：<br>Java后端开发、聚合支付、<br>公众号开发、开源爱好者、Linux<br><br>联系QQ:2434387555<br><br>很惭愧<br><br>只做了一点微小的工作<br>谢谢大家
 ```
-
-
-## 其它项目支持
-
-- ### 一款简洁优雅的hexo主题：[hexo-theme-yilia-plus](https://github.com/JoeyBling/hexo-theme-yilia-plus)
-- ### 一款简洁优雅的VuePress主题：[vuepress-theme-yilia-plus](https://github.com/JoeyBling/vuepress-theme-yilia-plus)
-- ### VuePress集成Live2D看板娘：[vuepress-plugin-helper-live2d](https://github.com/JoeyBling/vuepress-plugin-helper-live2d)
-- ### VuePress回到页首插件Plus：[vuepress-plugin-gotop-plus](https://github.com/JoeyBling/vuepress-plugin-gotop-plus)
 
 ## 捐赠
 &#160;&#160;&#160;&#160;**如果感觉对您有帮助，请作者喝杯咖啡吧，请注明您的名字或者昵称，方便作者感谢o(*￣︶￣*)o**
