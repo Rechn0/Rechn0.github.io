@@ -1,6 +1,6 @@
 ---
 layout: post
-title: crypto#Blockcipher
+title: Blockcipher Crypto
 author: Rechn0
 date: 2022-02-07 14:30 +0800
 last_modified_at: 2022-02-07 14:30 +0800

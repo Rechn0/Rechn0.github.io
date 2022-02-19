@@ -1,6 +1,6 @@
 ---
 layout: post
-title: crypto#Stream & PRNG 1
+title: Stream & PRNG 1
 author: Rechn0
 date: 2022-01-14 17:00 +0800
 last_modified_at: 2022-01-15 23:00 +0800

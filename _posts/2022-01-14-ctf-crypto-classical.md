@@ -1,6 +1,6 @@
 ---
 layout: post
-title: crypto#Classical
+title: Classical Crypto
 author: Rechn0
 date: 2022-01-14 17:00 +0800
 last_modified_at: 2022-01-15 23:00 +0800
