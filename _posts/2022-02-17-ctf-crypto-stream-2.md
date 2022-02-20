@@ -3,7 +3,7 @@ layout: post
 title: Stream & PRNG 2
 author: Rechn0
 date: 2022-02-17 17:00 +0800
-last_modified_at: 2022-02-17 17:00 +0800
+last_modified_at: 2022-02-21 2:00 +0800
 tags: [crypto, stream, PRNG, FSR, MT19937]
 categories: ctf
 toc:  true
@@ -90,7 +90,7 @@ $$
 ```
 # Recover pre-state
 # make sure the highest bit of mask is 1
-## bit operation
+## bitwise operation
 def recover_state(bits,mask,n,step):
     state=bits&((1<<n)-1)
     while step:
@@ -265,24 +265,9 @@ python中random模块，以及php中的mt_rand，即使用了mt19937算法产生
 考虑到extract()部分使用可逆操作，因此可以通过发生器的输出还原其状态
 
 ```
-# Part 1
-y = y ^ y >> 11
-```
-分析可以发现，运算结果的高11bit即为y的高11bit
-
-因此，如果对该结果再次执行此式子，即可得到y的高22bit。故可以证明，对某数y循环执行若干次该操作，一定能得到y本身
-
-```
-# Part 2
-y = y ^ y << 7 & 2636928640
-```
-
-该部分增加了掩码mask参与运算，实际影响不大。可以发现运算结果的低7bit即为y的低7bit
-
-因此再次执行此式子，则可以得到y低14bit，进而一定能得到y本身
-
-```
 # crack extract-func
+## solution 1
+## bitwise operation
 def inverse_shift(x, shift, type, mask=0xffffffff, nbit=32):
     res = x
     for _ in range(nbit//shift):
@@ -297,6 +282,32 @@ def crack_extract(x):
     x = inverse_shift(x, 11, 'r')
     return x
 ```
+以 y = y ^ y >> 11 为例分析，可以发现运算结果的高11bit即为y的高11bit，进一步操作即可暴露y的高22bit，可以证明若干次操作后一定会得到y本身
+
+以 y = y ^ y << 7 & 2636928640 为例分析，可以发现掩码的作用不大，运算结果的低7bit即为y的低7bit，结论与上述相同
+
+$$
+周期T=(bits//shift)+1
+$$
+
+因此再执行若干次相应操作，即可还原初始状态
+
+```
+# crack extract-func
+## solution 1
+## matrix operation
+
+```
+
+另一种思路将shift-xor操作考虑为 \\\( \mathbb{Z}_{2}^{nbit} \\\) 上的矩阵操作。观察发现每步操作的结果与输入之间存在线性关系，可以构造矩阵
+
+$$
+y_{1*nbit}=x_{1*nbit}*T_{nbit*nbit}
+$$
+
+由于操作可逆，故在 \\\( \mathbb{Z}_{2}^{nbit} \\\) 求得逆矩阵即为逆向还原操作
+
+此处可以考虑**对Black-Box的选择明文泄露攻击**，即选择特殊的明文泄露黑盒的信息。例如当 \\\( x_{1}=1, x_{i}=0 (i \neq 1)\\\) 时，y即对应T的第一行，此法可以还原出整个T矩阵，进而求出 \\\( T^{-1} \\\) 即可
 
 **2.向前预测：对twist()的攻击**
 
