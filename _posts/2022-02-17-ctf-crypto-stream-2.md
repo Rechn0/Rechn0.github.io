@@ -215,5 +215,90 @@ def recover_mask(bits,n):
 
 ## **MT19937**
 
+MT19937算法基于矩阵递归构建周期较长的随机数序列，其周期长达 \\\( 2^{19937}-1 \\\) ，是十分优秀的随机数算法
+
+该算法主要分为下列步骤
+
+1. 使用seed产生基础梅森旋转链
+2. 对旋转链执行旋转算法
+3. 根据旋转链的状态获得输出随机数
+
+```
+# MT19937 example
+def _int32(x):
+    return int(0xffffffff & x)
+class mt19937:
+    def __init__(self, seed):
+        self.mt = [0] * 624
+        self.mt[0] = seed
+        self.mti = 0
+        for i in range(1, 624):
+            self.mt[i] = _int32(1812433253 * (self.mt[i - 1] ^ self.mt[i - 1] >> 30) + i)
+
+    def extract(self):
+        if self.mti == 0:
+            self.twist()
+        y = self.mt[self.mti]
+        y = y ^ y >> 11
+        y = y ^ y << 7 & 2636928640
+        y = y ^ y << 15 & 4022730752
+        y = y ^ y >> 18
+        self.mti = (self.mti + 1) % 624
+        return _int32(y)
+
+    def twist(self):
+        for i in range(0, 624):
+            y = _int32((self.mt[i] & 0x80000000) + (self.mt[(i + 1) % 624] & 0x7fffffff))
+            self.mt[i] = (y >> 1) ^ self.mt[(i + 397) % 624]
+            if y % 2 != 0:
+                self.mt[i] = self.mt[i] ^ 0x9908b0df
+```
+
+python中random模块，以及php中的mt_rand，即使用了mt19937算法产生随机数
+
+**攻击方法**
+
+**1.向后预测：对extract()的攻击**
+
+对于MT19937，得到其连续的624个32bit状态即可恢复整条旋转链，可以证明此时即恢复了发生器状态，进而能够预测后续所有的随机数
+
+考虑到extract()部分使用可逆操作，因此可以通过发生器的输出还原其状态
+
+```
+# Part 1
+y = y ^ y >> 11
+```
+分析可以发现，运算结果的高11bit即为y的高11bit
+
+因此，如果对该结果再次执行此式子，即可得到y的高22bit。故可以证明，对某数y循环执行若干次该操作，一定能得到y本身
+
+```
+# Part 2
+y = y ^ y << 7 & 2636928640
+```
+
+该部分增加了掩码mask参与运算，实际影响不大。可以发现运算结果的低7bit即为y的低7bit
+
+因此再次执行此式子，则可以得到y低14bit，进而一定能得到y本身
+
+```
+# crack extract-func
+def inverse_shift(x, shift, type, mask=0xffffffff, nbit=32):
+    res = x
+    for _ in range(nbit//shift):
+        if type == 'l': res = x ^ res << shift & mask
+        if type == 'r': res = x ^ res >> shift & mask
+    return res
+
+def crack_extract(x):
+    x = inverse_shift(x, 18, 'r')
+    x = inverse_shift(x, 15, 'l', 4022730752)
+    x = inverse_shift(x,  7, 'l', 2636928640)
+    x = inverse_shift(x, 11, 'r')
+    return x
+```
+
+**2.向前预测：对twist()的攻击**
+
 ---
 
