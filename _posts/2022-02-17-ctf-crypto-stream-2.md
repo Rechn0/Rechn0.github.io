@@ -79,6 +79,10 @@ class lfsr():
 
 **攻击方法**
 
+[深入分析LFSR1](https://www.anquanke.com/post/id/181811)
+
+[深入分析LFSR2](https://www.anquanke.com/post/id/184828)
+
 **1.还原初始状态**
 
 通过已知输出序列与反馈函数，可以还原出LFSR的前驱状态
@@ -89,7 +93,7 @@ $$
 
 ```python
 # Recover pre-state
-# make sure the highest bit of mask is 1
+# solution 1
 ## bitwise operation
 def recover_state(bits,mask,n,step):
     state=bits&((1<<n)-1)
@@ -103,24 +107,43 @@ def recover_state(bits,mask,n,step):
             res>>=1
         state^=high<<(n-1)
     return state
+```
 
+使用矩阵方程求解，可以通过不连续的bit序列还原初始状态，这也是常见的情况
+
+```python
+# Recover pre-state
+# solution 2
 ## matrix operation
-def recover_state(bits,mask,n,step):
-    mat=Matrix(GF(2),n,n)
-    for i in range(n-1):
+def i2v(x, nbit):
+    return Matrix(GF(2), [int(i) for i in bin(x)[2:].zfill(nbit)])
+
+def v2i(y):
+    return int(''.join([str(i) for i in y.list()]), 2)
+
+def mat_mask(mask, nbit):
+    mat=Matrix(GF(2), nbit, nbit)
+    mat[nbit-1]=i2v(mask, nbit)
+    mat=mat.T
+    for i in range(nbit-1):
         mat[i+1,i]=1
-    for i in range(n):
-        mat[n-1-i,n-1]=(mask>>i)&1
-    v=Matrix(GF(2),1,n)
-    for i in range(n):
-        v[0,i]=(bits>>(n-i-1))&1
-    mat=mat**(-step)
-    v=(v*mat).list()
-    state=0
-    for i in v:
-        state<<=1
-        state+=int(i)
-    return state
+    return mat
+
+def qpow(mat, b):
+    res=mat**0
+    while b:
+        if b&1: res*=mat
+        b>>=1
+        mat*=mat
+    return res
+
+def recover_state(x, mask, nbit):
+    mask=mat_mask(mask, nbit)
+    mat=Matrix(GF(2), nbit, nbit)
+    for i in range(nbit):
+        mat[i]=qpow(mask, x[i][1]+1).T[nbit-1]
+    v=i2v(int(''.join([str(i[0]) for i in x]),2), nbit)
+    return v2i(v/mat.T)
 ```
 
 > **[例题][2018 CISCN 线上赛 oldstreamgame]()**
@@ -174,21 +197,20 @@ $$
 
 ```python
 # Recover mask
+
+def i2v(x, nbit):
+    return Matrix(GF(2), [int(i) for i in bin(x)[2:].zfill(nbit)])
+
+def v2i(y):
+    return int(''.join([str(i) for i in y.list()]), 2)
+
 def recover_mask(bits,n):
+    lengthmask=(1<<n)-1
     mat=Matrix(GF(2),n,n)
     for i in range(n):
-        for j in range(n):
-            mat[j,i]=(bits>>(2*n-1-i-j))&1
-    s=Matrix(GF(2),1,n)
-    for i in range(n):
-        s[0,i]=(bits>>(n-1-i))&1
-    c=s*(mat**-1)
-    c=c.list()
-    mask=0
-    for i in c:
-        mask<<=1
-        mask+=int(i)
-    return mask
+        mat[i]=i2v((bits>>(n-i))&lengthmask,n)
+    s=i2v(bits&lengthmask, n)
+    return v2i(s/mat.T)
 ```
 
 **3.求解LFSR的阶数n**
@@ -210,6 +232,12 @@ def recover_mask(bits,n):
 **攻击方法**
 
 **快速相关攻击FCA**
+
+[开普敦大学FCA项目](https://projects.cs.uct.ac.za/honsproj/cgi-bin/view/2011/desai.zip/crypto_desai/dl/)
+
+快速相关攻击考虑到，源LFSR的产生序列与combine后LFSR序列存在的相关性。当序列相关性>0.53时，可以视为满足FCA攻击的条件
+
+对于小抽头数(<10)的LFSR，FCA攻击的效果较为显著
 
 ---
 
@@ -258,6 +286,8 @@ python中random模块，以及php中的mt_rand，即使用了mt19937算法产生
 
 **攻击方法**
 
+[MT19937攻击](https://www.anquanke.com/post/id/205861#h2-5)
+
 **1.向后预测：对extract()的攻击**
 
 对于MT19937，得到其连续的624个32bit状态即可恢复整条旋转链，可以证明此时即恢复了发生器状态，进而能够预测后续所有的随机数
@@ -288,7 +318,7 @@ def crack_extract(x):
 以 y = y ^ y << 7 & 2636928640 为例分析，可以发现掩码的作用不大，运算结果的低7bit即为y的低7bit，结论与上述相同
 
 $$
-周期T=(bits//shift)+1
+T=(bits//shift)+1
 $$
 
 因此再执行若干次相应操作，即可还原初始状态
@@ -330,6 +360,38 @@ $$
 此处可以考虑**对Black-Box的选择明文泄露攻击**，即选择特殊的明文泄露黑盒的信息。例如当 \\\( x_{1}=1, x_{i}=0 (i \neq 1)\\\) 时，y即对应T的第一行，此法可以还原出整个T矩阵，进而求出 \\\( T^{-1} \\\) 即可
 
 **2.向前预测：对twist()的攻击**
+
+```python
+# crack twist-func
+def crack_twist(cur):
+    high = 0x80000000
+    low = 0x7fffffff
+    mask = 0x9908b0df
+    state = cur
+    for i in range(623,-1,-1):
+        tmp = state[i]^state[(i+397)%624]
+        # recover Y,tmp = Y
+        if tmp & high == high:
+            tmp ^= mask
+            tmp <<= 1
+            tmp |= 1
+        else:
+            tmp <<=1
+        # recover highest bit
+        res = tmp&high
+        # recover other 31 bits,when i =0,it just use the method again it so beautiful!!!!
+        tmp = state[i-1]^state[(i+396)%624]
+        # recover Y,tmp = Y
+        if tmp & high == high:
+            tmp ^= mask
+            tmp <<= 1
+            tmp |= 1
+        else:
+            tmp <<=1
+        res |= (tmp)&low
+        state[i] = res    
+    return state
+```
 
 ---
 

@@ -78,7 +78,7 @@ rsa低加密指数攻击
 
 由于加密指数较小，考虑枚举开根\\\( (c+kn)^{\frac{1}{e}} \\\)，可以较快时间内得到k的值
 
-```
+```python
 from easyrsa4 import e, c, n
 import gmpy2
 from Crypto.Util.number import *
@@ -102,7 +102,7 @@ flag{Sm4ll_eee}
 
 rsa低解密指数攻击
 
-Wiener攻击，需要满足条件 \\\( q<p<2q,d<\cfrac{1}{3}N^{\frac{1}{4}} \\\)
+Wiener攻击，需要满足条件\\\( q<p<2q,d<\cfrac{1}{3}N^{\frac{1}{4}} \\\)
 
 攻击脚本[Lazzaro](https://lazzzaro.github.io/2020/05/06/crypto-RSA/)，[RSA-Wiener-Attack](https://github.com/pablocelayes/rsa-wiener-attack)
 
