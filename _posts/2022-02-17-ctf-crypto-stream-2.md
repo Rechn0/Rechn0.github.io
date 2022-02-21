@@ -137,8 +137,11 @@ def qpow(mat, b):
         mat*=mat
     return res
 
-def recover_state(x, mask, nbit):
+# tag=0 for distinct bit
+def recover_state(x, mask, nbit, tag=0):
     mask=mat_mask(mask, nbit)
+    if tag:
+        return v2i(i2v(x)/(mask**nbit))
     mat=Matrix(GF(2), nbit, nbit)
     for i in range(nbit):
         mat[i]=qpow(mask, x[i][1]+1).T[nbit-1]
