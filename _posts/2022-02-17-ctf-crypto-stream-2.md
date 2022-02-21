@@ -268,6 +268,7 @@ python中random模块，以及php中的mt_rand，即使用了mt19937算法产生
 # crack extract-func
 ## solution 1
 ## bitwise operation
+
 def inverse_shift(x, shift, type, mask=0xffffffff, nbit=32):
     res = x
     for _ in range(nbit//shift):
@@ -297,6 +298,25 @@ $$
 ## solution 1
 ## matrix operation
 
+def _int32(x):
+    return int(0xffffffff & x)
+def encrypt(y):
+    y = y ^^ y >> 11
+    y = y ^^ y << 7 & 2636928640
+    y = y ^^ y << 15 & 4022730752
+    y = y ^^ y >> 18
+    return _int32(y)
+
+def i2v(x, nbit):
+    return Matrix(GF(2), [int(i) for i in bin(x)[2:].zfill(nbit)])
+def v2i(y):
+    return int(''.join([str(i) for i in y.list()]), 2)
+def getT():
+    t = Matrix(GF(2), 32, 32)
+    for i in range(32):
+        y = encrypt( 1<<(32-1-i) )
+        t[i] = i2v(y, 32)
+    return t
 ```
 
 另一种思路将shift-xor操作考虑为 \\\( \mathbb{Z}_{2}^{nbit} \\\) 上的矩阵操作。观察发现每步操作的结果与输入之间存在线性关系，可以构造矩阵
