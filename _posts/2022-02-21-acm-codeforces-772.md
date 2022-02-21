@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Codeforces Round #772 (Div. 2)
+title: Codeforces Round#772 (Div. 2)
 author: Rechn0
 date: 2022-02-21 13:30 +0800
 last_modified_at: 2022-02-21 13:30 +0800
