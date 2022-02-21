@@ -71,10 +71,10 @@ class lfsr():
         return int(output)
     
     def getrandbit(self, nbit):
-        output = 0
+        output = ''
         for _ in range(nbit):
-            output = (output << 1) ^ self.next()
-        return int(output)
+            output += str(self.next())
+        return int(output,2)
 ```
 
 **攻击方法**
@@ -200,7 +200,6 @@ $$
 
 ```python
 # Recover mask
-
 def i2v(x, nbit):
     return Matrix(GF(2), [int(i) for i in bin(x)[2:].zfill(nbit)])
 
@@ -301,7 +300,6 @@ python中random模块，以及php中的mt_rand，即使用了mt19937算法产生
 # crack extract-func
 ## solution 1
 ## bitwise operation
-
 def inverse_shift(x, shift, type, mask=0xffffffff, nbit=32):
     res = x
     for _ in range(nbit//shift):
@@ -330,7 +328,6 @@ $$
 # crack extract-func
 ## solution 1
 ## matrix operation
-
 def _int32(x):
     return int(0xffffffff & x)
 def encrypt(y):
