@@ -57,7 +57,7 @@ class lfsr():
     def __init__(self, init, mask, length):
         self.mask = mask
         self.state = init
-        self.lengthmask = 2**length - 1
+        self.lengthmask = (1 << length) - 1
 
     def next(self):
         nextdata = (self.state << 1) & self.lengthmask
@@ -345,11 +345,11 @@ def i2v(x, nbit):
 def v2i(y):
     return int(''.join([str(i) for i in y.list()]), 2)
 def getT():
-    t = Matrix(GF(2), 32, 32)
+    T = Matrix(GF(2), 32, 32)
     for i in range(32):
         y = encrypt( 1<<(32-1-i) )
-        t[i] = i2v(y, 32)
-    return t
+        T[i] = i2v(y, 32)
+    return T
 ```
 
 另一种思路将shift-xor操作考虑为 \\\( \mathbb{Z}_{2}^{nbit} \\\) 上的矩阵操作。观察发现每步操作的结果与输入之间存在线性关系，可以构造矩阵
