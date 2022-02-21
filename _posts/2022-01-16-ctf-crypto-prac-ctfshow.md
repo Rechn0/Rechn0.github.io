@@ -49,7 +49,7 @@ rsa共模攻击
 
 此时明文 \\\( m = c_{1}^{s_{1}} * c_{2}^{s_{2}} = m^{s_{1} * e_{1}+s_{2} * e_{2}} \pmod{n} \\\)
 
-```
+```python
 from easyrsa3 import e1, e2, c1, c2, n
 import gmpy2
 from Crypto.Util.number import *
@@ -106,7 +106,7 @@ Wiener攻击，需要满足条件 \\\( q<p<2q,d<\cfrac{1}{3}N^{\frac{1}{4}} \\\)
 
 攻击脚本[Lazzaro](https://lazzzaro.github.io/2020/05/06/crypto-RSA/)，[RSA-Wiener-Attack](https://github.com/pablocelayes/rsa-wiener-attack)
 
-```
+```python
 from easyrsa5 import e, c, n
 
 # 将分数x/y展开为连分数的形式
@@ -152,7 +152,7 @@ flag{very_biiiiig_e}
 
 利用factorb工具也可以对n进行分解
 
-```
+```python
 from easyrsa6 import c, n
 import gmpy2
 from Crypto.Util.number import *
@@ -185,7 +185,7 @@ coppersmith攻击
 
 使用sage的small_roots(X,beta)可以求解，其中X为根的上界， \\\( n^{beta} \\\) 为式中因子的下界
 
-```
+```python
 # sage
 from easyrsa7 import e, c, n, hp
 import gmpy2
@@ -217,7 +217,7 @@ flag{Kn0wn_Hi9h_Bit5}
 
 PKCS1_OAEP cipher的操作可以学习一下，这里直接进行解密无法得到答案
 
-```
+```python
 from Crypto.Cipher import PKCS1_OAEP
 import gmpy2
 from Crypto.Util.number import *
@@ -252,7 +252,7 @@ flag{p_1s_5mall_num6er}
 
 对于 \\\( e_{i}^{'} \\\) 部分，可以使用标准rsa操作
 
-```
+```python
 # Step 1
 from funnyrsa1 import e1, p1, q1, c1, e2, p2, q2, c2
 import gmpy2
@@ -296,7 +296,7 @@ $$
 
 此时 \\\( gcd(14, \phi(q_{1} * q_{2})) = 2 \\\) ，故对于 \\\( e^{''} = 7 \\\) 部分，也可以使用rsa操作
 
-```
+```python
 # Step 2
 from Math_Func import crt
 c_14=crt([c1_14%q1, c2_14%q2], [q1, q2])[0]
@@ -308,7 +308,7 @@ c=pow(c_14,d,q1*q2)
 
 此处由于数据较弱故可以得到结果，模p开根操作可以使用sage实现，见unusualrsa5部分
 
-```
+```python
 #Step 3
 while True:
     if gmpy2.iroot(c,2)[1]==True:
@@ -360,7 +360,7 @@ $$
 
 考虑到 \\\( dp < (p-1) \Rightarrow X < e \\\) ，故枚举X即可快速求出p
 
-```
+```python
 from funnyrsa3 import e, c, n, dp
 import gmpy2
 from Crypto.Util.number import *
@@ -403,7 +403,7 @@ $$
 
 故对方程求解small_root即可恢复明文m
 
-```
+```python
 # sage
 from unusualrsa1 import n,c,hm
 e=3
@@ -458,7 +458,7 @@ $$
 
 故可以利用gcd思想求出方程公因式，即恢复了消息 \\\( M_{1} \\\) 进而得到了明文m
 
-```
+```python
 # sage
 from unusualrsa2 import n,c1,c2
 # m1=2*m+3
@@ -490,7 +490,7 @@ flag{r54__r3l473d_m355463_4774ck_4l50_c4ll3d_fr4nkl1n_r3173r_4774ck~}
 
 另外注意在GF(p)上的n次多项式（最高次为 \\\( x^{n} \\\) ），其阶为 \\\( p^{n}-1 \\\)
 
-```
+```python
 # sage
 base=2470567871
 R.<x>=PolynomialRing(GF(base))
@@ -524,7 +524,7 @@ flag{h4v3_y0u_533n_p0lyn0m14l_b453d_r54??}
 
 本题可以直接调用sage的f.roots()函数进行求解
 
-```
+```python
 # sage
 from unusualrsa5 import e,p,q,c
 def nth_solve(n,c,p):

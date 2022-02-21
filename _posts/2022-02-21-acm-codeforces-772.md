@@ -22,8 +22,6 @@ Codeforces #772 题解
 
 [Problem](https://codeforces.com/contest/1635/problem/A)
 
-**Solution：**
-
 每次操作前后两数或运算的结果相同，故对于第i位二进制位：
 
 * 若 \\\( a_{i}, a_{j} \\\) 均为0，则 \\\( x, y \\\) 也为0即可
@@ -31,9 +29,8 @@ Codeforces #772 题解
 
 因此对整个数组，依次考虑每个二进制位。若每个元素该位为0，则无事发生。若存在元素该位为1，则只保留一个元素使该位为1即可，此时 \\\( ans+=2^i \\\)
 
-**Code：**
 
-```
+```cpp
 int t,n,a[N];
 inline void Main()
 {
@@ -60,15 +57,11 @@ inline void Main()
 
 [Problem](https://codeforces.com/contest/1635/problem/B)
 
-**Solution：**
-
 首先找出数组中存在的局部极大值。已知对于i位置的局部极大值，只需要令其某个相邻元素与它相等即可
 
 对于i-1、i+1两相邻位置的局部极大值，将i位置元素修改为两极大值中较大的一个，即可消除两个局部极大值，此策略较优
 
-**Code：**
-
-```
+```cpp
 int t,n,a[N],b[N];
 inline void Main()
 {
@@ -113,15 +106,11 @@ inline void Main()
 
 [Problem](https://codeforces.com/contest/1635/problem/C)
 
-**Solution：**
-
 观察发现元素 \\\( a_{n-1}, a_{n} \\\) 是无法被修改的，\\\( a_{n-2} \\\) 仅能被修改为 \\\( a_{n-1}-a_{n} \\\)
 
 因此，首先判断最后两个元素是否单调不减，然后考虑将所有其他元素均修改为 \\\( a_{n-1}-a_{n} \\\) 的可行性即可
 
-**Code：**
-
-```
+```cpp
 int t,n,a[N];
 inline void Main()
 {
@@ -151,11 +140,9 @@ inline void Main()
 
 [Problem](https://codeforces.com/contest/1635/problem/D)
 
-**Solution：**
 
-**Code：**
 
-```
+```cpp
 int n,p,a[N];
 map<int,bool>ma;
 int func[N];

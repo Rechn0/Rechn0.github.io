@@ -51,7 +51,7 @@ $$
 \begin{bmatrix} 0&0&...&0&c_{n}  \\ 1&0&...&0&c_{n-1} \\ 0&1&...&0&c_{n-2} \\ ...&...&...&...&... \\ 0&0&...&1&c_{1} \end{bmatrix} \pmod{2}
 $$
 
-```
+```python
 # LFSR example
 class lfsr():
     def __init__(self, init, mask, length):
@@ -87,7 +87,7 @@ $$
 a_{i}=F(a_{i},a_{i+1},...,a_{i+n-1})=c_{n-1} * a_{i+1} \oplus ... \oplus c_{1} * a_{i+n-1} \oplus a_{i+n}
 $$
 
-```
+```python
 # Recover pre-state
 # make sure the highest bit of mask is 1
 ## bitwise operation
@@ -129,7 +129,7 @@ def recover_state(bits,mask,n,step):
 >
 > **思路：** 逆推LFSR还原seed
 >
->```
+>```python
 >key=open(hpath+'key','rb').read()
 > mask=0b10100100000010000000100010010100
 > s,r=bytes_to_long(key[0:4]),0
@@ -172,7 +172,7 @@ $$
 
 此时即得到了反馈函数c
 
-```
+```python
 # Recover mask
 def recover_mask(bits,n):
     mat=Matrix(GF(2),n,n)
@@ -223,7 +223,7 @@ MT19937算法基于矩阵递归构建周期较长的随机数序列，其周期�
 2. 对旋转链执行旋转算法
 3. 根据旋转链的状态获得输出随机数
 
-```
+```python
 # MT19937 example
 def _int32(x):
     return int(0xffffffff & x)
@@ -264,7 +264,7 @@ python中random模块，以及php中的mt_rand，即使用了mt19937算法产生
 
 考虑到extract()部分使用可逆操作，因此可以通过发生器的输出还原其状态
 
-```
+```python
 # crack extract-func
 ## solution 1
 ## bitwise operation
@@ -293,7 +293,7 @@ $$
 
 因此再执行若干次相应操作，即可还原初始状态
 
-```
+```python
 # crack extract-func
 ## solution 1
 ## matrix operation

@@ -78,7 +78,7 @@ Cryptool
 > 
 > **思路：** 使用sympy求出矩阵A的模逆，进行解密即可
 > 
-> ```
+> ```python
 > # Code
 > from sympy import Matrix
 > A=Matrix([[1,2,3],[0,1,4],[5,6,0]]).inv_mod(26)
@@ -129,7 +129,7 @@ L表示文段长度，fi表示第i个字符出现的次数
 > 
 > **思路：** 卡西斯基试验估计密钥长度，利用字频统计猜测密钥
 > 
-> ```
+> ```python
 > # 卡西斯基试验
 > c=open(hpath+"cipher.txt",'r').read()
 > c="".join(filter(str.isalpha,c))

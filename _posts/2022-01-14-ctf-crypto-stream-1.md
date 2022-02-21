@@ -44,7 +44,7 @@ $$
 X_{n+1}=(A*X_{n}+B)\pmod{M}
 $$
 
-```
+```python
 # LCG example
 class lcg():
     def __init__(self, A, B, M, seed):
@@ -135,7 +135,7 @@ $$
 
 RC4使用256长度的S盒，KSA部分对S盒进行初始化
 
-```
+```python
 # RC4-KSA
 for i in range(256):
     s[i]=i
@@ -148,7 +148,7 @@ for i in range(256):
 
 PRGA部分利用混乱的S盒，生成流密钥。
 
-```
+```python
 # RC4-PRGA
 i,j=0,0
 for _ in range(len(msg)):
