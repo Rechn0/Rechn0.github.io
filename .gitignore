@@ -45,3 +45,4 @@ node_modules
 # Ruby gems
 *.gem
 _posts/.vscode/settings.json
+store
