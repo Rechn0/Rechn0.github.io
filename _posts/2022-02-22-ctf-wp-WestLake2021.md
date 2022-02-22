@@ -18,6 +18,8 @@ math: true
 
 ### unknown_dsa
 
+**思路：**
+
 ### hard_rsa
 
 ### SpecialCurve2
@@ -27,6 +29,12 @@ math: true
 [Problem](/store/WestLake2021/FilterRandom.zip)
 
 **思路：**
+
+输出序列bit有90%概率与lfsr1的输出相同，因此有理由相信序列中存在连续64bit均来自lfsr1
+
+遍历各个64bit片段，利用生成seed产生的序列与输出序列进行比较，拟合度较高的可以视为正确的seed1
+
+利用正确的seed1生成输出序列，与序列不同的位即来自lfsr2，收集64bit后求解矩阵方程即可恢复lfsr2
 
 ```python
 #!/usr/bin/env sage
