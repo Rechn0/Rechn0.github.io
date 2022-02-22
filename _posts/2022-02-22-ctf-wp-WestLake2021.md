@@ -26,8 +26,6 @@ math: true
 
 ### FilterRandom
 
-[Problem](/store/WestLake2021/FilterRandom.zip)
-
 **思路：**
 
 输出序列bit有90%概率与lfsr1的输出相同，因此有理由相信序列中存在连续64bit均来自lfsr1
@@ -130,7 +128,6 @@ seed2=recover_state(x,mask2,nbit)
 # print(f'seed2: {seed2}')
 print('DASCTF{%d-%d}'%(seed1,seed2))
 # DASCTF{15401137114601469828-11256716742701089092}
-
 ```
 
 ---
