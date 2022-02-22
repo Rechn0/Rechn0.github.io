@@ -24,6 +24,8 @@ math: true
 
 ### FilterRandom
 
+[Problem](/store/WestLake2021/FilterRandom.zip)
+
 **思路：**
 
 ```python
