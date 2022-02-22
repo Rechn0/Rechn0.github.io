@@ -126,7 +126,7 @@ for i in range(2048):
         if cnt==64:break
 seed2=recover_state(x,mask2,nbit)
 # print(f'seed2: {seed2}')
-print('DASCTF{%d-%d}'%(seed1,seed2))
+print(f'DASCTF{seed1}-{seed2}}')
 # DASCTF{15401137114601469828-11256716742701089092}
 ```
 
