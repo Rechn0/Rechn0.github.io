@@ -125,38 +125,6 @@ print(long_to_bytes(int(m)))
 lgw师傅的好题。本题使用模p复数乘法群进行加密，需要研究群的性质，比较重要的考点。[模p复数乘法群的阶性质](https://zhuanlan.zhihu.com/p/436496753)
 
 ```python
-# Part 1
-pp = [434321947632744071481092243,425886199617876462796191899,502327221194518528553936039]
-ee=[]
-res=(HINT[0]**2+HINT[1]**2)%n
-for p in pp:
-	ee.append(tmp=Zmod(p)(res).log(2))
-e=crt(ee,[p-1 for p in pp])
-# e=pari(f"znlog({HINT[0]**2*2%n},Mod({2},{n}))")
-```
-
-第一层题目利用Hint还原e的信息。类似复数的分析方式，已知G(1,1)的模长 \\\( r^2=2, Hint=G^e \\\)，故Hint的模长 \\\( r^2=2^e \pmod{n} \\\)转化为离散对数问题，分解 \\\( n=p*q*r \\\)，求解有限域的离散对数后crt合并即可得到e
-
-常规离散对数的求解使用Pohlig-Hellman算法，复杂度约为 \\\( O(\sqrt{N}) \\\) ，无法满足本题。此处分析素数产生的方法，可以发现p-1含有大素数因子，该类型素数的离散对数使用cado-nfs或pari可以快速求出，sage中的Zmod(p)(x).log(2)在底层同样使用pari的方法，可以求解
-
-```python
-# Part 2
-def add(P1,P2,n):
-    x1,y1=P1
-    x2,y2=P2
-    x3=(x1*x2-y1*y2)%n
-    y3=(x1*y2+x2*y1)%n
-    return (x3,y3)
-
-def mul(P,k,n):
-    assert k>=0
-    Q=(1,0)
-    while k>0:
-        if k&1:Q=add(P,Q,n)
-        k>>=1
-        P=add(P,P,n)
-    return Q
-
 import random
 def check_ord(p):
 	ord=1
@@ -171,12 +139,24 @@ def check_ord(p):
 				ord=lcm(ord,cnt-1)
 				break
 	print(p,ord)
-# ord = p^2-1
-phi=(p**2-1)*(q**2-1)*(r**2-1)
-d=inverse_mod(e,phi)
-M=mul(C,d,n)
-print(long_to_bytes(M[0])+long_to_bytes(M[1]))
+now=17
+for _ in range(10):
+    check_ord(now)
+    now=next_prime(now)
+```
 
+第一层题目利用Hint还原e的信息。复数乘法等价于模相乘、辐角相加，已知G(1,1)的模 \\\( r^2=2, Hint=G^e \\\)，故Hint的模长 \\\( r^2=2^e \pmod{n} \\\)。转化为离散对数问题，分解n=pqr，求解有限域的离散对数后crt合并即可得到e
+
+常规离散对数的求解使用Pohlig-Hellman算法，复杂度约为 \\\( O(\sqrt{N}) \\\) ，无法用于本题。此处分析素数产生的方法，可以发现p-1含有大素数因子，该类型素数的离散对数使用cado-nfs或pari可以快速求出，sage中的Zmod(p)(x).log(2)在底层同样使用pari的方法，可以求解
+
+```python
+pp = [434321947632744071481092243,425886199617876462796191899,502327221194518528553936039]
+ee=[]
+res=(HINT[0]**2+HINT[1]**2)%n
+for p in pp:
+    ee.append(int(Zmod(p)(res).log(2)))
+	# ee.append(int(pari(f"znlog({res%p},Mod({2},{p}))")))
+e=crt(ee,[p-1 for p in pp])
 ```
 
 第二层题目在分析得到循环群的阶之后，可以求出e在阶上的逆元d，类似RSA的求解即可还原明文信息
@@ -225,7 +205,8 @@ pp = [434321947632744071481092243,425886199617876462796191899,502327221194518528
 ee=[]
 res=(HINT[0]**2+HINT[1]**2)%n
 for p in pp:
-	ee.append(tmp=Zmod(p)(res).log(2))
+    ee.append(int(Zmod(p)(res).log(2)))
+	# ee.append(int(pari(f"znlog({res%p},Mod({2},{p}))")))
 e=crt(ee,[p-1 for p in pp])
 # e=96564183954285580248216944343172776827819893296479821021220123492652817873253
 phi=1
