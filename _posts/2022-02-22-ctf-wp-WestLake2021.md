@@ -26,7 +26,7 @@ math: true
 
 ### FilterRandom
 
-**思路：**
+[Problem](/store/WestLake2021/FilterRandom)
 
 输出序列bit有90%概率与lfsr1的输出相同，因此有理由相信序列中存在连续64bit均来自lfsr1
 
