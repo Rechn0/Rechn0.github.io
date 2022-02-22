@@ -18,7 +18,9 @@ math: true
 
 ### unknown_dsa
 
-**思路：**
+[Problem](https://github.com/Rechn0/Rechn0.github.io/blob/gh-pages/store/WestLake2021/unknown_dsa.zip)
+
+第一层题目需要求解Pell方程，利用crt恢复消息 \\\( m_{1}, m_{2} \\\)
 
 ### hard_rsa
 
@@ -26,7 +28,7 @@ math: true
 
 ### FilterRandom
 
-[Problem](/tree/gh-pages/store/WestLake2021/FilterRandom)
+[Problem](/tree/gh-pages/store/WestLake2021/FilterRandom.zip)
 
 输出序列bit有90%概率与lfsr1的输出相同，因此有理由相信序列中存在连续64bit均来自lfsr1
 
