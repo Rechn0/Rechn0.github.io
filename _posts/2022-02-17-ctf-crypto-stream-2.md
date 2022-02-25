@@ -326,7 +326,7 @@ $$
 
 ```python
 # crack extract-func
-## solution 1
+## solution 2
 ## matrix operation
 def _int32(x):
     return int(0xffffffff & x)

@@ -4,7 +4,7 @@ title: CTFshow Crypto
 author: Rechn0
 date: 2022-01-16 11:00 +0800
 last_modified_at: 2022-02-07 12:00 +0800
-tags: [crypto, practice]
+tags: [crypto, ctfshow]
 categories: [ctf, practice]
 toc:  true
 math:  true
