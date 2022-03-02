@@ -138,7 +138,7 @@ def qpow(mat, b):
     return res
 
 # step=0 for distinct bit
-def recover_state(x, mask, nbit, step=0):
+def recover_state(x,mask,nbit,step=0):
     mask=mat_mask(mask, nbit)
     if step > 0:
         return v2i(i2v(x,nbit)/(mask**step))
