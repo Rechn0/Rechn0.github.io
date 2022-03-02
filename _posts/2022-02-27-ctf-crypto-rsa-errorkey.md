@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RSA with Incorrectedly Keys
+title: RSA & Incorrect Keys
 author: Rechn0
 date: 2022-02-27 16:00 +0800
 last_modified_at: 2022-03-03 2:10 +0800
@@ -42,10 +42,10 @@ SUSCTF2022结束不久，一个想法在脑中浮现，最后逐渐产生了一�
 
 在 \\\( (p-1)=0 \pmod{e} , (p-1) \neq 0 \pmod{e^2} \\\) 的条件下，Paper1059提供了一种分析思路与解决方案
 
-RSA可以视为乘法群 \\\( (\Z/N\Z)^{\times} \\\) 上的操作，其阶即为 \\\( \phi(N)=(p-1)*(q-1) \\\) 。由于e为 \\\( \phi(N) \\\) 的因子，故可以将群分解：
+RSA可以视为乘法群 \\\( (\Z /N \Z)^{\times} \\\) 上的操作，其阶即为 \\\( \phi(N)=(p-1)*(q-1) \\\) 。由于e为 \\\( \phi(N) \\\) 的因子，故可以将群分解：
 
 $$
-(\Z/N\Z)^{\times} \cong G \times E
+( \Z /N \Z )^{\times} \cong G \times E
 $$
 
 其中 \\\( \lvert G \rvert = \frac{\phi(N)}{e},\lvert E \rvert = e \\\)
@@ -53,7 +53,7 @@ $$
 此时有:
 
 $$
-x \in (\Z/N\Z)^{\times} \rightarrow x=g*l, g \in G, l \in E
+x \in ( \Z /N \Z )^{\times} \rightarrow x=g*l, g \in G, l \in E
 $$
 
 $$
@@ -88,7 +88,6 @@ for i in range(e*e):
     m=m0
     # some m may be not eth-root 
     m0=m0*g%n
-
 ```
 
 对于p-1,q-1中均含有e因子的情况，需要选择两个生成元同时进行操作，操作规模也会相应扩大。由crt可以发现此时开e次根的解共 \\\( e^2 \\\) 个
@@ -129,25 +128,26 @@ m=f.roots()
 
 AMM算法提供了一种有限域开e次根的解决方案，许多情况下往往只能使用该算法进行求解
 
+![AMM](https://pic1.zhimg.com/80/v2-c9134c3672c300509bf25a4e44f82014_720w.jpg)
+
+AMM算法的复杂度为 \\\( O(log^4(p)+e*log^3(p)) \\\)，随着模数p的增长速度很快
+
 ```python
 #!/usr/bin/env sage
 import random
 import time
 def AMM(res, e, p):
-    print(f'[+]Search for a {hex(e)}th-root of {hex(res)} modulus {hex(p)}')
     st = time.time()
     G = GF(p)
     res, g = G(res), G(random.randint(1, q))
     while g ** ((p - 1) // e) == 1:
         g = G(random.randint(1, q))
-    print(f'[+]Generated g')
     t, s = 0, p - 1
     while s % e == 0:
         t, s = t + 1, s // e
     k = 1
     while (k * s + 1) % e != 0:
         k = k + 1
-    print(f'[+]Generated t,s,k')
     alp = (k * s + 1) // e
     a = g ** (s * e ** (t - 1))
     b, c, h = res ** (e * alp - 1), g ** s, 1
@@ -162,8 +162,6 @@ def AMM(res, e, p):
         c = c ** e
     result = h * res ** alp
     ed = time.time()
-    print(f'[+]Gotta nth-root:{hex(result)}')
-    print(f'[+]Time:{ed - st}')
     return int(result)
 ```
 
@@ -171,12 +169,39 @@ def AMM(res, e, p):
 
 ### **ctfshow: unusualrsa5**
 
+本题条件：
+
+* e=20
+* \\\( (p-1)=e\*res, (q-1)=e\*res \\\)
+
+题目中e并不是素数，没有很好的性质。可以考虑依次开5次根与4次根，不过问题规模较小直接使用f.roots()进行求解
+
+```python
+from unusualrsa5 import e,p,q,c
+def nth_solve(n,c,p):
+    R.<x>=PolynomialRing(GF(p))
+    f=x^n-c
+    f=f.monic()
+    return f.roots()
+
+m1=nth_solve(e,c,p)
+m2=nth_solve(e,c,q)
+for i in m1:
+    for j in m2:
+        m=crt([i[0],j[0]],[p,q])
+        m=long_to_bytes(m)
+        if b'flag' in m:
+            exit(print(m))
+
+# flag{r54__d34l1n6_w17h_3v3n_3 _&_f1nd1n6_n-7h_r0075~~}
+```
+
 ### **DiceCTF2022: babyrsa**
 
 本题条件：
 
 * prime e=17
-* \\\( (p-1)=e^{2}*res, (q-1)=e^{2}*res \\\)
+* \\\( (p-1)=e^{2}\*res, (q-1)=e^{2}\*res \\\)
 
 一共有 \\\( e^2 \\\) 个解，e的规模较小，所以做法较多
 
