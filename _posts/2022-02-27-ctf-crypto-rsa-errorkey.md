@@ -175,8 +175,6 @@ def AMM(res, e, p):
 
 本题条件：
 
-[Problem]()
-
 * prime e=17
 * \\\( (p-1)=e^{2}*res, (q-1)=e^{2}*res \\\)
 
@@ -233,8 +231,6 @@ for i in range(e*e):
 
 ### **NCTF2019: easyRSA**
 
-[Problem]()
-
 * prime e=0x1337
 * \\\( (p-1)=e*res, (q-1)=e*res \\\)
 
@@ -288,7 +284,7 @@ for i in mp:
 
 ### **SUSCTF2022: large case**
 
-oc师傅的好题。
+oc师傅的[好题](https://github.com/susers/SUSCTF2022_official_wp/tree/main/crypto/large%20case)。
 
 第一步需要求出加密指数e。根据e的性质可知：
 
