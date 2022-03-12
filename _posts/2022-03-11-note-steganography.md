@@ -1,6 +1,6 @@
 ---
 layout: post
-title: OP-Courses Notes
+title: Courses Notes
 author: Rechn0
 date: 2022-03-11 10:00 +0800
 last_modified_at: 2022-03-11 10:00 +0800
@@ -8,6 +8,10 @@ tags: [steganography, digital seal]
 categories: note
 toc:  true
 math:  true
+---
+
+Notes for optional-courses.
+
 ---
 
 # Malware Analysis

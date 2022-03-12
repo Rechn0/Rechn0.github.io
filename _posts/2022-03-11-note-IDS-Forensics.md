@@ -10,6 +10,8 @@ toc:  true
 math:  true
 ---
 
+Notes for IDS & Forensics
+
 ```
 NIDS网络入侵检测系统
 NIDS工作：对镜像流量(Mirror Traffic)进行模式匹配
