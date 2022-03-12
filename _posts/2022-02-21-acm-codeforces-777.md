@@ -24,7 +24,7 @@ Codeforces #777 题解
 
 由于不能使用0，也不能出现相邻的相同数字，因此使用1|2序列构造即可得到答案
 
-首先令 \\\( ans= \frac{n}{3} \times '21' \\\) ，进行分类讨论
+首先令 \\\( ans= \frac{n}{3} \* '21' \\\) ，进行分类讨论
 
 * \\\( n=0 \pmod{3} \\\) 则ans即为答案
 * \\\( n=1 \pmod{3} \\\) 则 \\\( ans='1'+ans \\\)
@@ -328,6 +328,69 @@ while cnt < n:
 
 [Problem](https://codeforces.com/contest/1647/problem/D)
 
+对于good与beautiful的定义分析如下：
+
+* x是good的，则 \\\( x=k \* d \\\)
+* x是beautiful的，则 \\\( x=k\*d, k \neq 0 \pmod{d} \\\)
+
+对于给定的x与d，题目要求寻找是否存在至少两种方案，将x分解为若干beautiful数
+
+考虑将x分为 \\\( res \* d^i, res \neq 0 \pmod{d} \\\) ，则一定存在下列方案：
+
+$$
+res \* d, d, ..., d
+$$
+
+因此只需要判断是否存在第二种方案即可。这里使用简单的分类讨论。
+
+~~虽然赛时遗忘了一种情况，哈哈~~
+
+\* 以下条件使用递进关系，即讨论i条件时，1~i-1条件均不满足
+
+**1.i=1**
+
+此时 \\\( x=res \* d \\\)，因此只有**x本身**这一个方案
+
+**2.res=a \* b**
+
+当res可以分解为两个不为1的整数时(即res不为1或者一个素数)，可以得到第二种方案：
+
+$$
+a \* d, b \* d, d, ..., d
+$$
+
+**3.prime d**
+
+若res无法分解，且d为素数时，无法找到其他方案
+
+\* 否则，可以考虑将d分解，以找到新的方案。下列情况对该情况进行讨论
+
+**4.i==2**
+
+可以发现在该情况下，无法将某一个d分解后得到新的有效解
+
+**5.i>3**
+
+此时考虑将一个d分解为 \\\( d_1, d_2 \\\)，则第二种方案：
+
+$$
+res \* d, d_1 \* d, d_2 \* d, ..., d
+$$
+
+**6.i==3**
+
+最后一种情况： \\\( x=res \* d^3,  d=d_1 \* d_2, prime:res \\\)
+
+易知如果 \\\( res \neq d_1, d_2 \\\)，则第二种方案：
+
+$$
+res \* d_1 \* d, d_2 \* d
+$$
+
+只要能够找到d的一种分解方案，使得 \\\( res \* d_1 \neq d \\\) 即可
+
+然而，如果 \\\( d = d_1 \* d_2 = res \* res \\\) ，则无法找到第二种方案，需要进行最后的判断即可
+
 **cpp-version**
 
 ```cpp
@@ -378,6 +441,40 @@ inline void Main()
 **python3-version**
 
 ```python
+t = int(input())
+def check(x):
+    if x <= 3:
+        return True
+    i = 2
+    while i * i <= x:
+        if x % i == 0:
+            return False
+        i += 1
+    return True
+while t:
+    t -= 1
+    x, d = [int(i) for i in input().split(' ')]
+    a, di = x, 0
+    while a % d == 0:
+        a, di = a // d, di + 1
+    flag = True
+    if di <= 1:
+        flag = False
+    elif check(a) == False:
+        flag = True
+    elif check(d) == True:
+        flag = False
+    elif di > 3:
+        flag = True
+    elif di == 2:
+        flag = False
+    elif a * a == d:
+        flag = False
+
+    if flag:
+        print("Yes")
+    else:
+        print("No")
 ```
 
 ---
