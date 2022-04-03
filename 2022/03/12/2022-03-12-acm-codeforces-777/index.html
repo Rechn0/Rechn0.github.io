@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Codeforces #777 题解 这次带上了大佬前来验题xs，并公开珍贵的代码资源供参考 $$ \frac{1}{2} $$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Codeforces Round#777 (Div. 2)">
+<meta property="og:url" content="http://example.com/2022/03/12/2022-03-12-acm-codeforces-777/index.html">
+<meta property="og:site_name" content="Rec|rEc|reC">
+<meta property="og:description" content="Codeforces #777 题解 这次带上了大佬前来验题xs，并公开珍贵的代码资源供参考 $$ \frac{1}{2} $$">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-12T12:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-01T13:08:16.291Z">
+<meta property="article:author" content="Rec">
+<meta property="article:tag" content="codeforces">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/03/12/2022-03-12-acm-codeforces-777/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Codeforces Round#777 (Div. 2) | Rec|rEc|reC</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Rec|rEc|reC</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Can you here me?</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/12/2022-03-12-acm-codeforces-777/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Rec">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rec|rEc|reC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Codeforces Round#777 (Div. 2)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-12 20:00:00" itemprop="dateCreated datePublished" datetime="2022-03-12T20:00:00+08:00">2022-03-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-04-01 21:08:16" itemprop="dateModified" datetime="2022-04-01T21:08:16+08:00">2022-04-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/acm/" itemprop="url" rel="index"><span itemprop="name">acm</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Codeforces #777 题解</p>
+<p>这次带上了大佬前来验题xs，并公开珍贵的代码资源供参考</p>
+<p>$$ \frac{1}{2} $$</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="A-Madoka-and-Math-Dad"><a href="#A-Madoka-and-Math-Dad" class="headerlink" title="A.Madoka and Math Dad"></a><strong>A.Madoka and Math Dad</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1647/problem/A">Problem</a></p>
+<p>在给定条件下要找到最大的数字，考虑到数字位数较多的方案更优</p>
+<p>由于不能使用0，也不能出现相邻的相同数字，因此使用1 2序列构造即可得到答案</p>
+<p>首先令$ans= \frac{n}{3} * 21$，进行分类讨论</p>
+<ul>
+<li>$n=0 \pmod{3}$则ans即为答案</li>
+<li>$n=1 \pmod{3}$则$ans=1+ans$</li>
+<li>$n=2 \pmod{3}$则$ans=ans+2$</li>
+</ul>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> t,n;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;t;</span><br><span class="line">	<span class="keyword">while</span>(t--)</span><br><span class="line">	&#123;</span><br><span class="line">		cin&gt;&gt;n;</span><br><span class="line">		string ans=<span class="string">&quot;&quot;</span>;</span><br><span class="line">		<span class="built_in">rep</span>(i,<span class="number">1</span>,n/<span class="number">3</span>)ans+=<span class="string">&quot;21&quot;</span>;</span><br><span class="line">		<span class="keyword">if</span>(n%<span class="number">3</span>==<span class="number">1</span>)ans=<span class="string">&quot;1&quot;</span>+ans;</span><br><span class="line">		<span class="keyword">if</span>(n%<span class="number">3</span>==<span class="number">2</span>)ans=ans+<span class="string">&quot;2&quot;</span>;</span><br><span class="line">		cout&lt;&lt;ans&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>python3-version</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">n = <span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line">num_list = []</span><br><span class="line">cnt = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> cnt &lt; n:</span><br><span class="line">    num_list.append(<span class="built_in">int</span>(<span class="built_in">input</span>()))</span><br><span class="line">    cnt += <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> num_list:</span><br><span class="line">    res = num % <span class="number">3</span></span><br><span class="line">    mul = <span class="built_in">int</span>(num / <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">if</span> res == <span class="number">0</span>:</span><br><span class="line">        <span class="built_in">print</span>(mul * <span class="string">&quot;21&quot;</span>)</span><br><span class="line">    <span class="keyword">elif</span> res == <span class="number">1</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;1&quot;</span> + mul * <span class="string">&quot;21&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(mul * <span class="string">&quot;21&quot;</span> + <span class="string">&quot;2&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="B-Madoka-and-the-Elegant-Gift"><a href="#B-Madoka-and-the-Elegant-Gift" class="headerlink" title="B.Madoka and the Elegant Gift"></a><strong>B.Madoka and the Elegant Gift</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1647/problem/B">Problem</a></p>
+<p>根据题目给出的定义，nice矩形即为某个不能再扩张的最大全1矩形</p>
+<p>分析可以发现，如果某一片连续的全1区域不是规则的矩形，即这篇区域是在矩形的基础上增加了一些1方格，则该区域一定可以找到至少两个nice矩形相交</p>
+<blockquote>
+<p>简单的例子：</p>
+<p>$$<br>\begin{bmatrix} 1 &amp; 1 &amp; 0 \\ 1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 0 \end{bmatrix} \rightarrow \begin{bmatrix} 1 &amp; 1 &amp; * \\ 1 &amp; 1 &amp; * \\ 1 &amp; 1 &amp; * \end{bmatrix} and \begin{bmatrix} * &amp; * &amp; * \\ 1 &amp; 1 &amp; 1 \\ * &amp; * &amp; * \end{bmatrix}<br>$$</p>
+<p>可以推广到更复杂的情况</p>
+<p>结论：某个01矩阵是elegant的，当且仅当矩阵中的1方格构成了若干个规则的矩形</p>
+</blockquote>
+<p>因此只需要判断矩阵中的1区域是否为标准的矩形即可</p>
+<p>对于每一个1方格，分别向右向下搜索找到最长连续的1，作为当前子矩阵的n与m。只需要判断：</p>
+<ul>
+<li>子矩阵中是否全1</li>
+<li>子矩阵的边界是否存在1</li>
+</ul>
+<p>即可得到当前子矩阵的合法性。对所有遍历过的1方格打标记，防止多次遍历</p>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> t,n,m;</span><br><span class="line"><span class="type">char</span> A[<span class="number">200</span>][<span class="number">200</span>];</span><br><span class="line"><span class="type">int</span> mark[<span class="number">200</span>][<span class="number">200</span>];</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">bool</span> <span class="title">check</span><span class="params">(<span class="type">int</span> si,<span class="type">int</span> sj)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> nown=<span class="number">0</span>,nowm=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(si+nown&lt;=n&amp;&amp;A[si+nown][sj]==<span class="string">&#x27;1&#x27;</span>)++nown;</span><br><span class="line">	<span class="keyword">while</span>(sj+nowm&lt;=m&amp;&amp;A[si][sj+nowm]==<span class="string">&#x27;1&#x27;</span>)++nowm;</span><br><span class="line">	<span class="built_in">rep</span>(i,si,si+nown<span class="number">-1</span>)<span class="built_in">rep</span>(j,sj,sj+nowm<span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(A[i][j]==<span class="string">&#x27;0&#x27;</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		mark[i][j]=<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">rep</span>(i,si,si+nown<span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(sj<span class="number">-1</span>&gt;=<span class="number">1</span>&amp;&amp;A[i][sj<span class="number">-1</span>]==<span class="string">&#x27;1&#x27;</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		<span class="keyword">if</span>(sj+nowm&lt;=m&amp;&amp;A[i][sj+nowm]==<span class="string">&#x27;1&#x27;</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">rep</span>(j,sj,sj+nowm<span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(si<span class="number">-1</span>&gt;=<span class="number">1</span>&amp;&amp;A[si<span class="number">-1</span>][j]==<span class="string">&#x27;1&#x27;</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		<span class="keyword">if</span>(si+nown&lt;=n&amp;&amp;A[si+nown][j]==<span class="string">&#x27;1&#x27;</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;t;</span><br><span class="line">	<span class="keyword">while</span>(t--)</span><br><span class="line">	&#123;</span><br><span class="line">		cin&gt;&gt;n&gt;&gt;m;</span><br><span class="line">		<span class="built_in">rep</span>(i,<span class="number">1</span>,n)<span class="built_in">rep</span>(j,<span class="number">1</span>,m)</span><br><span class="line">		&#123;</span><br><span class="line">			cin&gt;&gt;A[i][j];</span><br><span class="line">			mark[i][j]=<span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">bool</span> flag=<span class="literal">true</span>;</span><br><span class="line">		<span class="built_in">rep</span>(i,<span class="number">1</span>,n)<span class="built_in">rep</span>(j,<span class="number">1</span>,m)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(A[i][j]==<span class="string">&#x27;0&#x27;</span>||mark[i][j]==<span class="number">1</span>)<span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">if</span>(!<span class="built_in">check</span>(i,j))flag=<span class="literal">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(flag)cout&lt;&lt;<span class="string">&quot;Yes&quot;</span>&lt;&lt;endl;</span><br><span class="line">		<span class="keyword">else</span> cout&lt;&lt;<span class="string">&quot;No&quot;</span>&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>python3-version</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">n = <span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line">ans_list = []</span><br><span class="line"> </span><br><span class="line">cnt = <span class="number">0</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">while</span> cnt &lt; n:</span><br><span class="line">    table = []</span><br><span class="line">    tmp = <span class="built_in">input</span>().split(<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">    rows = <span class="built_in">int</span>(tmp[<span class="number">0</span>])</span><br><span class="line">    cols = <span class="built_in">int</span>(tmp[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(rows):</span><br><span class="line">        table.append([])</span><br><span class="line">        num_str = <span class="built_in">str</span>(<span class="built_in">input</span>())</span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> num_str:</span><br><span class="line">            table[row].append(<span class="built_in">int</span>(num))</span><br><span class="line">    mark = []</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(rows):</span><br><span class="line">        mark.append([])</span><br><span class="line">        <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(cols):</span><br><span class="line">            mark[row].append(<span class="number">0</span>)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">checkLen</span>(<span class="params">r, c</span>):</span><br><span class="line">        cnt_col = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> c + cnt_col &lt;= cols - <span class="number">1</span> <span class="keyword">and</span> table[r][c + cnt_col] == <span class="number">1</span>:</span><br><span class="line">            cnt_col += <span class="number">1</span></span><br><span class="line"> </span><br><span class="line">        cnt_row = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> r + cnt_row &lt;= rows - <span class="number">1</span> <span class="keyword">and</span> table[r + cnt_row][c] == <span class="number">1</span>:</span><br><span class="line">            cnt_row += <span class="number">1</span></span><br><span class="line"> </span><br><span class="line">        <span class="keyword">return</span> cnt_row, cnt_col</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    rlen = <span class="number">0</span></span><br><span class="line">    clen = <span class="number">0</span></span><br><span class="line">    f = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(rows):</span><br><span class="line">        <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(cols):</span><br><span class="line">            <span class="keyword">if</span> table[row][col] == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">if</span> mark[row][col] == <span class="number">0</span>:</span><br><span class="line">                rlen, clen = checkLen(row, col)</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(rlen):</span><br><span class="line">                    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(clen):</span><br><span class="line">                        mark[row + i][col + j] = <span class="number">1</span></span><br><span class="line">                        <span class="keyword">if</span> table[row + i][col + j] == <span class="number">0</span>:</span><br><span class="line">                            f = <span class="number">1</span></span><br><span class="line">                            <span class="keyword">break</span></span><br><span class="line">                        <span class="keyword">elif</span> col - <span class="number">1</span> &gt;= <span class="number">0</span> <span class="keyword">and</span> table[row + i][col - <span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">                            f = <span class="number">1</span></span><br><span class="line">                            <span class="keyword">break</span></span><br><span class="line">                        <span class="keyword">elif</span> col + clen &lt;= cols - <span class="number">1</span> <span class="keyword">and</span> table[row + i][col + clen] == <span class="number">1</span>:</span><br><span class="line">                             f = <span class="number">1</span></span><br><span class="line">                             <span class="keyword">break</span></span><br><span class="line">                        <span class="keyword">elif</span> row - <span class="number">1</span> &gt;= <span class="number">0</span> <span class="keyword">and</span> table[row - <span class="number">1</span>][j + col] == <span class="number">1</span>:</span><br><span class="line">                            f = <span class="number">1</span></span><br><span class="line">                            <span class="keyword">break</span></span><br><span class="line">                        <span class="keyword">elif</span> row + rlen &lt;= rows - <span class="number">1</span> <span class="keyword">and</span> table[row + rlen][j + col] == <span class="number">1</span>:</span><br><span class="line">                                f = <span class="number">1</span></span><br><span class="line">                                <span class="keyword">break</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> f == <span class="number">1</span>:</span><br><span class="line">        ans_list.append(<span class="string">&#x27;NO&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        ans_list.append(<span class="string">&#x27;YES&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">    cnt += <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> ans <span class="keyword">in</span> ans_list:</span><br><span class="line">    <span class="built_in">print</span>(ans)</span><br></pre></td></tr></table></figure>
+
+<h2 id="C-Madoka-and-Childish-Pranks"><a href="#C-Madoka-and-Childish-Pranks" class="headerlink" title="C.Madoka and Childish Pranks"></a><strong>C.Madoka and Childish Pranks</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1647/problem/C">Problem</a></p>
+<p>分析题目的操作可以发现，矩阵左上角的位置(1,1)是无法被染成黑色(1方格)的，如果目标矩阵的左上角为黑色则无解</p>
+<p>考虑一种操作，对矩阵$(i,j) \rightarrow (i+1,j)$进行染色，即将$(i,j)$染为白色(0方格)，将$(i+1,j)$染为黑色</p>
+<p>$$<br>opt_1 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}<br>$$</p>
+<p>枚举每一列，从下向上遍历该列的方格。如果位置$(i,j)$应该染为黑色，则对$(i-1,j) \rightarrow (i,j)$进行染色，即可将该点变为黑色。使用这种操作，可以将除了第一行的所有方格进行正确的染色</p>
+<p>对于第一行考虑另一种操作，对矩阵$(1,j) \rightarrow (1,j+1)$进行染色，即将$(1,j)$染为白色，$(1,j+1)$染为黑色</p>
+<p>$$<br>opt_2 = \begin{bmatrix} 0 &amp; 1 \end{bmatrix}<br>$$</p>
+<p>同理右向左遍历第一行的方格进行染色，即可将整个矩阵合法染色</p>
+<p>在极限情况下，该方案需要进行$n * m$次染色，符合题目要求</p>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> t,n,m;</span><br><span class="line"><span class="type">char</span> A[<span class="number">200</span>][<span class="number">200</span>];</span><br><span class="line"><span class="type">int</span> cnt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">op</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> x1,y1,x2,y2;</span><br><span class="line">	<span class="built_in">op</span>(<span class="type">int</span> a=<span class="number">0</span>,<span class="type">int</span> b=<span class="number">0</span>,<span class="type">int</span> c=<span class="number">0</span>,<span class="type">int</span> d=<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		x1=a,y1=b,x2=c,y2=d;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;ans[<span class="number">20004</span>];</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;t;</span><br><span class="line">	<span class="keyword">while</span>(t--)</span><br><span class="line">	&#123;</span><br><span class="line">		cin&gt;&gt;n&gt;&gt;m;</span><br><span class="line">		<span class="built_in">rep</span>(i,<span class="number">1</span>,n)<span class="built_in">rep</span>(j,<span class="number">1</span>,m)cin&gt;&gt;A[i][j];</span><br><span class="line">		<span class="keyword">if</span>(A[<span class="number">1</span>][<span class="number">1</span>]==<span class="string">&#x27;1&#x27;</span>)cout&lt;&lt;<span class="string">&quot;-1&quot;</span>&lt;&lt;endl;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			cnt=<span class="number">0</span>;</span><br><span class="line">			<span class="built_in">rep</span>(j,<span class="number">1</span>,m)<span class="built_in">per</span>(i,n,<span class="number">2</span>)<span class="keyword">if</span>(A[i][j]==<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">                ans[++cnt]=<span class="built_in">hzq</span>(i<span class="number">-1</span>,j,i,j);</span><br><span class="line">            <span class="built_in">per</span>(j,m,<span class="number">2</span>)<span class="keyword">if</span>(A[<span class="number">1</span>][j]==<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">                ans[++cnt]=<span class="built_in">hzq</span>(<span class="number">1</span>,j<span class="number">-1</span>,<span class="number">1</span>,j);</span><br><span class="line">			cout&lt;&lt;cnt&lt;&lt;endl;</span><br><span class="line">			<span class="built_in">rep</span>(i,<span class="number">1</span>,cnt)</span><br><span class="line">			&#123;</span><br><span class="line">				cout&lt;&lt;ans[i].x1&lt;&lt;sep&lt;&lt;ans[i].y1&lt;&lt;sep;</span><br><span class="line">				cout&lt;&lt;ans[i].x2&lt;&lt;sep&lt;&lt;ans[i].y2&lt;&lt;endl;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>python3-version</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">n = <span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line"> </span><br><span class="line">cnt = <span class="number">0</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">while</span> cnt &lt; n:</span><br><span class="line">    table = []</span><br><span class="line">    tmp = <span class="built_in">input</span>().split(<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">    rows = <span class="built_in">int</span>(tmp[<span class="number">0</span>])</span><br><span class="line">    cols = <span class="built_in">int</span>(tmp[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(rows):</span><br><span class="line">        table.append([])</span><br><span class="line">        num_str = <span class="built_in">str</span>(<span class="built_in">input</span>())</span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> num_str:</span><br><span class="line">            table[row].append(<span class="built_in">int</span>(num))</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> table[<span class="number">0</span>][<span class="number">0</span>] == <span class="number">1</span>:</span><br><span class="line">        <span class="built_in">print</span>(-<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        oper_list = []</span><br><span class="line">        <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(cols):</span><br><span class="line">            <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,rows):</span><br><span class="line">                <span class="keyword">if</span> table[rows-row][col] == <span class="number">1</span>:</span><br><span class="line">                    oper_list.append([rows-row, col + <span class="number">1</span>, rows-row + <span class="number">1</span>, col + <span class="number">1</span>])</span><br><span class="line">        <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,cols):</span><br><span class="line">            <span class="keyword">if</span> table[<span class="number">0</span>][cols-col] == <span class="number">1</span>:</span><br><span class="line">                oper_list.append([<span class="number">1</span>, cols-col, <span class="number">1</span>, cols-col + <span class="number">1</span>])</span><br><span class="line">        <span class="built_in">print</span>(<span class="built_in">len</span>(oper_list))</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> oper_list:</span><br><span class="line">            <span class="built_in">print</span>(i[<span class="number">0</span>], i[<span class="number">1</span>], i[<span class="number">2</span>], i[<span class="number">3</span>])</span><br><span class="line">    cnt += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="D-Madoka-and-the-Best-School-in-Russia"><a href="#D-Madoka-and-the-Best-School-in-Russia" class="headerlink" title="D.Madoka and the Best School in Russia"></a><strong>D.Madoka and the Best School in Russia</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1647/problem/D">Problem</a></p>
+<p>对于good与beautiful的定义分析如下：</p>
+<ul>
+<li>x是good的，则$x=k * d$</li>
+<li>x是beautiful的，则$x=k*d, k \neq 0 \pmod{d}$</li>
+</ul>
+<p>对于给定的x与d，题目要求寻找是否存在至少两种方案，将x分解为若干beautiful数</p>
+<p>考虑将x分为$res * d^i, res \neq 0 \pmod{d}$，则一定存在下列方案：</p>
+<p>$$<br>res * d, d, …, d<br>$$</p>
+<p>因此只需要判断是否存在第二种方案即可。这里使用简单的分类讨论。</p>
+<p><del>虽然赛时遗忘了一种情况，哈哈</del></p>
+<ul>
+<li>以下条件使用递进关系，即讨论i条件时，1~i-1条件均不满足</li>
+</ul>
+<p><strong>1.i=1</strong></p>
+<p>此时$x=res * d$，因此只有<strong>x本身</strong>这一个方案</p>
+<p><strong>2.res=a * b</strong></p>
+<p>当res可以分解为两个不为1的整数时(即res不为1或者一个素数)，可以得到第二种方案：</p>
+<p>$$<br>a * d, b * d, d, …, d<br>$$</p>
+<p><strong>3.prime d</strong></p>
+<p>若res无法分解，且d为素数时，无法找到其他方案</p>
+<ul>
+<li>否则，可以考虑将d分解，以找到新的方案。下列情况对该情况进行讨论</li>
+</ul>
+<p><strong>4.i==2</strong></p>
+<p>可以发现在该情况下，无法将某一个d分解后得到新的有效解</p>
+<p><strong>5.i&gt;3</strong></p>
+<p>此时考虑将一个d分解为$d_1, d_2$，则第二种方案：</p>
+<p>$$<br>res * d, d_1 * d, d_2 * d, …, d<br>$$</p>
+<p><strong>6.i==3</strong></p>
+<p>最后一种情况：$x=res * d^3,  d=d_1 * d_2, prime:res$</p>
+<p>易知如果$res \neq d_1, d_2$，则第二种方案：</p>
+<p>$$<br>res * d_1 * d, d_2 * d<br>$$</p>
+<p>只要能够找到d的一种分解方案，使得$res * d_1 \neq d$即可</p>
+<p>然而，如果$d = d_1 * d_2 = res * res$，则无法找到第二种方案，需要进行最后的判断即可</p>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> t,x,d,res,cntd;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">bool</span> <span class="title">check</span><span class="params">(<span class="type">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(x&lt;=<span class="number">3</span>)<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">2</span>;i*i&lt;=x;++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(x%i==<span class="number">0</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">bool</span> <span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(cntd&lt;=<span class="number">1</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="comment">//cntd&gt;=2</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">check</span>(res)==<span class="literal">false</span>)<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="comment">//prime res,cntd&gt;=2</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">check</span>(d)==<span class="literal">true</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="comment">//non-prime d,prime res,cntd&gt;=2</span></span><br><span class="line">	<span class="keyword">if</span>(cntd&gt;<span class="number">3</span>)<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="comment">//non-prime d,prime res,cntd=2,3</span></span><br><span class="line">	<span class="keyword">if</span>(cntd==<span class="number">2</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="comment">//non-prime d,prime res,cntd=3</span></span><br><span class="line">	<span class="keyword">if</span>(res*res%d==<span class="number">0</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;t;</span><br><span class="line">	<span class="keyword">while</span>(t--)</span><br><span class="line">	&#123;</span><br><span class="line">		cin&gt;&gt;x&gt;&gt;d;</span><br><span class="line">		res=x,cntd=<span class="number">0</span>;</span><br><span class="line">		<span class="keyword">while</span>(res%d==<span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			++cntd;</span><br><span class="line">			res/=d;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">func</span>())cout&lt;&lt;<span class="string">&quot;Yes&quot;</span>&lt;&lt;endl;</span><br><span class="line">		<span class="keyword">else</span> cout&lt;&lt;<span class="string">&quot;No&quot;</span>&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>python3-version</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">t = <span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">check</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">if</span> x &lt;= <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    i = <span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> i * i &lt;= x:</span><br><span class="line">        <span class="keyword">if</span> x % i == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"><span class="keyword">while</span> t:</span><br><span class="line">    t -= <span class="number">1</span></span><br><span class="line">    x, d = [<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">input</span>().split(<span class="string">&#x27; &#x27;</span>)]</span><br><span class="line">    a, di = x, <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> a % d == <span class="number">0</span>:</span><br><span class="line">        a, di = a // d, di + <span class="number">1</span></span><br><span class="line">    flag = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">if</span> di &lt;= <span class="number">1</span>:</span><br><span class="line">        flag = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">elif</span> check(a) == <span class="literal">False</span>:</span><br><span class="line">        flag = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">elif</span> check(d) == <span class="literal">True</span>:</span><br><span class="line">        flag = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">elif</span> di &gt; <span class="number">3</span>:</span><br><span class="line">        flag = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">elif</span> di == <span class="number">2</span>:</span><br><span class="line">        flag = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">elif</span> a * a == d:</span><br><span class="line">        flag = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> flag:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Yes&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;No&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/codeforces/" rel="tag"># codeforces</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/27/2022-02-27-ctf-crypto-rsa-errorkey/" rel="prev" title="RSA & Incorrect Keys">
+      <i class="fa fa-chevron-left"></i> RSA & Incorrect Keys
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/13/2022-03-13-notes/" rel="next" title="Start With Hexo">
+      Start With Hexo <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Madoka-and-Math-Dad"><span class="nav-number">1.</span> <span class="nav-text">A.Madoka and Math Dad</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Madoka-and-the-Elegant-Gift"><span class="nav-number">2.</span> <span class="nav-text">B.Madoka and the Elegant Gift</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-Madoka-and-Childish-Pranks"><span class="nav-number">3.</span> <span class="nav-text">C.Madoka and Childish Pranks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-Madoka-and-the-Best-School-in-Russia"><span class="nav-number">4.</span> <span class="nav-text">D.Madoka and the Best School in Russia</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Rec</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rec</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

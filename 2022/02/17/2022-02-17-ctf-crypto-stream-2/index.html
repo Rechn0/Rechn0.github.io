@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="FSR与MT19937">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stream &amp; PRNG II">
+<meta property="og:url" content="http://example.com/2022/02/17/2022-02-17-ctf-crypto-stream-2/index.html">
+<meta property="og:site_name" content="Rec|rEc|reC">
+<meta property="og:description" content="FSR与MT19937">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-02-17T09:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-15T17:44:45.702Z">
+<meta property="article:author" content="Rec">
+<meta property="article:tag" content="stream">
+<meta property="article:tag" content="PRNG">
+<meta property="article:tag" content="FSR">
+<meta property="article:tag" content="MT19937">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/02/17/2022-02-17-ctf-crypto-stream-2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Stream & PRNG II | Rec|rEc|reC</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Rec|rEc|reC</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Can you here me?</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/17/2022-02-17-ctf-crypto-stream-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Rec">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rec|rEc|reC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Stream & PRNG II
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-17 17:00:00" itemprop="dateCreated datePublished" datetime="2022-02-17T17:00:00+08:00">2022-02-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-03-16 01:44:45" itemprop="dateModified" datetime="2022-03-16T01:44:45+08:00">2022-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/" itemprop="url" rel="index"><span itemprop="name">ctf</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/crypto/" itemprop="url" rel="index"><span itemprop="name">crypto</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>FSR与MT19937</p>
+<span id="more"></span>
+
+<h2 id="FSR"><a href="#FSR" class="headerlink" title="FSR"></a><strong>FSR</strong></h2><p>反馈移位寄存器(Feedback Shift Register)使用寄存器状态$\sigma_{i}$与反馈函数$F(\sigma_{i})$</p>
+<p>根据寄存器状态，FSR通过输出函数得到当前输出，通过反馈函数更新到下一状态</p>
+<p>$$<br>\sigma_{i}=(a_{i},a_{i+1},…,a_{i+n-1})<br>$$</p>
+<p>$$<br>a_{i+n}=F(\sigma_{i})=F(a_{i},a_{i+1},…,a_{i+n-1})<br>$$</p>
+<p>$$<br>\Rightarrow \sigma_{i+1}=(a_{i+1},a_{i+2},…,a_{i+n})<br>$$</p>
+<p>根据反馈函数的线性or非线性特性，可以分为LFSR与NFSR</p>
+<h3 id="LFSR"><a href="#LFSR" class="headerlink" title="LFSR"></a><strong>LFSR</strong></h3><p>线性反馈移位寄存器使用线性函数作为反馈函数，其性质较易于探讨</p>
+<p>$$<br>a_{i+n}=F(a_{i},a_{i+1},…,a_{i+n-1})=c_{n} * a_{i} \oplus … \oplus c_{1} * a_{i+n-1}<br>$$</p>
+<p>此处不为零的$c_{i}$数目为抽头数，会影响到LFSR的性质</p>
+<p>此外LFSR也可以视作$\mathbb{Z}_{2}^{n}$上的矩阵运算，特殊情况下可以求解矩阵方程得到某些参数</p>
+<p>$$<br>\begin{bmatrix} a_{i+1}&amp;…&amp;a_{i+n} \end{bmatrix}<br>=<br>\begin{bmatrix} a_{i}&amp;…&amp;a_{i+n-1} \end{bmatrix} *<br>\begin{bmatrix} 0&amp;0&amp;…&amp;0&amp;c_{n}  \\ 1&amp;0&amp;…&amp;0&amp;c_{n-1} \\ 0&amp;1&amp;…&amp;0&amp;c_{n-2} \\ …&amp;…&amp;…&amp;…&amp;… \\ 0&amp;0&amp;…&amp;1&amp;c_{1} \end{bmatrix} \pmod{2}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># LFSR example</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">lfsr</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, init, mask, length</span>):</span><br><span class="line">        self.mask = mask</span><br><span class="line">        self.state = init</span><br><span class="line">        self.lengthmask = (<span class="number">1</span> &lt;&lt; length) - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">next</span>(<span class="params">self</span>):</span><br><span class="line">        nextdata = (self.state &lt;&lt; <span class="number">1</span>) &amp; self.lengthmask</span><br><span class="line">        i = self.state &amp; self.mask &amp; self.lengthmask</span><br><span class="line">        output = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i != <span class="number">0</span>:</span><br><span class="line">            output ^= (i &amp; <span class="number">1</span>)</span><br><span class="line">            i = i &gt;&gt; <span class="number">1</span></span><br><span class="line">        nextdata ^= output</span><br><span class="line">        self.state = nextdata</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">int</span>(output)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getrandbit</span>(<span class="params">self, nbit</span>):</span><br><span class="line">        output = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(nbit):</span><br><span class="line">            output += <span class="built_in">str</span>(self.<span class="built_in">next</span>())</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">int</span>(output,<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>攻击方法</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/181811">深入分析LFSR1</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/184828">深入分析LFSR2</a></p>
+<p><strong>1.还原初始状态</strong></p>
+<p>通过已知输出序列与反馈函数，可以还原出LFSR的前驱状态</p>
+<p>$$<br>a_{i}=F(a_{i},a_{i+1},…,a_{i+n-1})=c_{n-1} * a_{i+1} \oplus … \oplus c_{1} * a_{i+n-1} \oplus a_{i+n}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Recover pre-state</span></span><br><span class="line"><span class="comment"># solution 1</span></span><br><span class="line"><span class="comment">## bitwise operation</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">recover_state</span>(<span class="params">bits,mask,n,step</span>):</span><br><span class="line">    state=bits&amp;((<span class="number">1</span>&lt;&lt;n)-<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">while</span> step:</span><br><span class="line">        step-=<span class="number">1</span></span><br><span class="line">        high=state&amp;<span class="number">1</span></span><br><span class="line">        state&gt;&gt;=<span class="number">1</span></span><br><span class="line">        res=mask&amp;state</span><br><span class="line">        <span class="keyword">while</span> res:</span><br><span class="line">            high^=res&amp;<span class="number">1</span></span><br><span class="line">            res&gt;&gt;=<span class="number">1</span></span><br><span class="line">        state^=high&lt;&lt;(n-<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> state</span><br></pre></td></tr></table></figure>
+
+<p>使用矩阵方程求解，可以通过不连续的bit序列还原初始状态，这也是常见的情况</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Recover pre-state</span></span><br><span class="line"><span class="comment"># solution 2</span></span><br><span class="line"><span class="comment">## matrix operation</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">i2v</span>(<span class="params">x, nbit</span>):</span><br><span class="line">    <span class="keyword">return</span> Matrix(GF(<span class="number">2</span>), [<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">bin</span>(x)[<span class="number">2</span>:].zfill(nbit)])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">v2i</span>(<span class="params">y</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(<span class="string">&#x27;&#x27;</span>.join([<span class="built_in">str</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> y.<span class="built_in">list</span>()]), <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mat_mask</span>(<span class="params">mask, nbit</span>):</span><br><span class="line">    mat=Matrix(GF(<span class="number">2</span>), nbit, nbit)</span><br><span class="line">    mat[nbit-<span class="number">1</span>]=i2v(mask, nbit)</span><br><span class="line">    mat=mat.T</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(nbit-<span class="number">1</span>):</span><br><span class="line">        mat[i+<span class="number">1</span>,i]=<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> mat</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">qpow</span>(<span class="params">mat, b</span>):</span><br><span class="line">    res=mat**<span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> b:</span><br><span class="line">        <span class="keyword">if</span> b&amp;<span class="number">1</span>: res*=mat</span><br><span class="line">        b&gt;&gt;=<span class="number">1</span></span><br><span class="line">        mat*=mat</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="comment"># step=0 for distinct bit</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">recover_state</span>(<span class="params">x,mask,nbit,step=<span class="number">0</span></span>):</span><br><span class="line">    mask=mat_mask(mask, nbit)</span><br><span class="line">    <span class="keyword">if</span> step &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> v2i(i2v(x,nbit)/(mask**step))</span><br><span class="line">    mat=Matrix(GF(<span class="number">2</span>), nbit, nbit)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(nbit):</span><br><span class="line">        mat[i]=qpow(mask, x[i][<span class="number">1</span>]+<span class="number">1</span>).T[nbit-<span class="number">1</span>]</span><br><span class="line">    v=i2v(<span class="built_in">int</span>(<span class="string">&#x27;&#x27;</span>.join([<span class="built_in">str</span>(i[<span class="number">0</span>]) <span class="keyword">for</span> i <span class="keyword">in</span> x]),<span class="number">2</span>), nbit)</span><br><span class="line">    <span class="keyword">return</span> v2i(v/mat.T)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>[例题]<a href="">2018 CISCN 线上赛 oldstreamgame</a></strong></p>
+<p>题目给出LFSR的反馈函数与800bit的密钥，求32bit初始状态</p>
+<p><strong>思路：</strong> 逆推LFSR还原seed</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt;key=<span class="built_in">open</span>(hpath+<span class="string">&#x27;key&#x27;</span>,<span class="string">&#x27;rb&#x27;</span>).read()</span><br><span class="line">mask=<span class="number">0b10100100000010000000100010010100</span></span><br><span class="line">s,r=bytes_to_long(key[<span class="number">0</span>:<span class="number">4</span>]),<span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">    output=s&amp;<span class="number">1</span></span><br><span class="line">    s&gt;&gt;=<span class="number">1</span></span><br><span class="line">    r&gt;&gt;=<span class="number">1</span></span><br><span class="line">    x=<span class="number">0</span></span><br><span class="line">    tmp=s&amp;mask&amp;<span class="number">0xffffffff</span></span><br><span class="line">    <span class="keyword">while</span> tmp&gt;<span class="number">0</span>:</span><br><span class="line">        x^=tmp&amp;<span class="number">1</span></span><br><span class="line">        tmp&gt;&gt;=1Z</span><br><span class="line">    s^=(x^output)&lt;&lt;<span class="number">31</span></span><br><span class="line">    r^=(x^output)&lt;&lt;<span class="number">31</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;flag&#123;&#x27;</span>+<span class="built_in">format</span>(r,<span class="string">&#x27;x&#x27;</span>)+<span class="string">&#x27;&#125;&#x27;</span>)</span><br><span class="line">&gt;<span class="comment"># flag&#123;926201d7&#125;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><strong>2.还原反馈函数</strong></p>
+<p>对于n阶LFSR，已知长度为2n的输出序列，即得到了LFSR的n+1个连续状态，此时可构造矩阵求出反馈函数</p>
+<p>令反馈函数$c=(c_{n},…,c_{1})$，已知连续状态$\sigma_{1},…,\sigma_{n+1}$</p>
+<p>$$<br>a_{n+i}=c*\sigma_{i}^{T}=c_{n}*a_{i} \oplus … \oplus c_{1}*a_{n+i-1}<br>$$</p>
+<p>$$<br>\Rightarrow \sigma_{n+1}=c*(\sigma_{1}^{T},…,\sigma_{n}^{T})=c*\Sigma<br>$$</p>
+<p>易证明矩阵$\Sigma$在$\mathbb{Z}_{2}^{n}$上可逆（只需证明n个状态线性无关即可，证明略）</p>
+<p>故：</p>
+<p>$$<br>c=\sigma_{n+1}*\Sigma^{-1}<br>$$</p>
+<p>此时即得到了反馈函数c</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Recover mask</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">i2v</span>(<span class="params">x, nbit</span>):</span><br><span class="line">    <span class="keyword">return</span> Matrix(GF(<span class="number">2</span>), [<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">bin</span>(x)[<span class="number">2</span>:].zfill(nbit)])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">v2i</span>(<span class="params">y</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(<span class="string">&#x27;&#x27;</span>.join([<span class="built_in">str</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> y.<span class="built_in">list</span>()]), <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">recover_mask</span>(<span class="params">bits,n</span>):</span><br><span class="line">    lengthmask=(<span class="number">1</span>&lt;&lt;n)-<span class="number">1</span></span><br><span class="line">    mat=Matrix(GF(<span class="number">2</span>),n,n)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        mat[i]=i2v((bits&gt;&gt;(n-i))&amp;lengthmask,n)</span><br><span class="line">    s=i2v(bits&amp;lengthmask, n)</span><br><span class="line">    <span class="keyword">return</span> v2i(s/mat.T)</span><br></pre></td></tr></table></figure>
+
+<p><strong>3.求解LFSR的阶数n</strong></p>
+<p>使用B-M算法，利用已知输出序列可以对LFSR的线性复杂度与极小多项式进行分析，进而得到LFSR的阶数n</p>
+<h3 id="NFSR"><a href="#NFSR" class="headerlink" title="NFSR"></a><strong>NFSR</strong></h3><p>通过引入非线性函数，可以增强流密码输出序列的复杂性</p>
+<p>常用的NFSR：</p>
+<p>1.非线性组合生成器：多个LFSR使用非线性函数综合输出（Geffe、Pless）</p>
+<p>2.非线性滤波生成器：一个LFSR使用非线性函数得到输出</p>
+<p>3.钟控生成器：使用一个LFSR的输出，作为另一个LFSR的时钟信号</p>
+<p><strong>攻击方法</strong></p>
+<p><strong>快速相关攻击FCA</strong></p>
+<p><a target="_blank" rel="noopener" href="https://projects.cs.uct.ac.za/honsproj/cgi-bin/view/2011/desai.zip/crypto_desai/dl/">开普敦大学FCA项目</a></p>
+<p>快速相关攻击考虑到，源LFSR的产生序列与combine后LFSR序列存在的相关性。当序列相关性&gt;0.53时，可以视为满足FCA攻击的条件</p>
+<p>对于小抽头数(&lt;10)的LFSR，FCA攻击的效果较为显著</p>
+<hr>
+<h2 id="MT19937"><a href="#MT19937" class="headerlink" title="MT19937"></a><strong>MT19937</strong></h2><p>MT19937算法基于矩阵递归构建周期较长的随机数序列，其周期长达$2^{19937}-1$，是十分优秀的随机数算法</p>
+<p>该算法主要分为下列步骤</p>
+<ol>
+<li>使用seed产生基础梅森旋转链</li>
+<li>对旋转链执行旋转算法</li>
+<li>根据旋转链的状态获得输出随机数</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># MT19937 example</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_int32</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(<span class="number">0xffffffff</span> &amp; x)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">mt19937</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, seed</span>):</span><br><span class="line">        self.mt = [<span class="number">0</span>] * <span class="number">624</span></span><br><span class="line">        self.mt[<span class="number">0</span>] = seed</span><br><span class="line">        self.mti = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">624</span>):</span><br><span class="line">            self.mt[i] = _int32(<span class="number">1812433253</span> * (self.mt[i - <span class="number">1</span>] ^ self.mt[i - <span class="number">1</span>] &gt;&gt; <span class="number">30</span>) + i)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">extract</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> self.mti == <span class="number">0</span>:</span><br><span class="line">            self.twist()</span><br><span class="line">        y = self.mt[self.mti]</span><br><span class="line">        y = y ^ y &gt;&gt; <span class="number">11</span></span><br><span class="line">        y = y ^ y &lt;&lt; <span class="number">7</span> &amp; <span class="number">2636928640</span></span><br><span class="line">        y = y ^ y &lt;&lt; <span class="number">15</span> &amp; <span class="number">4022730752</span></span><br><span class="line">        y = y ^ y &gt;&gt; <span class="number">18</span></span><br><span class="line">        self.mti = (self.mti + <span class="number">1</span>) % <span class="number">624</span></span><br><span class="line">        <span class="keyword">return</span> _int32(y)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">twist</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">624</span>):</span><br><span class="line">            y = _int32((self.mt[i] &amp; <span class="number">0x80000000</span>) + (self.mt[(i + <span class="number">1</span>) % <span class="number">624</span>] &amp; <span class="number">0x7fffffff</span>))</span><br><span class="line">            self.mt[i] = (y &gt;&gt; <span class="number">1</span>) ^ self.mt[(i + <span class="number">397</span>) % <span class="number">624</span>]</span><br><span class="line">            <span class="keyword">if</span> y % <span class="number">2</span> != <span class="number">0</span>:</span><br><span class="line">                self.mt[i] = self.mt[i] ^ <span class="number">0x9908b0df</span></span><br></pre></td></tr></table></figure>
+
+<p>python中random模块，以及php中的mt_rand，即使用了mt19937算法产生随机数</p>
+<p><strong>攻击方法</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/205861#h2-5">MT19937攻击</a></p>
+<p><strong>1.向后预测：对extract()的攻击</strong></p>
+<p>对于MT19937，得到其连续的624个32bit状态即可恢复整条旋转链，可以证明此时即恢复了发生器状态，进而能够预测后续所有的随机数</p>
+<p>考虑到extract()部分使用可逆操作，因此可以通过发生器的输出还原其状态</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># crack extract-func</span></span><br><span class="line"><span class="comment">## solution 1</span></span><br><span class="line"><span class="comment">## bitwise operation</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">inverse_shift</span>(<span class="params">x, shift, <span class="built_in">type</span>, mask=<span class="number">0xffffffff</span>, nbit=<span class="number">32</span></span>):</span><br><span class="line">    res = x</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(nbit//shift):</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span> == <span class="string">&#x27;l&#x27;</span>: res = x ^ res &lt;&lt; shift &amp; mask</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span> == <span class="string">&#x27;r&#x27;</span>: res = x ^ res &gt;&gt; shift &amp; mask</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">crack_extract</span>(<span class="params">x</span>):</span><br><span class="line">    x = inverse_shift(x, <span class="number">18</span>, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">    x = inverse_shift(x, <span class="number">15</span>, <span class="string">&#x27;l&#x27;</span>, <span class="number">4022730752</span>)</span><br><span class="line">    x = inverse_shift(x,  <span class="number">7</span>, <span class="string">&#x27;l&#x27;</span>, <span class="number">2636928640</span>)</span><br><span class="line">    x = inverse_shift(x, <span class="number">11</span>, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>以 y = y ^ y &gt;&gt; 11 为例分析，可以发现运算结果的高11bit即为y的高11bit，进一步操作即可暴露y的高22bit，可以证明若干次操作后一定会得到y本身</p>
+<p>以 y = y ^ y &lt;&lt; 7 &amp; 2636928640 为例分析，可以发现掩码的作用不大，运算结果的低7bit即为y的低7bit，结论与上述相同</p>
+<p>$$<br>T=(bits//shift)+1<br>$$</p>
+<p>因此再执行若干次相应操作，即可还原初始状态</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># crack extract-func</span></span><br><span class="line"><span class="comment">## solution 2</span></span><br><span class="line"><span class="comment">## matrix operation</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_int32</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(<span class="number">0xffffffff</span> &amp; x)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encrypt</span>(<span class="params">y</span>):</span><br><span class="line">    y = y ^^ y &gt;&gt; <span class="number">11</span></span><br><span class="line">    y = y ^^ y &lt;&lt; <span class="number">7</span> &amp; <span class="number">2636928640</span></span><br><span class="line">    y = y ^^ y &lt;&lt; <span class="number">15</span> &amp; <span class="number">4022730752</span></span><br><span class="line">    y = y ^^ y &gt;&gt; <span class="number">18</span></span><br><span class="line">    <span class="keyword">return</span> _int32(y)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">i2v</span>(<span class="params">x, nbit</span>):</span><br><span class="line">    <span class="keyword">return</span> Matrix(GF(<span class="number">2</span>), [<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">bin</span>(x)[<span class="number">2</span>:].zfill(nbit)])</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">v2i</span>(<span class="params">y</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(<span class="string">&#x27;&#x27;</span>.join([<span class="built_in">str</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> y.<span class="built_in">list</span>()]), <span class="number">2</span>)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getT</span>():</span><br><span class="line">    T = Matrix(GF(<span class="number">2</span>), <span class="number">32</span>, <span class="number">32</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">        y = encrypt( <span class="number">1</span>&lt;&lt;(<span class="number">32</span>-<span class="number">1</span>-i) )</span><br><span class="line">        T[i] = i2v(y, <span class="number">32</span>)</span><br><span class="line">    <span class="keyword">return</span> T</span><br></pre></td></tr></table></figure>
+
+<p>另一种思路将shift-xor操作考虑为$\mathbb{Z}_{2}^{nbit}$上的矩阵操作。观察发现每步操作的结果与输入之间存在线性关系，可以构造矩阵</p>
+<p>$$<br>y_{1 * nbit} = x_{1 * nbit} * T_{nbit * nbit}<br>$$</p>
+<p>由于操作可逆，故在$\mathbb{Z}_{2}^{nbit}$求得逆矩阵即为逆向还原操作</p>
+<p>此处可以考虑<strong>对Black-Box的选择明文泄露攻击</strong>，即选择特殊的明文泄露黑盒的信息。例如当$x_{1}=1, x_{i}=0 (i \neq 1)$时，y即对应T的第一行，此法可以还原出整个T矩阵，进而求出$T^{-1}$即可</p>
+<p><strong>2.向前预测：对twist()的攻击</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># crack twist-func</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">crack_twist</span>(<span class="params">cur</span>):</span><br><span class="line">    high = <span class="number">0x80000000</span></span><br><span class="line">    low = <span class="number">0x7fffffff</span></span><br><span class="line">    mask = <span class="number">0x9908b0df</span></span><br><span class="line">    state = cur</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">623</span>,-<span class="number">1</span>,-<span class="number">1</span>):</span><br><span class="line">        tmp = state[i]^state[(i+<span class="number">397</span>)%<span class="number">624</span>]</span><br><span class="line">        <span class="comment"># recover Y,tmp = Y</span></span><br><span class="line">        <span class="keyword">if</span> tmp &amp; high == high:</span><br><span class="line">            tmp ^= mask</span><br><span class="line">            tmp &lt;&lt;= <span class="number">1</span></span><br><span class="line">            tmp |= <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            tmp &lt;&lt;=<span class="number">1</span></span><br><span class="line">        <span class="comment"># recover highest bit</span></span><br><span class="line">        res = tmp&amp;high</span><br><span class="line">        <span class="comment"># recover other 31 bits,when i =0,it just use the method again it so beautiful!!!!</span></span><br><span class="line">        tmp = state[i-<span class="number">1</span>]^state[(i+<span class="number">396</span>)%<span class="number">624</span>]</span><br><span class="line">        <span class="comment"># recover Y,tmp = Y</span></span><br><span class="line">        <span class="keyword">if</span> tmp &amp; high == high:</span><br><span class="line">            tmp ^= mask</span><br><span class="line">            tmp &lt;&lt;= <span class="number">1</span></span><br><span class="line">            tmp |= <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            tmp &lt;&lt;=<span class="number">1</span></span><br><span class="line">        res |= (tmp)&amp;low</span><br><span class="line">        state[i] = res    </span><br><span class="line">    <span class="keyword">return</span> state</span><br></pre></td></tr></table></figure>
+
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/stream/" rel="tag"># stream</a>
+              <a href="/tags/PRNG/" rel="tag"># PRNG</a>
+              <a href="/tags/FSR/" rel="tag"># FSR</a>
+              <a href="/tags/MT19937/" rel="tag"># MT19937</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/07/2022-02-07-ctf-wp-DiceCTF2022/" rel="prev" title="DiceCTF2022 Write Up">
+      <i class="fa fa-chevron-left"></i> DiceCTF2022 Write Up
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/21/2022-02-21-acm-codeforces-772/" rel="next" title="Codeforces Round#772 (Div. 2)">
+      Codeforces Round#772 (Div. 2) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FSR"><span class="nav-number">1.</span> <span class="nav-text">FSR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LFSR"><span class="nav-number">1.1.</span> <span class="nav-text">LFSR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NFSR"><span class="nav-number">1.2.</span> <span class="nav-text">NFSR</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MT19937"><span class="nav-number">2.</span> <span class="nav-text">MT19937</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Rec</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rec</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

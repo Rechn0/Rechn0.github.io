@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="古典密码概述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Classical Crypto">
+<meta property="og:url" content="http://example.com/2022/01/14/2022-01-14-ctf-crypto-classical/index.html">
+<meta property="og:site_name" content="Rec|rEc|reC">
+<meta property="og:description" content="古典密码概述">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/64e12df6219e2a298976d4baccc2610b.png">
+<meta property="article:published_time" content="2022-01-14T08:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-13T17:13:38.277Z">
+<meta property="article:author" content="Rec">
+<meta property="article:tag" content="classical">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/64e12df6219e2a298976d4baccc2610b.png">
+
+<link rel="canonical" href="http://example.com/2022/01/14/2022-01-14-ctf-crypto-classical/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Classical Crypto | Rec|rEc|reC</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Rec|rEc|reC</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Can you here me?</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/14/2022-01-14-ctf-crypto-classical/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Rec">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rec|rEc|reC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Classical Crypto
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-14 16:00:00" itemprop="dateCreated datePublished" datetime="2022-01-14T16:00:00+08:00">2022-01-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-03-14 01:13:38" itemprop="dateModified" datetime="2022-03-14T01:13:38+08:00">2022-03-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/" itemprop="url" rel="index"><span itemprop="name">ctf</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/crypto/" itemprop="url" rel="index"><span itemprop="name">crypto</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>古典密码概述</p>
+<span id="more"></span>
+
+<h1 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a><strong>Intro</strong></h1><p>主要学习经典的古典密码</p>
+<hr>
+<h2 id="单表替换密码"><a href="#单表替换密码" class="headerlink" title="单表替换密码"></a><strong>单表替换密码</strong></h2><h3 id="Caesar密码-Rightarrow-仿射密码"><a href="#Caesar密码-Rightarrow-仿射密码" class="headerlink" title="Caesar密码$\Rightarrow$仿射密码"></a><strong>Caesar密码$\Rightarrow$仿射密码</strong></h3><p>仿射密码使用加密函数$E(x)=(ax+b)\pmod{m}$，其中$gcd(a,m)=1$</p>
+<p><strong>攻击方法</strong></p>
+<p>由于$\phi(26) = \phi(2) * \phi(13) = 12$，故密钥空间为$12*26=312$，安全性较低</p>
+<p>对于已知部分仿射关系$x_{i}\rightarrow y_{i}$的情况：</p>
+<p>$$<br>a=(y_{1}-y_{2})*(x_{1}-x_{2})^{-1}\pmod{m}<br>$$</p>
+<p>$$<br>b=(y_{1}-ax_{1})\pmod{m}<br>$$</p>
+<h3 id="简单替换密码"><a href="#简单替换密码" class="headerlink" title="简单替换密码"></a><strong>简单替换密码</strong></h3><p>使用无序字母映射表进行加密，密钥空间为$26!$</p>
+<p><strong>攻击方法</strong></p>
+<p><a target="_blank" rel="noopener" href="https://quipqiup.com/">quipquip</a>词频分析工具</p>
+<hr>
+<h2 id="多表替换密码"><a href="#多表替换密码" class="headerlink" title="多表替换密码"></a><strong>多表替换密码</strong></h2><h3 id="Hill密码"><a href="#Hill密码" class="headerlink" title="Hill密码"></a><strong>Hill密码</strong></h3><p>使用$\mathbb{Z}_{m}^{n}$上的n阶可逆方阵A作为密钥，将明文映射为n维向量x</p>
+<p>$$<br>E(x)=Ax, D(y)=A^{-1}y \pmod{m}<br>$$</p>
+<p><strong>攻击方法</strong></p>
+<p>在$\mathbb{Z}_{m}^{n}$上对矩阵A求逆即可得到解密函数</p>
+<p><a target="_blank" rel="noopener" href="http://www.practicalcryptography.com/ciphers/hill-cipher/">Hill-cipher</a>希尔密码工具</p>
+<p>Cryptool</p>
+<blockquote>
+<p><strong><a target="_blank" rel="noopener" href="https://ctf.bugku.com/challenges/detail/id/169.html?page=2">[例题]Bugku-小山丘的秘密</a></strong></p>
+<p>$$<br>A=\begin{bmatrix}<br>      1 &amp; 2 &amp; 3 \\<br>      0 &amp; 1 &amp; 4 \\<br>      5 &amp; 6 &amp; 0 \\<br>  \end{bmatrix} \pmod{26}<br>$$</p>
+<p>$$<br>enc=PLGTGBQHM, A=1<br>$$</p>
+<p><strong>思路：</strong> 使用sympy求出矩阵A的模逆，进行解密即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Code</span></span><br><span class="line"><span class="keyword">from</span> sympy <span class="keyword">import</span> Matrix</span><br><span class="line">A=Matrix([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">0</span>,<span class="number">1</span>,<span class="number">4</span>],[<span class="number">5</span>,<span class="number">6</span>,<span class="number">0</span>]]).inv_mod(<span class="number">26</span>)</span><br><span class="line">c=[[<span class="number">16</span>, <span class="number">12</span>, <span class="number">7</span>],[<span class="number">20</span>, <span class="number">7</span>, <span class="number">2</span>],[<span class="number">17</span>, <span class="number">8</span>, <span class="number">13</span>]]</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> c:</span><br><span class="line">	y=A*Matrix(x)</span><br><span class="line">	<span class="keyword">for</span> yi <span class="keyword">in</span> y:</span><br><span class="line">		<span class="built_in">print</span>(<span class="built_in">chr</span>(yi%<span class="number">26</span>+<span class="built_in">ord</span>(<span class="string">&#x27;a&#x27;</span>)-<span class="number">1</span>),end=<span class="string">&quot;&quot;</span>)</span><br><span class="line"><span class="comment"># flag: whatahill</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="Vigenere密码"><a href="#Vigenere密码" class="headerlink" title="Vigenere密码"></a><strong>Vigenere密码</strong></h3><p>维吉尼亚密码使用多个移位变换字母表进行加密，由于同一字符可以被加密成不同字符，因此可以掩盖明文的字频特性</p>
+<p>维吉尼亚密码循环使用密钥$z=z_{0}z_{1}…z_{len}$进行加密。在使用第i位密钥时，使用字符$z_{i}$对应的行作为替换表</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/64e12df6219e2a298976d4baccc2610b.png" alt="vigenere"></p>
+<p><strong>攻击方法</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.guballa.de/vigenere-solver">vigenere-solver</a>维吉尼亚攻击工具</p>
+<p><strong>1.Kasiski试验</strong></p>
+<p>卡西斯基试验考虑相同的文段可能被同一段密钥进行加密，例如英文单词the可能被加密成同样的密文</p>
+<p>利用卡西斯基试验可以估计密钥的长度（或其约数）</p>
+<p><strong>2.Friedman试验（重合指数攻击）</strong></p>
+<p>重合指数CI主要表示文段中两个字符相等的概率</p>
+<p>$$<br>CI = \sum \frac{fi*(fi-1)}{L*(L-1)}<br>$$</p>
+<p>L表示文段长度，fi表示第i个字符出现的次数</p>
+<p>经过分析，对于一段随机英文文段$CI \approx 0.0385$；而对于有意义的英文文段$CI \approx 0.065$</p>
+<p>将密文按照测试密钥长度进行分组，通过重合指数可以判断当前测试密钥长度的可靠性</p>
+<blockquote>
+<p><strong><a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[MRCTF2020]vigenere">[例题]MRCTF2020-vigenere</a></strong></p>
+<p>给出Vigenere加密脚本与密文，密钥长度$5&lt;len&lt;10$</p>
+<p><strong>思路：</strong> 卡西斯基试验估计密钥长度，利用字频统计猜测密钥</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 卡西斯基试验</span></span><br><span class="line">c=<span class="built_in">open</span>(hpath+<span class="string">&quot;cipher.txt&quot;</span>,<span class="string">&#x27;r&#x27;</span>).read()</span><br><span class="line">c=<span class="string">&quot;&quot;</span>.join(<span class="built_in">filter</span>(<span class="built_in">str</span>.isalpha,c))</span><br><span class="line"><span class="keyword">for</span> l <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6</span>,<span class="number">10</span>):</span><br><span class="line">	cnt=<span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(c)-l):</span><br><span class="line">		<span class="keyword">if</span> c[i:i+<span class="number">3</span>]==c[i+l:i+l+<span class="number">3</span>]:</span><br><span class="line">		cnt+=<span class="number">1</span></span><br><span class="line">	<span class="built_in">print</span>(l,cnt)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 字频统计，将最高字频作为e字母进行解密</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(l):</span><br><span class="line">	fq=&#123;&#125;</span><br><span class="line">	<span class="keyword">while</span> i &lt; <span class="built_in">len</span>(c):</span><br><span class="line">	<span class="keyword">if</span> c[i] <span class="keyword">in</span> fq:</span><br><span class="line">		fq[c[i]]+=<span class="number">1</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		fq[c[i]]=<span class="number">1</span></span><br><span class="line">	i+=l</span><br><span class="line">	tmp=<span class="built_in">ord</span>(<span class="built_in">max</span>(fq,key=<span class="keyword">lambda</span> x:fq[x]))</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">chr</span>((tmp-<span class="built_in">ord</span>(<span class="string">&#x27;e&#x27;</span>)+<span class="number">26</span>)%<span class="number">26</span>+<span class="built_in">ord</span>(<span class="string">&#x27;a&#x27;</span>)),end=<span class="string">&quot;&quot;</span>)</span><br><span class="line"><span class="comment"># key=gsfezn, 正确的key为gsfepn</span></span><br><span class="line"><span class="comment"># 使用Vigenere攻击网站效果较好</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/classical/" rel="tag"># classical</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/13/2022-01-13-notes/" rel="prev" title="Intro-Finally u found me.">
+      <i class="fa fa-chevron-left"></i> Intro-Finally u found me.
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/01/14/2022-01-14-ctf-crypto-stream-1/" rel="next" title="Stream & PRNG I">
+      Stream & PRNG I <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%A1%A8%E6%9B%BF%E6%8D%A2%E5%AF%86%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">单表替换密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Caesar%E5%AF%86%E7%A0%81-Rightarrow-%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81"><span class="nav-number">1.1.1.</span> <span class="nav-text">Caesar密码$\Rightarrow$仿射密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%9B%BF%E6%8D%A2%E5%AF%86%E7%A0%81"><span class="nav-number">1.1.2.</span> <span class="nav-text">简单替换密码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%A1%A8%E6%9B%BF%E6%8D%A2%E5%AF%86%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">多表替换密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hill%E5%AF%86%E7%A0%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">Hill密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vigenere%E5%AF%86%E7%A0%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">Vigenere密码</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Rec</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rec</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

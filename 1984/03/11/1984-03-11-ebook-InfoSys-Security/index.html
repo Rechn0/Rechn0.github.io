@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Private.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Information System Security">
+<meta property="og:url" content="http://example.com/1984/03/11/1984-03-11-ebook-InfoSys-Security/index.html">
+<meta property="og:site_name" content="Rec|rEc|reC">
+<meta property="og:description" content="Private.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="1984-03-11T02:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-24T17:09:51.260Z">
+<meta property="article:author" content="Rec">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/1984/03/11/1984-03-11-ebook-InfoSys-Security/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Information System Security | Rec|rEc|reC</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Rec|rEc|reC</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Can you here me?</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/1984/03/11/1984-03-11-ebook-InfoSys-Security/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Rec">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rec|rEc|reC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Information System Security
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 1984-03-11 10:00:00" itemprop="dateCreated datePublished" datetime="1984-03-11T10:00:00+08:00">1984-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-03-25 01:09:51" itemprop="dateModified" datetime="2022-03-25T01:09:51+08:00">2022-03-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/e-book/" itemprop="url" rel="index"><span itemprop="name">e-book</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Permission Denied." data-whm="Wrong Hash?">
+  <script id="hbeData" type="hbeData" data-hmacdigest="32ca04c06079e7ef6f8eef563db9d26614ce9acd827b56cfe0bb257f3b389d04">964072abacc8091b98a9d23596db95dda2682917a2351022e5eadd0f59ea49d9a824a396150759eb1b485aeb6798488fc854c8a9ddecab7c622bb778d4d8bc6094ffb6aba9cd58cd29a822e010b231e1020aac6c7e022ada2a08cf698bfc6e4a4a052f7c26ff614a743b9a607baa568a6fb528238577614adac18bd8dae2b5267c80f587a4f18ded563bd634a17bee5e25abc0e363314522dc3e4548224f66ebfed51da6a498b9a9e8693051e2f07212da5145006bcbb7310d4edf682fd9d7dbc1b975d85ccce842e8b16d6dd0e38b2694305304b18397a6960509c0788c641a55031df367c8d9f9f5727f14e4639a5371d01b120c6b2219c2832859309073ccdd0c473372350015a522826c589bff245869d80fac3012465268f406ab45f0fea880931a5e5452a1ac6392de5aa52d90f4c04014e82530517d8c897d3ce4c01828c2db01663ae01fe0a6671695426afdffdc8d86957da2544e5999ff8a08354ab56d9296acf9bcff0a3d221a0e7bbd6be52c5f2906a844262e8845472ee37b2dbf6ab1b2d42ff2490c6f6b8c5261e3fac48baab71656127a8bf4f3d6060d50a78af10be4a1dadd1f9d06432faa073653bddf81b273a80b497f226f5181a6f214e8bad28f7f79feb46219013e3c1d3f3bf2e3ce9b77e82c9ee7fa4cfe24928ebf231068bca83f64af3f9c78be83c36dea8be33f3289ea6d3df12b23d0485797f0b1a0291e42e5669dfcb621fd0ad505333eb54f0311dfee8efdecc264cb96753418442ef1a511ffdf6719d848339f8448d88d880f229626517a0539907dbad8dcdcf5c8a76397173f6414b2f9883c3dae907d63c4e6fab82a710c11331f366f5bd48055a33477fa90ef09209747a7adb9f2f446a87e96f433bc3a9c94751d0a6abdee34b4e7256464ed811501dbc07d8784f703825315ad3f20e7070dbca2e301ca0a523a12d28ba62029e1b6ba037db1e5e1fd9e913125aa492b4ebe599f04ae585e2e6dc2b0fb9d618f442ce922be76adfceb214a67990fa8f62c46d825f3bc8a78ed1e9f190405470669bd5abd76389747d0406bc23c64b324f5ebf6dca03549b00682646845bf7e76ef7fe1af5f65453271dce9203d906ab0afa0bd3e5e0583aca5cd0b8607b5c8363c9adecfea158a131c120487a59a02723fb8d5babc8108cff9506372075984d9aec545eefe5836408a2552f90bcf657204d649adc1998d2841c5c80a7232402966bff2a8e9248b4f003774d5f495826791e771c36d34712b07b51fba234364679d8241431a42e74ca1b06336efd38cd62f20cd1163c9e0fbed480feb84d695b0257f88f4002959e8a739470d3311a2da5de93c9c205a494b346107c171fc306cd6ef51a045df3270a32c686b373b7db8136888c68b65ecfbda095fe0cfe48c079259089b23e582682bb8d6bd603c29f343d3d17fb6b357ecb01823848b88a7266cca1f94ae299e44159bf1eb4c17fb9749ad487952389abc35e5d9d827c0727827c5f5dba56fddf2a7b382b2b876b8e9a39199b084b63f292288afb127d5b0857c92232a77841d1ce538b6b3f020de13a7d50a046243533b823fb307a64289de397f45c56a4201aa04902529fb8e514e1511e08f888598328cd1f9ff76a4d777c3208e35c5aa9402e9e331f3de3c1916074c7bd727e93dac391789afaa7a4bbb5a96a292b55e7df0b6ecb7b02e3c877d00498dce1a6daa84babbb124ce3823dcf88a23b567c54fea683f02f8e43178bb2d7ee2edf1495fbc8538982793aa4d3b9c09a23b7201350113d758ae6c459e648061fa38bbb56ea072b8b93be136e83ef39b892c5f23d36ff57a8577f60ae900f9235fbd335f2f07bf1181ec5366e8bb2cea017a8ac4748ae596101f5b050c93b2699bed5ce03795a7677afc220c829cf1a41d4b8772cdb7d1b37a5529112db2c97cf36372633407389591293e429e6ef0e0c15367954d7e491df8ab17d3341cbc1cf6b9bdb26d1c7c96208fcfce28cec17927a046a337cbff3ba36c3eb8dd138ca4731a0d5dcb4350eead6072f49d7103adf3dbd5dab32aadc715408e6a2a500b2d1d929e22cd85ee6a0964eb7115a445b1dc2d343b3f1b75f657c95276c9cebc6b4ef23ca07cd1940bd66acf992363e91d33270a892e80469e99dd88e0cba30266299142dda1ef28d14ca88226a913506512e6a8672918b310a4b0e2fefdda9542e0f0fff704f69a5b68b4a9353f1be010b1dc4866b2b7d5cf4bd9faab70730b9e186d70a9e3691182b362dcf91427ac3078464662c5443f6447dd29208c85306c0d8cae8399ab3b3054153fbf15f4a91cc734b2cb9e7e1cf9053cbca39b4706e9b995cb08fbaaf0d854940c9699696f5698569324f4d43a9cdcfec99409a13823b6118865e3dc28c8d6f70dfe3fb9ce7ed452ab98e12f74504f07e8453dd6b102f53cb7a2db4213461bccd82f769ff4f8d6b66c4bbacb25d35016b512334bd0f7bf4270359a706497d0630009ac3c68e1474489711c9ccd81c62b83804fe9c6e8af6003831043a3237517854455912710c097179106211d193c8e1af32f0687a4fd51a69fe930e0a91330dd2b18f365281954f9b5e7a2cd633f8792ce4cd5ccc9d6ca3056a9ca9f666d7415ea2b4982bdb2b24a66c1a1cc6f254e93be669304f343e585f0903512cc78cdc990ed395c354be3dd078c6787dbe1a238ff3fae4039a3f51b9f8f629718b10af30a7e17d3320a3b1ea754692001834917604a4f9ae4136e5ab0b4cb8fff1318c991e3b8e98f943896d7ef182eb3d24c0a021e57eb7ba58881e8eaac82ce23d6cb4e8870e35f74d106374d84f541575e9057b929fe6d445fd25bfe54379a685374cdccf91160d5dafe265aa20c493076330109c3959022d56e53cf0f5bebfb76c35de7576934736b3a48d8f8d24b9357deeee7625a432462a43f2506e9e63d7beeb3f4a5512f1640a393b62cfbb1f48aadb3bb154dcfcee3849e6a630334d82d8039546fc9fb48391c1e4ac284469c5491611a160354551025f56ffb989270afdfe3bc5fd778d3a49337bae30c6e418e9bef0039c55f7dea069acd8ec2dbe155f9f08a484c7da189316033d74b3b5aad984b94c683c24951c56926a4350e7d181827e84ba90946fc92148d694f00782c41d1e3109597549c6af04cc336d1dab80436d6f79a0d2aed2a7e030fa82fb4c0dfec71baef394f1a492623507d7a2462aa7a832c6856b668616a19a9f7293722ffb968bb67899f0165a1681f86a01a5289ab808317901e56ed2b5141a155975928c09eadc0af3905251fec2f299905cf57efb39de1b300f7e6b579bc6ab10194e403daf2e8f6483a192b9ad51228277582b767eccb55061bfe1120b5938c7015aa838d7aac740a36535008dd850a694c7dd7068be71105225d8a83da04a7eeb0e0fd43c913d9dc343de16e36fef75eee365ed67d86fe35356cc58854313579558ac206d6363e43630631172e40f0d7c0d7bc8c3e229607ccec6038b69f6f8d9f8ffa3b2a44afd753527d0879862f6ae3ad89c647071f4500f6ed0cbdf9490a72f2f1bbc0c59e1c8bb39c49342e7e29b78015d5b57bafee3f1d184d35277d3b986852c9b35f1c64cde1fc895cc834a364f84786b0dd0408cd3a9eea27a71c3b93168e5cc1247e7ceb022ecdf15a8bada9629208740bb264057004054fe98fde0cc82b202e3ae05c212298e33a9c542b3827302f26b73279599a27fab75ea784663c2ae7704a458636a42c5812b879f6fa624ff1906c610aeb342aea5b8c927ea176663c5e36b21fcb3e6625b0ba4fc8c7c2f4de170abf18cfdce9dc547c7b468f570aca8c9cd4e16ad1b7abeab6b2a3856548f6771ea55fbdd29f686929170109bb268f11804a7ec31eae23653d06147e0e3779c4740801229da577dd7e9afe9c89c6f0141eabd07301141fe5daaa130d0e45c0ec9afbfc96124b21cadbf295495bf547a664fbddda8192a33714e28a927c3471de97f9e1aad6540f247eadc2e2089af5abbac29fccb59df11528949699dca89b04399241d4cb603a8b56349c1801935cebb57f6a8b6df0145fdab7eaba43ee5f671bd26b9f3fddd1f8abc2e74baa659a5b5536186efc602750115e4b354d3aacf796ebe21339d437fe277dc35cc1a125cecb75cdac01f6afe40f07e9ca729d5945f9ca5177b2a92594ad505eafae76c37384065f6a2fe7aceaca4b8cf25adf4f494d1ca97d127e5e82d4d087a85c53c4972b940fc8cd384ffe9948c3a7ed4b8bbfcc396df4d833490173933a2febd70bf11d5683e1593c57ae6e960441cc7d3e98b61c43387bbf1585886faffa23296a14b772224c9c4a296bb0119c8ef0e22b7bfeb4af5c8aee9d4f922dbf41352f4ef40d67f9640dbe5fd5b0b8b63f0a4704521b060db3f40caf47915f952ee65e317f59669dc96aabcdbc0f851fd4b4ee5ecc74e22e4a4582805de462638231360b935099cd614f94c1c0971687c5c9da1550efb82f72ca21dab84cdab3de3b5d81acf762d51e7898a3f61ea4e20a65c13afc70d7569600824f735c788922b45f5cfa1303d0ac01d6c783e72599d1e381af1bb36e6b0eaf2985b381bd01e3f262bd3e94eef2ff35b3c7e02d037af995a79d0fb86437920ede62e4ddf7793b57dc88d35d4e20e7e1d564c14a16bbdd8f6b828defc5e988ca6aa88829549fdde982584b374eb52aa79859c57983f112fb753af2eeceb3803fa018eedd816558725ec71ec78563ce9cb2343dd0e5917dcab94c304c0a187c543d7e02a3cf50393d7aa749177e519e961b34b33e685b72b46608f9f286c8f94cfa9d14cd95688bdef4031fc816c8b3de655ac3289b12e5f5b7a6de0a89b33100e489e6cd29b98811d457f6f975134beeb1ae8a214e0f437213fa5e213cedb17d15ef30f95eeaf2dc28fa949834c58fe6aa1d558b94b33bd475213b085c39675a9b4891eafc47801ba88e13b6253cb9f2bada484e30739e987c912671b8b0f8ac5dc7b2763a7761aa944665092bdb1723485be85a234a5232eb29ee69e86f3a6b60f4b41aa4ec7d041d847c0bf71d884c08cf5bd9a420d84b717754297b7a29f12af60cfd965e700941168eb98031e5d4130853a8ebc6ecdc223b3d7d5147d356131782a9f90af0c2585355ed07790c4e30d9367f663502f7d966529dbc5d08bba6eb51c8bd5c3ff940df368ebb166c05d2d767b6b7b0b033912a49415790491f2ce74202a9499be90b8316305818bd9578f4246110f27cc2725f3e31b370b46217e80d50967ac20bcc82caef932f77b955fd9403d18f8e000070325ee3e01d727ca0fb6c5e224879cb742b0fd65ef7d78faf039d59522a4f8f62a182390c5e1f6f1bd2d6cadce5b753a8d232faacf4eae46349ad1cdf94ddf6b20a1c548a84f04ecf041bfe3a9c4dd87eaedf60d84952bc0d734758189360868246451460f925787cc3f90c2bd79b3d3114466a88007c6028fe8019cff1b23a3071089535423a9813b3b3bc4f5378c94a84885f864cc5391fd57386e90d85a51f0937d2a6d4d2a78231b91dd935ddb9bf86ebd5f0598f4f3bee834b52a5908e944e17cbd27e0692</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Password.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/1984/03/11/1984-03-11-ebook-optional-2/" rel="prev" title="Courses Notes II">
+      <i class="fa fa-chevron-left"></i> Courses Notes II
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/1984/03/11/1984-03-11-ebook-optional-1/" rel="next" title="Courses Notes I">
+      Courses Notes I <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Rec</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rec</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
