@@ -18,7 +18,7 @@
 <meta property="og:description" content="Midnight Sun CTF 2022Plaid CTF 2022Securinets CTF 2022 Crypto 的 write up">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-04-11T13:30:00.000Z">
-<meta property="article:modified_time" content="2022-04-11T13:40:39.685Z">
+<meta property="article:modified_time" content="2022-04-13T02:50:16.835Z">
 <meta property="article:author" content="Rec">
 <meta property="article:tag" content="AES">
 <meta property="article:tag" content="Matrix">
@@ -218,7 +218,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">739字</span>
+      <span class="post-count">753字</span>
     </span>
   </span>
 
@@ -249,6 +249,7 @@
 <p>因此分式的迭代操作即对应模p二维方阵的乘法(非常厉害)。此时问题转化为：</p>
 <p>$$<br>\left\{<br>    \begin{array}{}<br>        A=F^{x_0}G^{y_0} \\<br>        B=F^{x_1}G^{y_1} \\<br>    \end{array}<br>\right.<br>\Rightarrow C=F^{x_0+x_1}G^{y_0+y_1} \pmod{p}<br>$$</p>
 <p><a target="_blank" rel="noopener" href="http://www.infocomm-journal.com/txxb/article/2015/1000-436x/1000-436x-36-8-00061.shtml">遍历矩阵密码体制的安全性</a>浅搜索一下找到了一个(排版很奇怪的)文章，主要用于攻破PZZ1密码体制的计算性TEME问题，其核心算法处理的是以下问题：</p>
+<p>$$<br>公开参数：模p遍历矩阵P与Q，矩阵M<br>$$</p>
 <p>$$<br>已知A=P^{x}MQ^{y}，在x,y未知的情况下求解P’,Q’使得P’MQ’=A<br>$$</p>
 <p>对于本题中的二维矩阵情况，该算法思路如下：</p>
 <p>$$<br>\left\{<br>    \begin{array}{}<br>        F^{-x}=a_0I+a_1F \\<br>        G^{y} =a_2I+a_3G \\<br>        MG^{y}=AF^{-x} \\<br>    \end{array}<br>\right.<br>\pmod{p}<br>$$</p>
@@ -305,21 +306,6 @@
 	</div>
 
     
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf//" class="article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf/Write-Up//" class="article-tag-list-link color4">Write Up</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
     
 
@@ -530,14 +516,6 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">notes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">classical</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">stream</a>
               </li>
              
@@ -558,7 +536,23 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">RSA</a>
+                <a href="javascript:void(0)" class="js-tag color5">classical</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">notes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">blockcipher</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AES</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">DES</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -571,6 +565,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">codeforces</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">RSA</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -594,23 +592,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">nth-root</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Coppersmith</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">blockcipher</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AES</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">DES</a>
+                <a href="javascript:void(0)" class="js-tag color4">nth-root</a>
               </li>
              
               <li class="article-tag-list-item">
