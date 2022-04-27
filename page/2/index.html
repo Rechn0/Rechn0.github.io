@@ -5,7 +5,7 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://example.com">
+  <link rel="dns-prefetch" href="https://rechn0.github.io">
   <title>Rec|rEc|reC</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -16,7 +16,7 @@
   
   <meta property="og:type" content="website">
 <meta property="og:title" content="Rec|rEc|reC">
-<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:url" content="https://rechn0.github.io/page/2/index.html">
 <meta property="og:site_name" content="Rec|rEc|reC">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="Rec">
@@ -917,8 +917,78 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <br>Private.</br>
-    
+    <p>Notes for ISS.</p>
+<h2 id="Chapter-1"><a href="#Chapter-1" class="headerlink" title="Chapter 1"></a><strong>Chapter 1</strong></h2><h3 id="信息安全先验知识"><a href="#信息安全先验知识" class="headerlink" title="信息安全先验知识"></a><strong>信息安全先验知识</strong></h3><p><strong>信息安全层次：</strong> 系统安全、数据安全、内容安全、行为安全<br><strong>信息安全本质：</strong> 可信、可控</p>
+<p>信息系统：以提供特定信息处理功能，满足特定业务需求为主要目标的计算机应用系统。</p>
+<h3 id="信息系统安全面临的挑战"><a href="#信息系统安全面临的挑战" class="headerlink" title="信息系统安全面临的挑战"></a><strong>信息系统安全面临的挑战</strong></h3><p><strong>信息系统安全：</strong> 信息系统的硬件、软件、固件、网络不因偶然或恶意的原因遭受破坏、更改、访问、泄露，从而保证信息系统能够连续可靠地正常运行，提供稳定服务<br>信息系统基本安全属性：保密性、完整性、可用性<br>信息系统安全功能：物理安全（基础）、系统软件安全（必要条件）、网络安全、应用软件运行安全、安全管理<br>信息系统安全技术层次：基础安全（基础）、物理安全（前提）、操作系统安全（核心）、数据库安全、网络安全、应用系统安全</p>
+<p>安全风险：<br>*信息系统安全风险是绝对的，无论是否意识到都存在，与人的行为密切相关<br>由于信息系统存在缺陷、管理薄弱环节，导致受到来自外部或内部威胁可能遭受破坏或无法实现预期目标的可能性<br>信息系统脆弱性：电磁泄漏、芯片脆弱性、操作系统安全漏洞、数据库系统安全漏洞、通信协议安全漏洞、移动存储介质安全漏洞<br>人为安全威胁来源：物理攻击、网络攻击、恶意代码、安全管理</p>
+<p>信息系统安全问题的根源：<br>信息系统开放性、信息系统脆弱性、恶意入侵、人的脆弱性（社会工程）</p>
+<h2 id="Chapter-2"><a href="#Chapter-2" class="headerlink" title="Chapter 2"></a><strong>Chapter 2</strong></h2><h3 id="信息系统安全体系结构"><a href="#信息系统安全体系结构" class="headerlink" title="信息系统安全体系结构"></a><strong>信息系统安全体系结构</strong></h3><p>安全体系结构的要素：</p>
+<ul>
+<li>安全需求：要达到的安全服务要求，是制定安全策略、建立安全模型的前提</li>
+<li>安全策略：限定对象安全相关活动的规则集</li>
+<li>安全机制：实现安全需求与策略的具体措施</li>
+<li>安全模型：准确描述系统功能、结构的安全特性，反映一定的安全策略</li>
+</ul>
+<p>安全体系结构的类型：</p>
+<ul>
+<li>抽象体系：从描述需求开始，定义执行需求的功能函数，指导如何选用这些函数，以及如何将功能组织成整体的原理和相关的基本概念</li>
+<li>通用体系：基于抽象体系的决策来进行。在已有的安全功能和相关服务配置的基础上，定义系统分量类型及实现这些安全功能的有关安全机制</li>
+<li>逻辑体系：满足某个假设的需求集合的设计，显示一个通用体系应用于具体环境的基本情况</li>
+<li>特殊体系：在逻辑体系的基础上，表达系统分量、接口、开销等，表明如何把所有被选择的信息安全分量和机制结合起来以满足正在考虑的特殊系统的安全需求</li>
+</ul>
+<p>安全体系结构设计原则：</p>
+<ul>
+<li>从系统设计之初就考虑安全性：设计系统时，可以达到要求的方法多样，可能选择有安全缺陷的设计，只能添加安全功能补救措施，代价高昂。</li>
+<li>应该尽量考虑未来可能面临的安全需求：尽量将未来潜在安全属性考虑在内(实施系统安全增强：改进原有安全性或增加新的安全属性。安全性往往存在依赖无法改进。)，超前考虑安全需求，预设安全问题(不能太特殊具体，要从适当抽象层次理解安全问题，特别关注安全策略的制定)</li>
+<li>实现安全控制的极小化和隔离性：极小化模块复杂度与规模，考虑安全控制的隔离性。不是所有软件工程角度的有效设计规则都合适；安全机制应尽量简洁；数据隔离需要适度</li>
+<li>实施极小特权：执行某个操作时，主体除了能够获得必须权限外，不获得其他权限(硬件特权：do_fork(),sys_fork()；软件特权：管理员身份运行程序；最小特权技术：模块化编程、结构化设计、面向资源的访问控制等)</li>
+<li>安全功能结构化</li>
+<li>安全性能“友好”：不应对服从安全规则的用户造成功能影响；授权访问容易；限制访问容易；建立合理的默认规则</li>
+<li>安全性不依赖于保密</li>
+</ul>
+<h3 id="开放系统网络互联的安全体系结构"><a href="#开放系统网络互联的安全体系结构" class="headerlink" title="开放系统网络互联的安全体系结构"></a><strong>开放系统网络互联的安全体系结构</strong></h3><p><strong>ISO7498-2：</strong>将5类安全服务、8类安全机制放置在OSI7层协议中</p>
+<ul>
+<li>5类服务：认证、访问控制、数据保密性、数据完整性、不可否认性</li>
+<li>8类机制：加密、数字签名、访问控制、数据完整性、鉴别交换、通信业务填充、路由选择控制、公证</li>
+<li>7层协议：应用层、表示层、会话层、传输层、网络层、数据链路层、物理层</li>
+</ul>
+<h3 id="典型信息系统安全体系架构"><a href="#典型信息系统安全体系架构" class="headerlink" title="典型信息系统安全体系架构"></a><strong>典型信息系统安全体系架构</strong></h3><p><strong>基于协议的安全体系结构</strong></p>
+<p><strong>基于实体的安全体系结构</strong></p>
+<p><strong>基于对象的安全体系结构</strong></p>
+<h2 id="Chapter-3"><a href="#Chapter-3" class="headerlink" title="Chapter 3"></a><strong>Chapter 3</strong></h2><p>物理安全技术</p>
+<p>电磁干扰与电磁泄漏的区别</p>
+<p><strong>物理安全：</strong> 阻止非授权访问设施、设备和资源，以及保护人员和财产免受损害的环境和安全措施。<br>物理安全包括设备安全、环境安全、系统安全。</p>
+<ul>
+<li><strong>设备物理安全：</strong> 为保证信息系统安全可靠运行，降低或阻止人为或自然因素对硬件设备安全可靠运行带来的安全风险，对硬件设备及部件所采取的适当安全措施。<br>设备被盗与毁坏，电磁干扰，电磁泄露，声光泄露等</li>
+<li><strong>环境物理安全：</strong> 为保证信息系统安全可靠运行所提供的安全运行环境，使信息系统得到物理上的严密保护，从而降低或避免安全风险。<br>设备所处环境防火防水防盗等</li>
+<li><strong>系统物理安全：</strong> 保证信息系统安全可靠运行，降低或阻止人为或自然因素从物理层面对信息系统保密性、完整性、可用性带来的安全威胁，从系统角度采取适当的安全措施。</li>
+</ul>
+<h3 id="设备物理安全"><a href="#设备物理安全" class="headerlink" title="设备物理安全"></a><strong>设备物理安全</strong></h3><p>设备物理安全主要考虑设备被盗被毁、电磁干扰、电磁泄漏、声光泄露</p>
+<p><strong>设备被盗被毁：</strong> 信息系统设备小型化和便携化的发展趋势，增加了被盗被毁的风险。<br>防护：防盗，门禁</p>
+<p><strong>电磁干扰：</strong> 干扰源利用传导或辐射的方式，将电磁信号通过介质或空间耦合到电路上，从而对设备输出造成不良影响。分为外部电磁干扰（自然、人为），内部电磁干扰。<br>防护：屏蔽，滤波，接地</p>
+<p><strong>电磁泄漏：</strong> 设备工作时，其寄生电磁信号或谐波通过地线、电源线和信号线或空间向外扩散的现象<br>防护：低辐射设备(TEMPEST)，屏蔽，滤波，电磁干扰器</p>
+<p><strong>声光泄露：</strong> 光，声音等媒介泄露信息</p>
+<h3 id="TEMPEST技术"><a href="#TEMPEST技术" class="headerlink" title="TEMPEST技术"></a><strong>TEMPEST技术</strong></h3><p>研究内容：信息处理设备的电磁泄漏机理，有用电磁信息的提取技术，电磁泄漏防护技术，电磁泄漏测试技术与标准<br>主要技术措施：屏蔽技术，滤波技术，电磁干扰器，保证安全距离，低辐射技术</p>
+<h2 id="Chapter-4"><a href="#Chapter-4" class="headerlink" title="Chapter 4"></a><strong>Chapter 4</strong></h2><p>认证技术：身份认证(鉴别用户的身份)，消息认证(保证消息的完整性与不可否认性)<br>身份认证技术：<br>基本概念：标识、身份、认证/鉴别、凭证、身份服务<br>模型：Prover、Verifyier，第三方，通道，攻击者</p>
+<p><strong>基于密码技术身份认证</strong><br>对称密码算法：通信双方持有密钥，接收方通过验证发送方是否持有密钥来验证其身份。由于对称密钥无法唯一标识用户身份，一旦出现纠纷，无法进行裁决。<br>公钥密码算法：私钥又用户自己保存，可以唯一标识用户身份。无论在传输中还是仲裁中，都可以作为验证身份的依据。</p>
+<p><strong>基于生理特征身份认证</strong><br>生理特征需具有以下特性：普遍性(每个人都具有)，唯一性(不同的人特征不同)，可测量性(可以被计算机采集处理)，稳定性(不会随时间改变)，安全性(不容易被伪造模仿)</p>
+<p><strong>基于行为特征身份认证</strong><br>利用个人行为特征鉴别身份。用户行为特征后天养成，存在差异。</p>
+<h3 id="基于公钥密码技术的身份认证"><a href="#基于公钥密码技术的身份认证" class="headerlink" title="基于公钥密码技术的身份认证"></a><strong>基于公钥密码技术的身份认证</strong></h3><p>公钥密码技术应满足的要求：<br>用户产生一对密钥是容易的，公钥加密容易，私钥解密容易，公钥计算私钥不可行，公钥密文计算明文不可行，加密解密可互易</p>
+<p><strong>数字签名特征：</strong> 依赖性(签名内容与消息有关)，唯一性(签名适用发送方特有的消息)，易用性(产生签名比较容易)，易验证(识别验证签名比较容易)，抗伪造(伪造数字签名计算不可行)，可保存(保存数字签名的拷贝可信)</p>
+<p><strong>数字签名方法：</strong> 直接数字签名，仲裁数字签名</p>
+<p>直接数字签名：对整个消息签名，对哈希值签名（改进：对消息哈希值签名+对称密钥加密消息与签名，对称密钥加密消息+对密文哈希值签名）<br>签名有效性依赖于发送方私钥安全性</p>
+<p>仲裁数字签名：发送方将消息与签名发送给仲裁方，仲裁方经过检验后将检验结果加上时间戳，发送给接收方<br>改进：使用对称密钥对消息加密，消息保密性，利用接收方公钥加密对称密钥进行传递<br>需要可信第三方作为仲裁方</p>
+<p><strong>认证协议</strong> </p>
+<p>双向认证协议：相互认证协议，通信双方在确认对方身份的基础上交换会话密钥。保密性，及时性。<br>重放攻击：简单重放，可检测重放(攻击者在有效时限内重放有时间戳的消息)，不可检测重放(由于原始消息被拦截等，只有重放消息被接收)，不可修改的逆向重放(针对发送方的重放，对称密码体制中发送方无法分辨消息是发送or接收)<br><strong>应对重放攻击的方法：</strong><br>序列号：用于认证的消息后添加序列号，只接收序列号正确的消息。问题：需要记住所有通信最后的序列号，对于资源受限的实体尤其不可行。<br>时间戳：用于认证的消息后添加时间戳，只接收时间足够接近的消息。问题：时钟同步比较困难。<br>挑战/应答：首先接收方向发送方发出临时交互号(挑战码)，发送方发来的消息中包含该交互号。问题：不适合面向无连接的应用，比如邮件系统。</p>
+<p>单向认证协议：接收方通过验证发送方/仲裁者的签名结果，验证发送方身份<br>接收方利用数字证书E(PRas,IDa+T+PUa)判定发送方的公钥为现有合法公钥</p>
+<h2 id="Chapter-5"><a href="#Chapter-5" class="headerlink" title="Chapter 5"></a><strong>Chapter 5</strong></h2><p>访问控制</p>
+<p><strong>访问控制实现类别：</strong><br>接入访问控制：<br>资源访问控制：<br>网络端口与节点访问控制：</p>
+<h3 id="基于所有权的访问控制"><a href="#基于所有权的访问控制" class="headerlink" title="基于所有权的访问控制"></a><strong>基于所有权的访问控制</strong></h3><p>资源所有权：拥有管理权限，能够授予/撤销其他用户对资源的访问权限<br>自主访问控制DAC：资源所有者不仅拥有访问权限，而且能顾自主将权限授予其他主体<br>强制访问控制MAC：禁止普通用户管理资源的授权，授权权限收归系统</p>
+<p>DAC：严格策略、自由策略、属主权可转让策略<br>DAC粒度：单个用户、只有授权用户、阻止非授权用户访问敏感信息<br>DAC判定标准：</p>
+<p>MAC：保密性（下读上写）、完整性（上读下写）<br>BLP模型：强制安全访问规则、自主安全访问规则<br>三元组(s,o,m)：主体s能够以权限m访问客体o<br>Biba模型</p>
+<h3 id="基于角色的访问控制"><a href="#基于角色的访问控制" class="headerlink" title="基于角色的访问控制"></a><strong>基于角色的访问控制</strong></h3><hr>
+
     
 
     
@@ -1160,7 +1230,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2022 <a href="http://example.com/" target="_blank">Rec</a>
+    		&copy; 2022 <a href="https://rechn0.github.io/" target="_blank">Rec</a>
     	</div>
       	<div class="footer-right">
 			
@@ -1393,6 +1463,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">LLL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">ROCA</a>
               </li>
             
             <div class="clearfix"></div>
