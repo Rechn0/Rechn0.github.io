@@ -18,7 +18,7 @@
 <meta property="og:description" content="虎符 2022zer0pts 2022DASCTF 3月赛 Crypto 的 write up 以及杂题，一些 （其实一共没几题只是每场都看了而已，xs）">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-03-20T14:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-11T17:26:48.921Z">
+<meta property="article:modified_time" content="2022-04-25T05:10:14.541Z">
 <meta property="article:author" content="Rec">
 <meta property="article:tag" content="RSA">
 <meta property="article:tag" content="Coppersmith">
@@ -261,7 +261,7 @@
 <p>第二种思路构造格子，需要平衡范数，候补一下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env sage</span></span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> long_to_bytes, bytes_to_long</span><br><span class="line"><span class="keyword">from</span> task <span class="keyword">import</span> n,a,b,c</span><br><span class="line"></span><br><span class="line">load _coppersmith.sage</span><br><span class="line">R.&lt;dx,dy&gt;=PolynomialRing(Zmod(n))</span><br><span class="line">m=<span class="string">b&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(c)//<span class="number">2</span>):</span><br><span class="line">	x0,y0=<span class="built_in">int</span>(c[<span class="number">2</span>*i]),<span class="built_in">int</span>(c[<span class="number">2</span>*i+<span class="number">1</span>])</span><br><span class="line">	f=(x0+dx)**<span class="number">3</span>+a*(x0+dx)+b-(y0+dy)**<span class="number">2</span></span><br><span class="line">	bound=(<span class="number">1</span>&lt;&lt;<span class="number">128</span>,<span class="number">1</span>&lt;&lt;<span class="number">128</span>)</span><br><span class="line">	ans=small_roots(f,bound)[<span class="number">0</span>]</span><br><span class="line">	x,y=<span class="built_in">int</span>(x0+ans[<span class="number">0</span>]),<span class="built_in">int</span>(y0+ans[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">assert</span> (x**<span class="number">3</span>+a*x+b-y**<span class="number">2</span>)%n==<span class="number">0</span></span><br><span class="line">	m+=long_to_bytes(x^^x0)+long_to_bytes(y^^y0)</span><br><span class="line"><span class="built_in">print</span>(m)</span><br><span class="line"><span class="comment"># zer0pts&#123;th3_g00d_3ncrypti0n_c0m3s_fr0m_th3_g00d_curv3&#125;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="EDDH-re"><a href="#EDDH-re" class="headerlink" title="EDDH(re)"></a><strong>EDDH(re)</strong></h3><h2 id="DASCTF-3月赛"><a href="#DASCTF-3月赛" class="headerlink" title="DASCTF 3月赛"></a><strong>DASCTF 3月赛</strong></h2><h3 id="FlowerCipher"><a href="#FlowerCipher" class="headerlink" title="FlowerCipher"></a><strong>FlowerCipher</strong></h3><p>每一组L和R的大小关系都是明确的，辗转相除即可恢复所有状态</p>
+<h3 id="EDDH-re"><a href="#EDDH-re" class="headerlink" title="EDDH(re)"></a><strong>EDDH(re)</strong></h3><h2 id="DASCTF-x-SU-March"><a href="#DASCTF-x-SU-March" class="headerlink" title="DASCTF x SU March"></a><strong>DASCTF x SU March</strong></h2><h3 id="FlowerCipher"><a href="#FlowerCipher" class="headerlink" title="FlowerCipher"></a><strong>FlowerCipher</strong></h3><p>每一组L和R的大小关系都是明确的，辗转相除即可恢复所有状态</p>
 <p>对于字符的3次幂，4096是比较小的，不会对答案产生影响，爆破每一个字符即可</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env sage</span></span><br><span class="line"><span class="keyword">from</span> task <span class="keyword">import</span> L,R</span><br><span class="line">enc = [[L, R]]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">    L, R = R, L % R</span><br><span class="line">    enc.append([L, R])</span><br><span class="line">enc = enc[::-<span class="number">1</span>]</span><br><span class="line">tab=<span class="string">&#x27;0123456789abcdef&#x27;</span></span><br><span class="line">m=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">32</span>+<span class="number">1</span>):</span><br><span class="line">    res=enc[i][<span class="number">0</span>]//enc[i][<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">for</span> c <span class="keyword">in</span> tab:</span><br><span class="line">        t=res-<span class="built_in">ord</span>(c)**<span class="number">3</span></span><br><span class="line">        <span class="keyword">if</span> <span class="number">0</span>&lt;=t <span class="keyword">and</span> t&lt;=<span class="number">4096</span>:m+=c</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;DASCTF&#123;&#x27;</span>+m+<span class="string">&#x27;&#125;&#x27;</span>)</span><br><span class="line"><span class="comment"># DASCTF&#123;3e807b66ef26d38e671ddcbb9c108250&#125;</span></span><br></pre></td></tr></table></figure>
 
@@ -379,7 +379,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%8E%E7%AC%A6-2022"><span class="toc-number">1.</span> <span class="toc-text">虎符 2022</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RRSSAA"><span class="toc-number">1.1.</span> <span class="toc-text">RRSSAA</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zer0pts-2022"><span class="toc-number">2.</span> <span class="toc-text">zer0pts 2022</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Anti-Fermat"><span class="toc-number">2.1.</span> <span class="toc-text">Anti-Fermat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CurveCrypto-re"><span class="toc-number">2.2.</span> <span class="toc-text">CurveCrypto(re)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EDDH-re"><span class="toc-number">2.3.</span> <span class="toc-text">EDDH(re)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DASCTF-3%E6%9C%88%E8%B5%9B"><span class="toc-number">3.</span> <span class="toc-text">DASCTF 3月赛</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#FlowerCipher"><span class="toc-number">3.1.</span> <span class="toc-text">FlowerCipher</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#solomen%E2%80%99s-puzzle"><span class="toc-number">3.2.</span> <span class="toc-text">solomen’s puzzle</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Other-things"><span class="toc-number">4.</span> <span class="toc-text">Other things</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Copperstudy"><span class="toc-number">4.1.</span> <span class="toc-text">Copperstudy</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%8E%E7%AC%A6-2022"><span class="toc-number">1.</span> <span class="toc-text">虎符 2022</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RRSSAA"><span class="toc-number">1.1.</span> <span class="toc-text">RRSSAA</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zer0pts-2022"><span class="toc-number">2.</span> <span class="toc-text">zer0pts 2022</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Anti-Fermat"><span class="toc-number">2.1.</span> <span class="toc-text">Anti-Fermat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CurveCrypto-re"><span class="toc-number">2.2.</span> <span class="toc-text">CurveCrypto(re)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EDDH-re"><span class="toc-number">2.3.</span> <span class="toc-text">EDDH(re)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DASCTF-x-SU-March"><span class="toc-number">3.</span> <span class="toc-text">DASCTF x SU March</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#FlowerCipher"><span class="toc-number">3.1.</span> <span class="toc-text">FlowerCipher</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#solomen%E2%80%99s-puzzle"><span class="toc-number">3.2.</span> <span class="toc-text">solomen’s puzzle</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Other-things"><span class="toc-number">4.</span> <span class="toc-text">Other things</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Copperstudy"><span class="toc-number">4.1.</span> <span class="toc-text">Copperstudy</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -552,18 +552,6 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">RSA</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">FSR</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ctfshow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">classical</a>
               </li>
              
@@ -584,6 +572,10 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ctfshow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">blockcipher</a>
               </li>
              
@@ -600,7 +592,15 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">FSR</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MT19937</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">RSA</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -609,6 +609,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">ethernaut</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">nth-root</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -624,7 +628,7 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">nth-root</a>
+                <a href="javascript:void(0)" class="js-tag color2">Coppersmith</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -637,10 +641,6 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">LLL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Coppersmith</a>
               </li>
             
             <div class="clearfix"></div>
