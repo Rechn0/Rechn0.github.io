@@ -18,7 +18,7 @@
 <meta property="og:description" content="Notes for ISS. Chapter 1信息安全先验知识信息安全层次： 系统安全、数据安全、内容安全、行为安全信息安全本质： 可信、可控 信息系统：以提供特定信息处理功能，满足特定业务需求为主要目标的计算机应用系统。 信息系统安全面临的挑战信息系统安全： 信息系统的硬件、软件、固件、网络不因偶然或恶意的原因遭受破坏、更改、访问、泄露，从而保证信息系统能够连续可靠地正常运行，提供稳定服务信息">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="1984-03-11T02:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-27T09:08:36.713Z">
+<meta property="article:modified_time" content="2022-04-27T13:52:39.324Z">
 <meta property="article:author" content="Rec">
 <meta name="twitter:card" content="summary">
   
@@ -214,7 +214,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">3.2k字</span>
+      <span class="post-count">5k字</span>
     </span>
   </span>
 
@@ -223,7 +223,7 @@
     <span class="post-meta-item-icon">
       <i class="icon-book icon"></i>
       <span class="post-meta-item-text"> 阅读时长≈</span>
-      <span class="post-count">10分</span>
+      <span class="post-count">16分</span>
     </span>
   </span>
 </div>
@@ -299,12 +299,72 @@
 <p><strong>认证协议</strong> </p>
 <p>双向认证协议：相互认证协议，通信双方在确认对方身份的基础上交换会话密钥。保密性，及时性。<br>重放攻击：简单重放，可检测重放(攻击者在有效时限内重放有时间戳的消息)，不可检测重放(由于原始消息被拦截等，只有重放消息被接收)，不可修改的逆向重放(针对发送方的重放，对称密码体制中发送方无法分辨消息是发送or接收)<br><strong>应对重放攻击的方法：</strong><br>序列号：用于认证的消息后添加序列号，只接收序列号正确的消息。问题：需要记住所有通信最后的序列号，对于资源受限的实体尤其不可行。<br>时间戳：用于认证的消息后添加时间戳，只接收时间足够接近的消息。问题：时钟同步比较困难。<br>挑战/应答：首先接收方向发送方发出临时交互号(挑战码)，发送方发来的消息中包含该交互号。问题：不适合面向无连接的应用，比如邮件系统。</p>
 <p>单向认证协议：接收方通过验证发送方/仲裁者的签名结果，验证发送方身份<br>接收方利用数字证书E(PRas,IDa+T+PUa)判定发送方的公钥为现有合法公钥</p>
-<h2 id="Chapter-5"><a href="#Chapter-5" class="headerlink" title="Chapter 5"></a><strong>Chapter 5</strong></h2><p>访问控制</p>
-<p><strong>访问控制实现类别：</strong><br>接入访问控制：<br>资源访问控制：<br>网络端口与节点访问控制：</p>
-<h3 id="基于所有权的访问控制"><a href="#基于所有权的访问控制" class="headerlink" title="基于所有权的访问控制"></a><strong>基于所有权的访问控制</strong></h3><p>资源所有权：拥有管理权限，能够授予/撤销其他用户对资源的访问权限<br>自主访问控制DAC：资源所有者不仅拥有访问权限，而且能顾自主将权限授予其他主体<br>强制访问控制MAC：禁止普通用户管理资源的授权，授权权限收归系统</p>
-<p>DAC：严格策略、自由策略、属主权可转让策略<br>DAC粒度：单个用户、只有授权用户、阻止非授权用户访问敏感信息<br>DAC判定标准：</p>
-<p>MAC：保密性（下读上写）、完整性（上读下写）<br>BLP模型：强制安全访问规则、自主安全访问规则<br>三元组(s,o,m)：主体s能够以权限m访问客体o<br>Biba模型</p>
-<h3 id="基于角色的访问控制"><a href="#基于角色的访问控制" class="headerlink" title="基于角色的访问控制"></a><strong>基于角色的访问控制</strong></h3><hr>
+<h2 id="Chapter-5"><a href="#Chapter-5" class="headerlink" title="Chapter 5"></a><strong>Chapter 5</strong></h2><p><strong>访问控制：</strong> 对主体访问客体的能力或权力的限制<br><strong>访问控制要素：</strong></p>
+<ul>
+<li>主体：提出访问资源请求或某一动作的主动发起者，不一定是执行者。用户，进程，服务，设备等。</li>
+<li>客体：被访问资源的对象。被操作信息，资源，被调用程序等。</li>
+<li>引用监控器：监督主体客体兽群访问关系的部件，具体实现称为引用验证机制。(原则：自我保护能力，总能是出于活跃状态，设计得足够小)</li>
+<li>访问控制策略：主体对客体相关访问规则集合，定义了主体对客体的行为、客体对主体的条件约束。(原则：最小特权原则，最小泄露原则，多级安全原则：绝密TS、秘密S、机密C、限制RS、无级别U)</li>
+</ul>
+<p><strong>访问控制描述方法：</strong> (控制对象，访问类型)</p>
+<ul>
+<li>访问控制矩阵：(行：主体，列：客体)矩阵单元表示主体对客体的权限(Own，RWE等)。(缺点：查找与实现有难度，大量剩余空间浪费)</li>
+<li>访问控制列表(ACL)：(行：客体，列：具有权限的主体)每一行存储对该客体具有访问权限的主体以及各自权限。(缺点：较大规模信息系统ACL表项较多，修改困难，实现整个组织范围内一致的控制政策困难，不易实现复杂安全政策，不易实现最小权限原则)</li>
+<li>访问能力表(CL)：(行：主体，列：能够访问的客体)每一行存储该主体具有访问权限的客体以及各自权限。(优点：主体权限转移；缺点：客体信息泄露)</li>
+<li>授权关系表：(主体，客体，访问权限)每个表项描述一个授权关系</li>
+</ul>
+<p><strong>访问控制实现类别：</strong> 远程连接，访问资源，获取资源</p>
+<ul>
+<li>接入访问控制：控制哪些用户能登陆系统获取资源，控制入网时间、在哪台工作站入网</li>
+<li>资源访问控制：对客体整体资源信息的访问控制管理，包括：文件系统访问控制(文件目录访问控制，系统访问控制)，文件属性访问控制，信息内容访问控制</li>
+<li>网络端口与节点访问控制</li>
+</ul>
+<h3 id="基于所有权的访问控制"><a href="#基于所有权的访问控制" class="headerlink" title="基于所有权的访问控制"></a><strong>基于所有权的访问控制</strong></h3><p>资源所有权：拥有管理权限，能够授予/撤销其他用户对资源的访问权限</p>
+<p><strong>自主访问控制DAC：</strong> 资源所有者即为客体属主，可以根据自己医院将资源的访问权限子集直接/简介分发给其他主体或收回，不受任何安全策略限制，即在自主访问控制下(访问权限传递性，自由选择共享资源的主体)<br>*一种接入控制服务，常用操作系统和数据库管理系统<br>实现机制：访问控制矩阵，访问控制列表，访问能力表，权限关系表<br>自主访问控制策略：</p>
+<ul>
+<li>严格的：客体权限管理不能由非属主代理，客体访问需要属主合法授权</li>
+<li>自由的：属主可以让其他用户代理客体的权限管理，代理可转交</li>
+<li>属主权可以转让的：属主可以将属主权转让给其他用户<br>自主访问策略标准：</li>
+<li>文件和数据的所有权</li>
+<li>访问权限及批准<br>优点：灵活性，易用性，可扩展性<br>缺点：资源访问权限转移，带来安全隐患</li>
+</ul>
+<p><strong>强制访问控制MAC：</strong> 不再让普通用户管理资源的授权，即使是资源的创建者，由系统对资源进行统一的强制性控制，按照事先制定的规则决定主体对客体的访问权限。资源创建者也可能不具有访问权限。<br>*主要用于多层次安全级别系统，保护敏感数据<br>保密性规则(下读上写)，完整性规则(上读下写)<br>常见模型：BLP模型，Biba模型</p>
+<p><strong>BLP模型：</strong> 保护数据机密性，基本安全策略(下读上写)<br>安全访问规则：三元组(s,o,m)表示主体s以权限m访问客体o，访问矩阵M，安全级别函数f</p>
+<ul>
+<li>强制安全访问规则：简单安全性访问规则(下读)，*安全性访问规则(上写)</li>
+<li>自主安全访问规则：正在执行的访问权限必须存在于访问矩阵M，保证访问权限通过自主授权进行的<br>隐蔽通道问题：通过开放/关闭客体写权限，传递二进制信息，高级别线程泄露机密信息</li>
+</ul>
+<p><strong>Biba模型：</strong> 保护数据完整性(级别：关键级C，非常重要VI，重要I)<br>访问方式：修改modify，调用invoke，观察observe，执行execute<br>非自主安全访问规则：</p>
+<ul>
+<li>严格完整性规则：简单完整性条件(上读)，完整性*条件(下写)，调用条件(下调用)</li>
+<li>针对主体下限标记规则：完整性*条件(下写)，调用条件(下调用)，主体读时权限只降不升(缺点：对系统读写访问可能依赖于读写的顺序)</li>
+<li>针对客体下限标记规则：简单完整性条件(上读)，调用条件(下调用)，客体写时权限只降不升(缺点：允许不恰当的写降低客体完整性，且降低不可逆)</li>
+<li>下限标记完整性审计规则：简单完整性条件(上读)，调用条件(下调用)，主体上写时将被审计</li>
+<li>环规则：完整性*条件(下写)，调用条件(下调用)，主体可以读任意客体(缺点：阻止对更高或不可比完整性客体写，但仍可能进行不恰当写)<br>自主安全访问规则：访问控制列表，客体层次结构，环<br>优点：模型简单，可以与BLP模型结合<br>缺点：完整性级别标签确定困难，模型目的性不明确，与BLP模型结合困难</li>
+</ul>
+<h3 id="基于角色的访问控制"><a href="#基于角色的访问控制" class="headerlink" title="基于角色的访问控制"></a><strong>基于角色的访问控制</strong></h3><p>用户不与权限直接关联，通过赋予不同角色权限，再赋予用户角色来分配权限。<br>优点：不必在每次创建用户时都进行分配权限操作，只要分配角色即可，角色权限变更更少，简化用户权限管理，减少系统开销<br><strong>基本概念：</strong></p>
+<ul>
+<li>角色：可以完成一定事务的命名组</li>
+<li>事务：完成一定功能的过程</li>
+<li>角色继承：反映系统内部角色之间的权力责任关系</li>
+<li>角色分配与授权：角色授权给用户，即将角色分配给用户</li>
+<li>角色限制：角色互斥(角色与当前主体任何一个角色都不冲突，才可以被分配。静态互斥发生在角色分配阶段，动态互斥发生在会话选择阶段)，角色基数限制(指定角色的基数，一定时间内的角色数目上限)</li>
+<li>会话：用户通过建立会话激活角色，会话激活了用户授权角色集的某个子集，即活跃角色集</li>
+</ul>
+<p><strong>RBAC模型</strong></p>
+<ul>
+<li>RBAC0：基本模型。包含用户集、角色集、权限集、会话</li>
+<li>RBAC1：角色分级模型。增加角色层次的概念</li>
+<li>RBAC2：限制模型。增加约束规则的概念</li>
+<li>RBAC3：统一模型。包含1角色等级与2约束规则<br>RBAC2中的约束规则：对用户角色和角色权限的分配进行限制</li>
+<li>角色限制原则：最小权限</li>
+<li>职责分离：三权分立</li>
+<li>互斥角色：分配角色不互斥</li>
+<li>角色容量：角色数量不超过上限</li>
+<li>先决条件角色：获得某些角色前需满足一定条件</li>
+<li>时间频度限制：角色允许使用的时间和频度</li>
+</ul>
+<h3 id="基于任务的访问控制"><a href="#基于任务的访问控制" class="headerlink" title="基于任务的访问控制"></a><strong>基于任务的访问控制</strong></h3><hr>
 
     
 
@@ -378,7 +438,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-1"><span class="toc-number">1.</span> <span class="toc-text">Chapter 1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%85%88%E9%AA%8C%E7%9F%A5%E8%AF%86"><span class="toc-number">1.1.</span> <span class="toc-text">信息安全先验知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%9D%A2%E4%B8%B4%E7%9A%84%E6%8C%91%E6%88%98"><span class="toc-number">1.2.</span> <span class="toc-text">信息系统安全面临的挑战</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-2"><span class="toc-number">2.</span> <span class="toc-text">Chapter 2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.</span> <span class="toc-text">信息系统安全体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E6%94%BE%E7%B3%BB%E7%BB%9F%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94%E7%9A%84%E5%AE%89%E5%85%A8%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">开放系统网络互联的安全体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84"><span class="toc-number">2.3.</span> <span class="toc-text">典型信息系统安全体系架构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-3"><span class="toc-number">3.</span> <span class="toc-text">Chapter 3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E7%89%A9%E7%90%86%E5%AE%89%E5%85%A8"><span class="toc-number">3.1.</span> <span class="toc-text">设备物理安全</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TEMPEST%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">TEMPEST技术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-4"><span class="toc-number">4.</span> <span class="toc-text">Chapter 4</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%85%AC%E9%92%A5%E5%AF%86%E7%A0%81%E6%8A%80%E6%9C%AF%E7%9A%84%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81"><span class="toc-number">4.1.</span> <span class="toc-text">基于公钥密码技术的身份认证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-5"><span class="toc-number">5.</span> <span class="toc-text">Chapter 5</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%89%80%E6%9C%89%E6%9D%83%E7%9A%84%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="toc-number">5.1.</span> <span class="toc-text">基于所有权的访问控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%92%E8%89%B2%E7%9A%84%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="toc-number">5.2.</span> <span class="toc-text">基于角色的访问控制</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-1"><span class="toc-number">1.</span> <span class="toc-text">Chapter 1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%85%88%E9%AA%8C%E7%9F%A5%E8%AF%86"><span class="toc-number">1.1.</span> <span class="toc-text">信息安全先验知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%9D%A2%E4%B8%B4%E7%9A%84%E6%8C%91%E6%88%98"><span class="toc-number">1.2.</span> <span class="toc-text">信息系统安全面临的挑战</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-2"><span class="toc-number">2.</span> <span class="toc-text">Chapter 2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.</span> <span class="toc-text">信息系统安全体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E6%94%BE%E7%B3%BB%E7%BB%9F%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94%E7%9A%84%E5%AE%89%E5%85%A8%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">开放系统网络互联的安全体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84"><span class="toc-number">2.3.</span> <span class="toc-text">典型信息系统安全体系架构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-3"><span class="toc-number">3.</span> <span class="toc-text">Chapter 3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E7%89%A9%E7%90%86%E5%AE%89%E5%85%A8"><span class="toc-number">3.1.</span> <span class="toc-text">设备物理安全</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TEMPEST%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">TEMPEST技术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-4"><span class="toc-number">4.</span> <span class="toc-text">Chapter 4</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%85%AC%E9%92%A5%E5%AF%86%E7%A0%81%E6%8A%80%E6%9C%AF%E7%9A%84%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81"><span class="toc-number">4.1.</span> <span class="toc-text">基于公钥密码技术的身份认证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Chapter-5"><span class="toc-number">5.</span> <span class="toc-text">Chapter 5</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%89%80%E6%9C%89%E6%9D%83%E7%9A%84%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="toc-number">5.1.</span> <span class="toc-text">基于所有权的访问控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%92%E8%89%B2%E7%9A%84%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="toc-number">5.2.</span> <span class="toc-text">基于角色的访问控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E4%BB%BB%E5%8A%A1%E7%9A%84%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="toc-number">5.3.</span> <span class="toc-text">基于任务的访问控制</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -635,15 +695,19 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Slide attack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">LLL</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">ROCA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Slide Attack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RS Code</a>
               </li>
             
             <div class="clearfix"></div>
