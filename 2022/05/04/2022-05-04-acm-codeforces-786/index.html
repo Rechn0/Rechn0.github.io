@@ -6,16 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://rechn0.github.io">
-  <title>Archives: 2022 | Rec|rEc|reC</title>
+  <title>Codeforces Round#786 (Div. 3) | Rec|rEc|reC</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Rec|rEc|reC">
-<meta property="og:url" content="https://rechn0.github.io/archives/2022/page/2/index.html">
+  <meta name="description" content="Codeforces Round 786(Div. 3) 题解 邀请到大师为大家带来优质的python解答！（比哈特）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Codeforces Round#786 (Div. 3)">
+<meta property="og:url" content="https://rechn0.github.io/2022/05/04/2022-05-04-acm-codeforces-786/index.html">
 <meta property="og:site_name" content="Rec|rEc|reC">
+<meta property="og:description" content="Codeforces Round 786(Div. 3) 题解 邀请到大师为大家带来优质的python解答！（比哈特）">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-05-04T12:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-04T16:01:20.896Z">
 <meta property="article:author" content="Rec">
+<meta property="article:tag" content="codeforces">
 <meta name="twitter:card" content="summary">
   
   
@@ -177,453 +182,249 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-2022-05-04-acm-codeforces-786" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
   
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2022/02/17/2022-02-17-ctf-crypto-stream-2/" class="archive-article-date">
-        <time datetime="2022-02-17T09:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-17</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2022/02/17/2022-02-17-ctf-crypto-stream-2/">Stream &amp; PRNG II</a>
-	
+    <h1 class="article-title" itemprop="name">
+      Codeforces Round#786 (Div. 3)
     </h1>
   
 
 
-        <div class="article-info info-on-right">
-          
+  
+  
+        
+        <span id="busuanzi_container_page_pv" style='display:none' class="archive-article-date">
+              <i class="icon-smile icon"></i> 阅读数：<span id="busuanzi_value_page_pv"></span>次
+        </span>
+
+<a href="/2022/05/04/2022-05-04-acm-codeforces-786/" class="archive-article-date">
+        <time datetime="2022-05-04T12:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-04</time>
+</a>
+
+  
+  
+    
+<div style="margin-top:10px;">
+  <span class="post-time">
+    <span class="post-meta-item-icon">
+      <!-- fonts.scss -->
+      <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
+      <i class="icon-statistics"></i>
+      <span class="post-meta-item-text"> 字数统计:</span>
+      <span class="post-count">1.8k字</span>
+    </span>
+  </span>
+
+  <span class="post-time">
+    &nbsp; | &nbsp;
+    <span class="post-meta-item-icon">
+      <i class="icon-book icon"></i>
+      <span class="post-meta-item-text"> 阅读时长≈</span>
+      <span class="post-count">9分</span>
+    </span>
+  </span>
+</div>
+
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <p>Codeforces Round 786(Div. 3) 题解</p>
+<p>邀请到大师为大家带来优质的python解答！（比哈特）</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="A-Number-Transformation"><a href="#A-Number-Transformation" class="headerlink" title="A.Number Transformation"></a><strong>A.Number Transformation</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1674/problem/A">Problem</a></p>
+<p>寻找a，b满足$xb^a=y \rightarrow a=1,b=y//x$</p>
+<p>如果无法整除则无解</p>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> t,x,y;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;t;</span><br><span class="line">	<span class="keyword">while</span>(t--)</span><br><span class="line">	&#123;</span><br><span class="line">		cin&gt;&gt;x&gt;&gt;y;</span><br><span class="line">        <span class="keyword">if</span>(y%x)cout&lt;&lt;<span class="number">0</span>&lt;&lt;sep&lt;&lt;<span class="number">0</span>&lt;&lt;endl;</span><br><span class="line">        <span class="keyword">else</span> cout&lt;&lt;<span class="number">1</span>&lt;&lt;sep&lt;&lt;y/x&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>python3-version</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cnt=<span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line">i=<span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> i&lt;=cnt:</span><br><span class="line">    xy=<span class="built_in">input</span>().split()</span><br><span class="line">    x=<span class="built_in">int</span>(xy[<span class="number">0</span>])</span><br><span class="line">    y=<span class="built_in">int</span>(xy[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">if</span> y%x==<span class="number">0</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="number">1</span>,<span class="built_in">int</span>(y/x))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="number">0</span>,<span class="number">0</span>)</span><br><span class="line"> </span><br><span class="line">    i+=<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="B-Dictionary"><a href="#B-Dictionary" class="headerlink" title="B.Dictionary"></a><strong>B.Dictionary</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1674/problem/B">Problem</a></p>
+<p>查询串在字典中的位置，字典由2位小写字母排列组合（除去2位相等的情况）组成</p>
+<p>字典元素650个，枚举存储即可</p>
+<p><strong>cpp-version</strong></p>
+<p>python用久了，cpp的串操作忘却干净。另一方面这题用python应该舒适一点</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> t;</span><br><span class="line">string s;</span><br><span class="line"><span class="type">char</span> nmd[<span class="number">2</span>];</span><br><span class="line">map&lt;string,<span class="type">int</span>&gt; ma;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> cnt=<span class="number">0</span>;</span><br><span class="line">	<span class="built_in">rep</span>(i,<span class="number">0</span>,<span class="number">25</span>)<span class="built_in">rep</span>(j,<span class="number">0</span>,<span class="number">25</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		nmd[<span class="number">0</span>]=<span class="string">&#x27;a&#x27;</span>+i,nmd[<span class="number">1</span>]=<span class="string">&#x27;a&#x27;</span>+j;</span><br><span class="line">		<span class="keyword">if</span>(i==j)<span class="keyword">continue</span>;</span><br><span class="line">		s=nmd;</span><br><span class="line">		ma[s]=++cnt;</span><br><span class="line">	&#125;</span><br><span class="line">	cin&gt;&gt;t;</span><br><span class="line">	<span class="keyword">while</span>(t--)</span><br><span class="line">	&#123;</span><br><span class="line">		cin&gt;&gt;s;</span><br><span class="line">		cout&lt;&lt;ma[s]&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>python3-version</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cnt=<span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line">i=<span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> i&lt;=cnt:</span><br><span class="line">    ab=<span class="built_in">input</span>()</span><br><span class="line">    a=ab[<span class="number">0</span>]</span><br><span class="line">    b=ab[<span class="number">1</span>]</span><br><span class="line"> </span><br><span class="line">    one=(<span class="built_in">ord</span>(a)-<span class="built_in">ord</span>(<span class="string">&#x27;a&#x27;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">ord</span>(b)&gt;<span class="built_in">ord</span>(a):</span><br><span class="line">        two=<span class="built_in">ord</span>(b)-<span class="built_in">ord</span>(<span class="string">&#x27;a&#x27;</span>)-<span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        two=<span class="built_in">ord</span>(b)-<span class="built_in">ord</span>(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">print</span>(one*<span class="number">25</span>+two+<span class="number">1</span>)</span><br><span class="line"> </span><br><span class="line">    i+=<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="C-Infinite-Replacement"><a href="#C-Infinite-Replacement" class="headerlink" title="C.Infinite Replacement"></a><strong>C.Infinite Replacement</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1674/problem/C">Problem</a></p>
+<p>长为len的s串由字符a组成，可将s串中字符a替换成t串。考虑如下三种情况：</p>
+<ul>
+<li>t串不包含字符a。此时s串每一位均有替换or不替换两种状态，答案为$2^{len}$</li>
+<li>t串仅包含字符a。此时答案为1</li>
+<li>t串包含且不仅包含字符a。此时可以进行无穷次替换，答案为-1</li>
+</ul>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> t,ans;</span><br><span class="line">string s1,s2;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;t;</span><br><span class="line">	<span class="keyword">while</span>(t--)</span><br><span class="line">	&#123;</span><br><span class="line">		cin&gt;&gt;s1&gt;&gt;s2;</span><br><span class="line">		<span class="type">bool</span> f=<span class="number">0</span>;</span><br><span class="line">		<span class="built_in">rep</span>(i,<span class="number">0</span>,s2.<span class="built_in">length</span>()<span class="number">-1</span>)f|=s2[i]==<span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">		<span class="keyword">if</span>(f==<span class="number">0</span>)ans=(<span class="number">1ll</span>&lt;&lt;s1.<span class="built_in">length</span>());</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(s2.<span class="built_in">length</span>()==<span class="number">1</span>)ans=<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> ans=<span class="number">-1</span>;</span><br><span class="line">		cout&lt;&lt;ans&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>python3-version</strong></p>
+<p>python的一些功能确实很舒适</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">cnt=<span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line">i=<span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> i&lt;=cnt:</span><br><span class="line">    s=<span class="built_in">input</span>()</span><br><span class="line">    t=<span class="built_in">input</span>()</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> t==<span class="string">&#x27;a&#x27;</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;a&#x27;</span> <span class="keyword">in</span> t:</span><br><span class="line">        <span class="built_in">print</span>(-<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="built_in">pow</span>(<span class="number">2</span>,<span class="built_in">len</span>(s)))</span><br><span class="line"> </span><br><span class="line">    i+=<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="D-A-B-C-Sort"><a href="#D-A-B-C-Sort" class="headerlink" title="D.A-B-C Sort"></a><strong>D.A-B-C Sort</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1674/problem/D">Problem</a></p>
+<p>考虑题目操作的性质，可以发现本质上只有相邻两位发生交换的可能。准确来说，从A序列变为C序列，只有$(n,n-1),(n-2,n-3),…,(2,1) or (3,2),(1)$的位置对可能发生互换</p>
+<p>以$a_{n-2},a_{n-3}$举例：</p>
+<p>当从A中拿出$a_{n-2},a_{n-3}$放入B时，由于B中存在偶数个元素，故一定会放在$a_n,a_{n-1}$中间，其顺序任意，此后的$a_{n-4},a_{n-5}…$一定会放在$a_{n-2},a_{n-3}$的中间</p>
+<p>根据这一特点，可以发现在从B中拿取元素放入C时，当拿到$a_{n-2},a_{n-3}$时，$a_{n-4},a_{n-5}…$一定已经被拿出。且此时B中元素数为偶数，故拿取$a_{n-2},a_{n-3}$的顺序可以任意，可能产生互换</p>
+<p>因此只要判断排序后的不降序列能否由原序列使用该操作变换得到即可</p>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> t,n,a[N],b[N];</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;t;</span><br><span class="line">	<span class="keyword">while</span>(t--)</span><br><span class="line">	&#123;</span><br><span class="line">		cin&gt;&gt;n;</span><br><span class="line">		<span class="built_in">rep</span>(i,<span class="number">1</span>,n)</span><br><span class="line">		&#123;</span><br><span class="line">			cin&gt;&gt;a[i];</span><br><span class="line">			b[i]=a[i];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">sort</span>(b+<span class="number">1</span>,b+n+<span class="number">1</span>);</span><br><span class="line">		<span class="type">int</span> flag=<span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> i=n;i&gt;<span class="number">1</span>;i-=<span class="number">2</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(a[i]==b[i]&amp;&amp;a[i<span class="number">-1</span>]==b[i<span class="number">-1</span>])<span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">if</span>(a[i]==b[i<span class="number">-1</span>]&amp;&amp;a[i<span class="number">-1</span>]==b[i])<span class="keyword">continue</span>;</span><br><span class="line">			flag=<span class="literal">false</span>;<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(flag)cout&lt;&lt;<span class="string">&quot;Yes&quot;</span>&lt;&lt;endl;</span><br><span class="line">		<span class="keyword">else</span> cout&lt;&lt;<span class="string">&quot;No&quot;</span>&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>python3-version</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">cnt=<span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line">j=<span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> j&lt;=cnt:</span><br><span class="line">    l=<span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line">    tmp=<span class="built_in">input</span>().split()</span><br><span class="line">    <span class="keyword">if</span> l==<span class="number">1</span> <span class="keyword">or</span> l==<span class="number">2</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;YES&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        a=[]</span><br><span class="line">        <span class="keyword">for</span> aa <span class="keyword">in</span> tmp:</span><br><span class="line">            a.append(<span class="built_in">int</span>(aa))</span><br><span class="line"> </span><br><span class="line">        f=<span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(a)%<span class="number">2</span>==<span class="number">0</span>:</span><br><span class="line">            i = <span class="built_in">len</span>(a) - <span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> i&gt;=<span class="number">3</span>:</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">min</span>(a[i],a[i-<span class="number">1</span>])&lt;<span class="built_in">max</span>(a[i-<span class="number">2</span>],a[i-<span class="number">3</span>]):</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">&#x27;NO&#x27;</span>)</span><br><span class="line">                    f=<span class="number">1</span></span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">                i-=<span class="number">2</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            first=a.pop(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">if</span> first&gt;<span class="built_in">min</span>(a[<span class="number">0</span>],a[<span class="number">1</span>]):</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;NO&#x27;</span>)</span><br><span class="line">                f=<span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i = <span class="built_in">len</span>(a) - <span class="number">1</span></span><br><span class="line">                <span class="keyword">while</span> i &gt;= <span class="number">3</span>:</span><br><span class="line">                    <span class="keyword">if</span> <span class="built_in">min</span>(a[i], a[i - <span class="number">1</span>]) &lt; <span class="built_in">max</span>(a[i - <span class="number">2</span>], a[i - <span class="number">3</span>]):</span><br><span class="line">                        <span class="built_in">print</span>(<span class="string">&#x27;NO&#x27;</span>)</span><br><span class="line">                        f = <span class="number">1</span></span><br><span class="line">                        <span class="keyword">break</span></span><br><span class="line">                    i -= <span class="number">2</span></span><br><span class="line"> </span><br><span class="line">        <span class="keyword">if</span> f==<span class="number">0</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;YES&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    j+=<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="E-Breaking-the-Wall"><a href="#E-Breaking-the-Wall" class="headerlink" title="E.Breaking the Wall"></a><strong>E.Breaking the Wall</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1674/problem/E">Problem</a></p>
+<p>武器对$x$位置的一次攻击可以对x位置造成2伤害，对$x-1、x+1$位置造成1伤害(如果存在的话)，题目要求打穿两个洞需要的最少攻击次数</p>
+<p>分析可知，打穿两个洞的答案可能由以下情况得出：</p>
+<ul>
+<li>独立攻击$x_1,x_2$位置，直到打穿。击打最弱的两块即可(两块相邻的情况会在下面包含)</li>
+<li>攻击某个$x$位置，使得$x-1,x+1$位置被打穿。枚举每个x即可</li>
+<li>攻击位置$x,x+1$各若干次，直到打穿。</li>
+</ul>
+<p>对于第三种情况，假设两个位置中数值高者为a，低者为b：</p>
+<ul>
+<li>如果$a&gt;2b$，则攻击a的过程中，b会被击穿，因此此时答案即为将a击穿的开销。</li>
+<li>如果$a \leq 2b$，则对a攻击$t=a-b$次之后，两者会相等。此时对a、b各攻击一次，两者会受到3的伤害。进行若干次之后会出现2、1、0的情况，简单分析即可得答案对应2、1、0</li>
+</ul>
+<p>然后模拟就好了，需要考虑向上取整的问题</p>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> n,a[N];</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(a&lt;b)<span class="built_in">swap</span>(a,b);</span><br><span class="line">	<span class="keyword">if</span>(a&gt;=<span class="number">2</span>*b)<span class="keyword">return</span> (a+<span class="number">1</span>)/<span class="number">2</span>;</span><br><span class="line">	<span class="type">int</span> t=b-(a-b);</span><br><span class="line">	<span class="keyword">return</span> (a-b)+<span class="number">2</span>*(t/<span class="number">3</span>)+t%<span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;n;</span><br><span class="line">	<span class="built_in">rep</span>(i,<span class="number">1</span>,n)cin&gt;&gt;a[i];</span><br><span class="line">	<span class="type">int</span> ans=INF;</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">rep</span>(i,<span class="number">1</span>,n<span class="number">-1</span>)ans=<span class="built_in">min</span>(ans,<span class="built_in">func</span>(a[i],a[i+<span class="number">1</span>]));</span><br><span class="line">	<span class="keyword">if</span>(n&gt;<span class="number">2</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">rep</span>(i,<span class="number">2</span>,n<span class="number">-1</span>)ans=<span class="built_in">min</span>(ans,<span class="built_in">min</span>(a[i<span class="number">-1</span>],a[i+<span class="number">1</span>])+(<span class="built_in">max</span>(a[i<span class="number">-1</span>],a[i+<span class="number">1</span>])-<span class="built_in">min</span>(a[i<span class="number">-1</span>],a[i+<span class="number">1</span>])+<span class="number">1</span>)/<span class="number">2</span>);</span><br><span class="line">        </span><br><span class="line">		<span class="built_in">sort</span>(a+<span class="number">1</span>,a+n+<span class="number">1</span>);</span><br><span class="line">		ans=<span class="built_in">min</span>(ans,(a[<span class="number">1</span>]+<span class="number">1</span>)/<span class="number">2</span>+(a[<span class="number">2</span>]+<span class="number">1</span>)/<span class="number">2</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;ans&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="F-Desktop-Rearrangement"><a href="#F-Desktop-Rearrangement" class="headerlink" title="F.Desktop Rearrangement"></a><strong>F.Desktop Rearrangement</strong></h2><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1674/problem/F">Problem</a></p>
+<p>赛后复现，赛时时间不太够</p>
+<p>桌面整理规则与常见的电脑图标放置规则一致，将一个图标移动到任意位置视为一次操作，求每次修改(增加or删除图标)后整理桌面的最小操作次数</p>
+<p>其实将桌面拉伸成一维更好理解，最后整理好的桌面图标会占据连续前缀，故没有处于这个区域的图标会消耗一次操作进行整理</p>
+<p>对于每次修改操作，只需维护图标数量，以及修改处、边界处对答案产生的影响即可</p>
+<p><strong>cpp-version</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> q,n,m,cnt,ans;</span><br><span class="line"><span class="type">char</span> tab[N][N],que[N*N];</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">Main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;n&gt;&gt;m&gt;&gt;q;</span><br><span class="line">	<span class="built_in">rep</span>(i,<span class="number">1</span>,n)cin&gt;&gt;tab[i]+<span class="number">1</span>;</span><br><span class="line">	<span class="built_in">rep</span>(i,<span class="number">1</span>,n)<span class="built_in">rep</span>(j,<span class="number">1</span>,m)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(tab[i][j]==<span class="string">&#x27;*&#x27;</span>)++cnt;</span><br><span class="line">		que[(j<span class="number">-1</span>)*n+i]=tab[i][j];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">rep</span>(i,cnt+<span class="number">1</span>,n*m)<span class="keyword">if</span>(que[i]==<span class="string">&#x27;*&#x27;</span>)++ans;</span><br><span class="line">	<span class="keyword">while</span>(q--)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">int</span> x,y;cin&gt;&gt;x&gt;&gt;y;</span><br><span class="line">		<span class="type">int</span> now=(y<span class="number">-1</span>)*n+x;</span><br><span class="line">		<span class="keyword">if</span>(que[now]==<span class="string">&#x27;*&#x27;</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			que[now]=<span class="string">&#x27;.&#x27;</span>;</span><br><span class="line">			<span class="keyword">if</span>(now&gt;cnt)--ans;</span><br><span class="line">			<span class="keyword">if</span>(now!=cnt&amp;&amp;que[cnt]==<span class="string">&#x27;*&#x27;</span>)++ans;</span><br><span class="line">			--cnt;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			que[now]=<span class="string">&#x27;*&#x27;</span>;</span><br><span class="line">			++cnt;</span><br><span class="line">			<span class="keyword">if</span>(now&gt;cnt)++ans;</span><br><span class="line">			<span class="keyword">if</span>(now!=cnt&amp;&amp;que[cnt]==<span class="string">&#x27;*&#x27;</span>)--ans;</span><br><span class="line">		&#125;</span><br><span class="line">		cout&lt;&lt;ans&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+
+    
+
+    
+
+    
+    <div class="declare"> 
+      <ul class="post-copyright">
+        <li>
+          <strong>本文作者：</strong>
+          Rec
+        </li>
+        <li>
+          <strong>本文链接：</strong>
+          <a href="https://rechn0.github.io/2022/05/04/2022-05-04-acm-codeforces-786/" title="Codeforces Round#786 (Div. 3)" target="_blank">https://rechn0.github.io/2022/05/04/2022-05-04-acm-codeforces-786/</a>
+        </li>
+        
+      </ul>
+    </div>
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">stream</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">PRNG</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">FSR</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">MT19937</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">codeforces</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+    
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/ctf//" class="article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf/crypto//" class="article-tag-list-link color2">crypto</a>
+        			<a href="/categories/acm//" class="article-tag-list-link color4">acm</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2022/02/07/2022-02-07-ctf-crypto-blockcipher/" class="archive-article-date">
-        <time datetime="2022-02-07T06:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-07</time>
-</a>
 
+
+<nav id="article-nav">
+  
+  
+    <a href="/2022/04/11/2022-04-11-ctf-wp-recently/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Recently Write Ups -April</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2022/02/07/2022-02-07-ctf-crypto-blockcipher/">Blockcipher Crypto</a>
-	
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">blockcipher</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AES</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">DES</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf//" class="article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf/crypto//" class="article-tag-list-link color2">crypto</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Number-Transformation"><span class="toc-number">1.</span> <span class="toc-text">A.Number Transformation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-Dictionary"><span class="toc-number">2.</span> <span class="toc-text">B.Dictionary</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Infinite-Replacement"><span class="toc-number">3.</span> <span class="toc-text">C.Infinite Replacement</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#D-A-B-C-Sort"><span class="toc-number">4.</span> <span class="toc-text">D.A-B-C Sort</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#E-Breaking-the-Wall"><span class="toc-number">5.</span> <span class="toc-text">E.Breaking the Wall</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#F-Desktop-Rearrangement"><span class="toc-number">6.</span> <span class="toc-text">F.Desktop Rearrangement</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2022/02/07/2022-02-07-ctf-wp-DiceCTF2022/" class="archive-article-date">
-        <time datetime="2022-02-07T06:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-07</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2022/02/07/2022-02-07-ctf-wp-DiceCTF2022/">DiceCTF2022 Write Up</a>
-	
-    </h1>
-  
+        
+    </div>
+</aside>
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">FSR</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">RSA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf//" class="article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf/Write-Up//" class="article-tag-list-link color4">Write Up</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2022/01/16/2022-01-16-ctf-crypto-prac-ctfshow/" class="archive-article-date">
-        <time datetime="2022-01-16T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-16</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2022/01/16/2022-01-16-ctf-crypto-prac-ctfshow/">CTFshow Crypto</a>
-	
-    </h1>
-  
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ctfshow</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf//" class="article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf/crypto//" class="article-tag-list-link color2">crypto</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2022/01/14/2022-01-14-ctf-crypto-stream-1/" class="archive-article-date">
-        <time datetime="2022-01-14T09:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-14</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2022/01/14/2022-01-14-ctf-crypto-stream-1/">Stream &amp; PRNG I</a>
-	
-    </h1>
-  
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">stream</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">PRNG</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LCG</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">RC4</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf//" class="article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf/crypto//" class="article-tag-list-link color2">crypto</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2022/01/14/2022-01-14-ctf-crypto-classical/" class="archive-article-date">
-        <time datetime="2022-01-14T08:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-14</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2022/01/14/2022-01-14-ctf-crypto-classical/">Classical Crypto</a>
-	
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">classical</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf//" class="article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ctf/crypto//" class="article-tag-list-link color2">crypto</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2022/01/13/2022-01-13-notes/" class="archive-article-date">
-        <time datetime="2022-01-13T14:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-13</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2022/01/13/2022-01-13-notes/">Intro-Finally u found me.</a>
-	
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">notes</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2022/">Prev Page</a><a class="page-number" href="/archives/2022/">1</a><span class="page-number current">2</span>
-    </nav>
-  
 
 
           </div>
@@ -664,8 +465,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
