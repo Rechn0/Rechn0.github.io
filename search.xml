@@ -58,6 +58,135 @@
 ]]></content>
   </entry>
   <entry>
+    <title>XCTF-ACTF 2025</title>
+    <url>/2025/04/27/2025-actf/</url>
+    <content><![CDATA[<p>Time: 2025.04.26-27 (online)</p>
+<p>I played XCTF-ACTF 2025 with N0wayBack this weekend, and we got 1st for the first time. My teammates are sooooo strong orz</p>
+<p><img src="/2025/04/27/2025-actf/images/rank.png" alt="rank.png"></p>
+<p>I with @糖醋小鸡块 solved all 4 crypto challenges. All of them are high-quality, and we actually found many interesting unintended solutions XD</p>
+<h2 id="easy-log-12-solves"><a href="#easy-log-12-solves" class="headerlink" title="easy_log (12 solves)"></a>easy_log (12 solves)</h2><blockquote>
+<ul>
+<li><a href="eazy_log/task.py">task.py</a></li>
+</ul>
+</blockquote>
+<p>Yet another DLP challenge. </p>
+<h3 id="Our-Solution"><a href="#Our-Solution" class="headerlink" title="Our Solution"></a>Our Solution</h3><p>At first glance this’s a classic curve problem, so we need to recover the curve first. We (@糖醋小鸡块) tried <a href="https://affine.group/writeup/2024-12-hxp-AlcoholicVariety">an interesting method</a> from @hellman. In this method we take many points as inputs and try to solve the curve parameters by polynomial interpolation. </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> product</span><br><span class="line">R, (x, y) = GF(p)[<span class="string">&quot;x&quot;</span>, <span class="string">&quot;y&quot;</span>].objgens() <span class="comment"># try on each p, since we need to compute kernel basis</span></span><br><span class="line">xt, yt = <span class="number">2</span>, <span class="number">2</span></span><br><span class="line"></span><br><span class="line">monomials = [x**i*y**j <span class="keyword">for</span> i, j <span class="keyword">in</span> product(<span class="built_in">range</span>(xt+<span class="number">1</span>), <span class="built_in">range</span>(yt+<span class="number">1</span>))]</span><br><span class="line">kG2 = [double_and_add(randint(<span class="number">0</span>, p), G2, p) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(monomials)+<span class="number">1</span>)]</span><br><span class="line">A = matrix(GF(p), [[monomial(x, y) <span class="keyword">for</span> monomial <span class="keyword">in</span> monomials] <span class="keyword">for</span> x, y <span class="keyword">in</span> kG2])</span><br><span class="line">coefs = A.right_kernel().basis()</span><br><span class="line"><span class="keyword">for</span> coef <span class="keyword">in</span> coefs:</span><br><span class="line">	f = <span class="built_in">sum</span>([fi*monomial <span class="keyword">for</span> fi, monomial <span class="keyword">in</span> <span class="built_in">zip</span>(coef, monomials)])</span><br><span class="line">	<span class="built_in">print</span>(coef)</span><br><span class="line">	<span class="built_in">print</span>(f)</span><br></pre></td></tr></table></figure>
+
+<p>And this is a universal method, you just need to pre-assume the monomials. We managed to recover the curve as $x^2 + x \cdot y - y^2 + 1 &#x3D; 0$ with <code>G2</code>, but IT DIDN’T WORK ON <code>G1</code>! (And this will be discussed later)</p>
+<p>Now this is a quadratic curve (a conic curve actually), and the order of the curve on $\mathbb{F_p}$ should be $p^2-1$. With some tests, this worked on both <code>G1</code> and <code>G2</code>. Based on this we can implement a PH-BSGS style attack to solve DLP.</p>
+<p>For the first part, we factor the given $n$.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">n = <span class="number">0x231d5fa471913e79facfd95e9b874e2d499def420e0914fab5c9f87e71c2418d1194066bd8376aa8f02ef35c1926f73a46477cd4a88beae89ba575bb3e1b04271426c6706356dd8cd9aa742d7ad0343f8939bfd2110d45122929d29dc022da26551e1ed7000</span></span><br><span class="line">ps = [</span><br><span class="line">    (<span class="number">2</span>, <span class="number">12</span>),</span><br><span class="line">    (<span class="number">5</span>, <span class="number">4</span>),</span><br><span class="line">    (<span class="number">15271784978279</span>, <span class="number">1</span>),</span><br><span class="line">    (<span class="number">10714146599832792643</span>, <span class="number">1</span>), </span><br><span class="line">    (<span class="number">222696442740376752383</span>, <span class="number">3</span>), </span><br><span class="line">    (<span class="number">899889935029682511225429150065010811552017719005924136271659168643090431</span>, <span class="number">1</span>),</span><br><span class="line">    (<span class="number">899889935029682511225429150065010811552017719005924136271659166808024139</span>, <span class="number">1</span>)</span><br><span class="line">]</span><br><span class="line"><span class="keyword">assert</span> n == prod([p**i <span class="keyword">for</span> p, i <span class="keyword">in</span> ps])</span><br></pre></td></tr></table></figure>
+
+<p>It turns out each factor is appropriate for the attack (note that the order on some certain primes are $p-1$). To recover the secret (8*68&#x3D;544bit), we also used p-adic field attack on <code>(222696442740376752383, 3)</code>. Somehow I could only solve it on $p^2$ instead of $p^3$, but that was enough.</p>
+<p>For the second part, we just constructed a smooth prime with several 16bit subgroups. </p>
+<blockquote>
+<p>solution: <a href="eazy_log/exp.py">exp.py</a></p>
+</blockquote>
+<p>Definitely not a pleasing code, but we have a worse one during the contest.</p>
+<h3 id="Some-Additional-Thoughts"><a href="#Some-Additional-Thoughts" class="headerlink" title="Some Additional Thoughts"></a>Some Additional Thoughts</h3><p>So far it’s enough to solve the challenge. We don’t need the curve itself, we just need the order actually. But it’s really weird that <code>G1</code> is not on the curve (not on any curve ig, considering @hellman’s method is universal), but has the same structure.</p>
+<p>After the contest I got the answer from @∝: this is not a curve operation but a matrix operation. </p>
+<p>$$<br>\begin{bmatrix}<br>y_3-x_3 &amp; x_3 \\<br>x_3 &amp; y_3<br>\end{bmatrix}&#x3D;<br>\begin{bmatrix}<br>y_2-x_2 &amp; x_2 \\<br>x_2 &amp; y_2<br>\end{bmatrix}<br>\cdot<br>\begin{bmatrix}<br>y_1-x_1 &amp; x_1 \\<br>x_1 &amp; y_1<br>\end{bmatrix}<br>$$</p>
+<p>This forms a multiplication matrix group. And when the elements satisfy the curve equation, it becomes isomorphic to the addition curve group. But the operation itself doesn’t need the element to be a curve point. And now it’s quite clear. We can analyze the eigenvalues or the group itself to get the order. With the eigenvalues we can also map the elements onto $\mathbb{F_p^2}$, gaining some optimization to solve DLP.</p>
+<p>Since this is not my first time to connect matrixs and quadratic curves, I may find some time to give a comprehensive learning these days. And we still need some math works on how to solve such DLP on $p^i$.</p>
+<h2 id="AAALLL-8-solves"><a href="#AAALLL-8-solves" class="headerlink" title="AAALLL (8 solves)"></a>AAALLL (8 solves)</h2><blockquote>
+<ul>
+<li><a href="AAALLL/task.sage">task.sage</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to find a $n$-degree small ternary polynomial $f$, with $\frac{n}{2}$ pairs of $(x_i, f(x_i))$ on $\mathbb{F_p}$. The special part is that $x_i$ is randomly picked from the roots of $x^n+1$. Here $n&#x3D;450$ and $pbit&#x3D;32$.</p>
+<h3 id="Solution-1-Unintended"><a href="#Solution-1-Unintended" class="headerlink" title="Solution 1 (Unintended)"></a>Solution 1 (Unintended)</h3><p>A direct way is to construct the primal lattice and solve $f$ with <code>flatter</code>. The main reason this worked is $pbit&#x3D;32$ is a little big for $n&#x3D;450$, and it’s enough to solve uSVP under BKZ-2 bound. One can pick a subset of the instances to get a better perfomance.</p>
+<h3 id="Solution-2-Intended"><a href="#Solution-2-Intended" class="headerlink" title="Solution 2 (Intended)"></a>Solution 2 (Intended)</h3><p>The intended solution captures the special structure of the lattice. Since $x_i$ is a root of $x^n+1$, we’re actually dealing with a subset of Vandermonde matrix columns. This is called Partial Vandermonde Knapsack Problem, and you can find a optimized solution in <a href="https://eprint.iacr.org/2024/366">this</a> from Eurocrypt 2024.</p>
+<p><img src="/2025/04/27/2025-actf/images/pvkp.png" alt="pvkp.png"></p>
+<p>To make it clear, we have $x^n + 1 &#x3D; 0 \rightarrow \frac{1}{x} &#x3D; -x^{n-1} \pmod{p}$, and this builds certain connections between $f(x)$ and $f(\frac{1}{x})$. For instance, we have $f(x) &#x3D; a_{n-1} \cdot x^{n-1} + …$ and $f(\frac{1}{x}) &#x3D; a_1 \cdot \frac{1}{x} + …$, and we can sum them up to get $f(x) + f(\frac{1}{x}) &#x3D; (a_{n-1}-a_1) \cdot x^{n-1} + …$.</p>
+<p>In short, we can construct new polynomials $(\phi_+(x), \phi_-(x))$ with $(f(x), f(\frac{1}{x}))$, where $(\phi_+(x), \phi_-(x))$ are small and can be generated with a shorter (about $\lfloor \frac{n}{2} \rfloor$) basis. The following code gives a better explanation.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_ternery_poly</span>(<span class="params">Q</span>):</span><br><span class="line">    <span class="keyword">return</span> Q([choice([-<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(Q.degree())])</span><br><span class="line"></span><br><span class="line">n = <span class="number">450</span></span><br><span class="line">p = <span class="number">3774877201</span></span><br><span class="line">t = n//<span class="number">2</span></span><br><span class="line"></span><br><span class="line">P, x = GF(p)[<span class="string">&quot;x&quot;</span>].objgen()</span><br><span class="line">g = x**n+<span class="number">1</span></span><br><span class="line">roots = [i[<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> g.roots()]</span><br><span class="line">Q = P.quotient(g)</span><br><span class="line"></span><br><span class="line">f = sample_ternery_poly(Q).lift()</span><br><span class="line">rs = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> roots:</span><br><span class="line">    <span class="keyword">if</span> r <span class="keyword">not</span> <span class="keyword">in</span> rs <span class="keyword">and</span> <span class="number">1</span>/r <span class="keyword">not</span> <span class="keyword">in</span> rs:</span><br><span class="line">        rs.append(r)</span><br><span class="line"></span><br><span class="line">xs = [[r**i + <span class="number">1</span>/r**i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n//<span class="number">2</span>+<span class="number">1</span>)] <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line">ys = [f(r) + f(<span class="number">1</span>/r) <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line"><span class="built_in">print</span>(matrix(GF(p), xs).solve_right(vector(ys)))</span><br><span class="line"></span><br><span class="line">xs = [[r**i - <span class="number">1</span>/r**i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n//<span class="number">2</span>+<span class="number">1</span>)] <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line">ys = [f(r) - f(<span class="number">1</span>/r) <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line"><span class="built_in">print</span>(matrix(GF(p), xs).solve_right(vector(ys)))</span><br></pre></td></tr></table></figure>
+
+<p>With high possibility, we can find some pairs of $(f(x), f(\frac{1}{x}))$ from the given data. Then we can solve $(\phi_+, \phi_-)$ from two smaller primal lattices and combine them to get the original polynomial $f$. </p>
+<h2 id="OhMyTetration-8-solves"><a href="#OhMyTetration-8-solves" class="headerlink" title="OhMyTetration (8 solves)"></a>OhMyTetration (8 solves)</h2><blockquote>
+<ul>
+<li><a href="OhMyTetration/task.py">task.py</a></li>
+</ul>
+</blockquote>
+<p>Here is a lottery center with some secret code in <code>lotteryCenter</code>. In short, we can send some $(g, times)$ to the server and receive a tetration $\mathcal{T}(p, g, x, times)$. For instance, $\mathcal{T}(p, g, x, 2) &#x3D; g^{g^x} \pmod{p}$. And our target is to recover $x$.</p>
+<h3 id="Some-Fuzzes"><a href="#Some-Fuzzes" class="headerlink" title="Some Fuzzes"></a>Some Fuzzes</h3><p>It turns out that each time the server randomly chooses a prime $p$ from a small prime set. Take one of them as an example:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p = <span class="number">1502305675703953507826564356364207463785905265358954425050832597353379827611347779894929874274487297076504174110953417469304402049079223143080164648064147459</span></span><br><span class="line">q = (p - <span class="number">1</span>) // <span class="number">2</span></span><br><span class="line">qs = [(<span class="number">2</span>, <span class="number">12</span>), (<span class="number">2449952539</span>, <span class="number">1</span>), (<span class="number">2580715139</span>, <span class="number">1</span>), (<span class="number">2792523953</span>, <span class="number">1</span>), (<span class="number">2945474351</span>, <span class="number">1</span>), (<span class="number">2996317717</span>, <span class="number">1</span>), (<span class="number">3172879987</span>, <span class="number">1</span>), (<span class="number">3229817321</span>, <span class="number">1</span>), (<span class="number">3272969519</span>, <span class="number">1</span>), (<span class="number">3435471803</span>, <span class="number">1</span>), (<span class="number">3606091481</span>, <span class="number">1</span>), (<span class="number">3613773421</span>, <span class="number">1</span>), (<span class="number">3696075863</span>, <span class="number">1</span>), (<span class="number">3706535681</span>, <span class="number">1</span>), (<span class="number">3729911617</span>, <span class="number">1</span>), (<span class="number">3912962413</span>, <span class="number">1</span>), (<span class="number">3919762169</span>, <span class="number">1</span>)]</span><br><span class="line"><span class="keyword">assert</span> q == prod(qi**i <span class="keyword">for</span> qi, i <span class="keyword">in</span> qs) + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>Here $p &#x3D; 2*q + 1$, where $q$ is another big prime and $q-1$ is very smooth. All other $p$ have the same structure so we can just use this one in the following steps. To achieve that in the code, I just kept reconnecting until the server chose my prime.</p>
+<p>Another point worth noting is that we cannot just choose $g$ arbitrarily because of <code>lotteryCenter.defineG(g)</code>. After some tests, we found that some certain primes can pass the check. While it doesn’t expose the underlying checking strategy, we still have the opportunity to get a valid one by keeping constructing some primes.</p>
+<h3 id="Solution-1-Unintended-1"><a href="#Solution-1-Unintended-1" class="headerlink" title="Solution 1 (Unintended)"></a>Solution 1 (Unintended)</h3><p>Considering $q-1$ is smooth, with several 32bit small primes, a PH-BSGS style attack works as:</p>
+<ol>
+<li>Choose a generator $g_i$ from the $q_i$-order subgroup of $\mathbb{F_q}$, here we have $q_i | (q-1)$.</li>
+<li>Receive $y &#x3D; \mathcal{T}(p, g_i, x, 2) &#x3D; g_i^{g_i^x} \pmod{p}$ from the server.</li>
+<li>For all $a \in [0, t]$, compute and store $g_i^{2 \cdot g^{a \cdot t} \pmod{q}} \pmod{p}$.</li>
+<li>For all $b \in [0, t]$, compute $y^{2 \cdot g_i^{-b} \pmod{q}} \pmod{p}$ and query for a corresponding $a$.</li>
+<li>Finally, we have $x &#x3D; a \cdot t + b \pmod{q_i}$, and we can combine them using <code>crt</code>.</li>
+</ol>
+<p>Here we choose $t &#x3D; \lceil \sqrt{q_i} \rceil$ for a balanced perfomance. You can check the correctnest by $y^{g_i^{-b}} &#x3D; g_i^{g_i^{x-b}} &#x3D; g_i^{g_i^{a \cdot t}}\pmod{p}$. The reason we need $g_i^{2 \cdot (…)} \pmod{p}$ instead of $g_i^{(…)} \pmod{p}$ is that the order of $g_i$ may be $p-1 &#x3D; 2 \cdot q$ on $\mathbb{F_p}$, where the order of $g_i^2 \pmod{p}$ is guaranteed to be $q$ (or 1, with negligible probability).</p>
+<p>That’s it. What we need to do is to find a valid prime generator $g_i$, get a piece of $x_i$ locally, and then recover $x \pmod{\frac{q-1}{2}}$ with <code>crt</code>. For this chall, we need a little bruteforce to get the real $x &#x3D; (x \pmod{\frac{q-1}{2}}) + k \cdot \frac{q-1}{2}$.</p>
+<blockquote>
+<ul>
+<li>solution: <a href="OhMyTetration/exp.py">exp.py</a></li>
+</ul>
+</blockquote>
+<p>It actually costed us plenty of time since <code>lotteryCenter.defineG(g)</code> is veryyyyy slow, somehow :o</p>
+<h3 id="Solution-2-Intended-1"><a href="#Solution-2-Intended-1" class="headerlink" title="Solution 2 (Intended)"></a>Solution 2 (Intended)</h3><p>For the intended solution, we need more complex tetrations. As we compute a “higher” tetration tower, the order decreases rapidly as $\phi(\phi(…\phi(p)))$ where $\phi(x)$ is the Euler function. With an appropriate order, we can bruteforce the solution and a piece of $x$ under some modulus.</p>
+<p>This is more complicated. But if the level of tetration got limited or $q-1$ was not that smooth, we might have to try this ig.</p>
+<h2 id="tinyCKKS-2-solves"><a href="#tinyCKKS-2-solves" class="headerlink" title="tinyCKKS (2 solves)"></a>tinyCKKS (2 solves)</h2><blockquote>
+<ul>
+<li><a href="tinyCKKS/main.sage">main.sage</a> # task file</li>
+<li><a href="tinyCKKS/ckks.sage">ckks.sage</a> # ckks main class</li>
+<li><a href="tinyCKKS/ciphertext.sage">ciphertext.sage</a> # ct class</li>
+<li><a href="tinyCKKS/poly.sage">poly.sage</a> # poly class</li>
+<li><a href="tinyCKKS/gadget.sage">gadget.sage</a> # ckks gadget function</li>
+<li><a href="tinyCKKS/distribution.sage">distribution.sage</a> # ckks distribution function</li>
+<li><a href="tinyCKKS/module_test.sage">module_test.sage</a> # module test</li>
+</ul>
+</blockquote>
+<p>A good chance to learn more about FHE-CKKS! Nice code from @den.g_feng :D</p>
+<h3 id="CKKS-Intro"><a href="#CKKS-Intro" class="headerlink" title="CKKS: Intro"></a>CKKS: Intro</h3><p>In CKKS we deal with polynomials on a quotient ring with a prime power modulus $q&#x3D;p^i$. At first the modulus is $p^{L+1}$. In general, CKKS is a RLWE style FHE scheme.</p>
+<ul>
+<li>$\mathcal{Keygen}$: Generate a secret ternary polynomial $sk$.</li>
+<li>$\mathcal{Encode}$: For message polynomial $m$, compute $pt_i &#x3D; \lfloor m_i \cdot p \rfloor$ and construct the plaintext polynomial $pt$.</li>
+<li>$\mathcal{Decode}$: Compute $m_i &#x3D; \frac{pt_i}{p}$ to recover the original $m$.</li>
+<li>$\mathcal{Enc}$: For the plaintext polynomial $pt$, sample a noise polynomial $e$ and a random polynomial $ct_0$. Then compute $ct_1 &#x3D; pt + e - ct_0 \cdot sk$, and the ciphertext pair is $(ct_0, ct_1)$.</li>
+<li>$\mathcal{Dec}$ Compute $pt’ &#x3D; ct_1 + ct_0 \cdot sk$.</li>
+</ul>
+<p>In this challenge we use a simpler encode&#x2F;decode strategy, the original CKKS scheme involves complex number and some other complicated operations.</p>
+<p>It’s important to know that CKKS handles float data, which means $m$ is a float sequence (but $pt$ and other parts are not). You can find out that we actually cannot recover the original $pt$ and $m$ in CKKS. The noise is retained and after decoding, it exists as a small error in $m$.</p>
+<h3 id="Solution-1-Intended"><a href="#Solution-1-Intended" class="headerlink" title="Solution 1 (Intended)"></a>Solution 1 (Intended)</h3><p>In this challenge our target is to submit the <strong>exact</strong> original <code>plain</code>.</p>
+<p>The intended solution uses an interesting feature about CKKS, which may be counter-intuitive to FHE newbies (me). By encoding the decrypted <code>plain</code> again, we can recover the exact $pt + e$, and then we can recover $sk$ with the ciphtext pair $ct$.</p>
+<p>I’m not sure about other FHE schemes but for CKKS, it’s <strong>NOT</strong> a secure option to open a decryption oracle. I think the main reason is that CKKS uses floats instead of integers.</p>
+<blockquote>
+<p>At least in this challenge it’s true. I heard a patched version is available in industrial implementations. </p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">load(<span class="string">&quot;ckks.sage&quot;</span>)</span><br><span class="line"></span><br><span class="line">N = <span class="number">1024</span></span><br><span class="line">p = <span class="number">947819</span></span><br><span class="line">B = <span class="number">2</span></span><br><span class="line">L = <span class="number">4</span></span><br><span class="line"></span><br><span class="line">r = <span class="number">10</span></span><br><span class="line">precision = <span class="number">4</span></span><br><span class="line"></span><br><span class="line">debug = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">ckks = tinyCKKS(N, p, B, L, debug)</span><br><span class="line">plain = [<span class="built_in">round</span>(np.random.uniform(<span class="number">0</span>, r), precision) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(N)]</span><br><span class="line">pt = ckks.encode(plain)</span><br><span class="line">ct = ckks.encrypt(pt)</span><br><span class="line">pt = ckks.decrypt(ct)</span><br><span class="line">plain = ckks.decode(pt)</span><br><span class="line"></span><br><span class="line"><span class="comment"># recover sk</span></span><br><span class="line">P, z = GF(p)[<span class="string">&quot;z&quot;</span>].objgen()</span><br><span class="line">Q = P.quotient_ring(z**N+<span class="number">1</span>)</span><br><span class="line">pt = ckks.encode(plain)</span><br><span class="line">sk = Q((pt - ct.b).poly.<span class="built_in">list</span>()) / Q(ct.a.poly.<span class="built_in">list</span>())</span><br><span class="line"><span class="keyword">assert</span> P(sk.<span class="built_in">list</span>()) == P(ckks.sk.poly.<span class="built_in">list</span>())</span><br><span class="line"></span><br><span class="line"><span class="comment"># recover e</span></span><br><span class="line">plain = [<span class="built_in">round</span>(np.random.uniform(<span class="number">0</span>, r), precision) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(N)]</span><br><span class="line">pt = ckks.encode(plain)</span><br><span class="line">ct = ckks.encrypt(pt)</span><br><span class="line">e = ct.b + ckks.sk*ct.a - pt</span><br><span class="line">e = [ZZ(_+p//<span class="number">2</span>)%p - p//<span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> e.poly.<span class="built_in">list</span>()]</span><br><span class="line"><span class="built_in">print</span>(e)</span><br></pre></td></tr></table></figure>
+
+<p>Remember our target is to submit the orignial <code>plain</code>, so we need to predict $e$ too. Since the server uses a sequence of consecutive <code>getrandbits(4)</code> to generate $e$, we can crack MT19937 with the current $e$ and predict the next one. And the solution is quite clear now: </p>
+<ol>
+<li>(<code>c=1</code>) Get any plaintext-ciphertext pair as your wish, recover $sk$.</li>
+<li>(<code>c=2</code>) Get a ciphertext and the original <code>plain</code>, use $sk$ to recover $e$.</li>
+<li>Recover the underlying MT19937 states and predict the next $e$.</li>
+<li>(<code>c=3</code>) Get a ciphertext, use $sk$ and $e$ to recover the orignal <code>plain</code>.</li>
+</ol>
+<p>It’s worth mentioning that the noise is kinda too small compared to $p$ (you can find it out in <code>module_test</code>, the error between the original <code>plain</code> and the decrypted one is quite small). So it’s also feasible to eliminate the effect of the noise by controlling the precision of the <code>plain</code> (thanks to @hash_hash).</p>
+<h3 id="Solution-2-Unintended"><a href="#Solution-2-Unintended" class="headerlink" title="Solution 2 (Unintended)"></a>Solution 2 (Unintended)</h3><p>My teammate @糖醋小鸡块 found an interesting vuln about MT19937. Another PRNG used in this challenge is <code>np.random</code>, which is also based on MT19937 (in certain versions maybe).</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># distribution.sage</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_uniform_poly</span>(<span class="params">Q</span>):</span><br><span class="line">    q = Q.base_ring().cardinality()</span><br><span class="line">    N = Q.degree()</span><br><span class="line">    <span class="keyword">return</span> polynomial(q, N, Q([np.random.choice([-<span class="number">1</span>, <span class="number">1</span>]) * randbelow(<span class="built_in">int</span>(q//<span class="number">2</span>)) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(Q.degree())]))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_ternery_poly</span>(<span class="params">Q</span>):</span><br><span class="line">    q = Q.base_ring().cardinality()</span><br><span class="line">    N = Q.degree()</span><br><span class="line">    <span class="keyword">return</span> polynomial(q, N, Q([np.random.choice([-<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(Q.degree())]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># main.sage</span></span><br><span class="line">plain = [<span class="built_in">round</span>(np.random.uniform(<span class="number">0</span>, r), precision) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(N)]</span><br></pre></td></tr></table></figure>
+
+<p>While <code>sample_ternery_poly</code> and <code>plain</code> may not be accessible, we can get <code>sample_uniform_poly</code> from <code>ct_0</code> (and somewhere else), and it turns out we can obtain <code>np.random.choice([-1, 1])</code> from the signs of the coefficients. </p>
+<p>Only with enough (say 19937bits) consecutive values of <code>np.random.choice([-1, 1])</code> can we recover the underlying states. So instead of <code>ct</code>, we need to use <code>gen_ksk</code> or <code>gen_relin_key</code> which gives <code>t</code> sets of ciphtertext-like data. Here <code>t=100</code> is big so we can get enough data in one shot. Here is how we solved it:</p>
+<ol>
+<li>(<code>c=1</code> and <code>ccc=3 or 4</code>) Get <code>t</code> sets of <code>sample_uniform_poly</code> data through <code>ksk</code> or <code>galois_key</code> (you can also use <code>relin_key</code> in <code>ccc=2</code>, which may be more complicated to implement). </li>
+<li>Recover the underlying MT19937 states and predict the next <code>plain</code> (you can also predict <code>sample_ternery_poly</code> to get the next $e$).</li>
+</ol>
+<p>We actually thought this is the intended solution since it could use <code>randbelow(q)</code> in <code>sample_uniform_poly</code>. And <code>B</code> is very small to <code>q</code> so <code>t</code> is big enough here, but in <code>module_test</code> we have <code>B=2^8</code>.</p>
+]]></content>
+      <tags>
+        <tag>LLL</tag>
+        <tag>FHE</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)</title>
     <url>/2025/12/09/2025-blackhatmeactf-final/</url>
     <content><![CDATA[<p>Time: 2025.12.02-04 (onsite)</p>
@@ -327,6 +456,58 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
       </tags>
   </entry>
   <entry>
+    <title>fairy-ring::Dice CTF 2025 Qual</title>
+    <url>/2025/04/01/2025-dicectf/</url>
+    <content><![CDATA[<p>Time: 2025.03.29-31 (online)</p>
+<h2 id="fairy-ring-7-solves"><a href="#fairy-ring-7-solves" class="headerlink" title="fairy-ring (7 solves)"></a>fairy-ring (7 solves)</h2><p><a href="https://priv.pub/posts/dicectf-quals-2025/#fairy-ring">Original Writeup</a></p>
+<p><a href="https://github.com/defund/ctf/tree/master/dicectf-quals-2025/fairy-ring">https://github.com/defund/ctf/tree/master/dicectf-quals-2025/fairy-ring</a></p>
+<blockquote>
+<ul>
+<li><a href="fairy-ring/server.py">server.py</a></li>
+<li><a href="https://github.com/mjosaarinen/uov-py/tree/main">https://github.com/mjosaarinen/uov-py/tree/main</a></li>
+<li><ul>
+<li><a href="fairy-ring/uov.py">uov.py</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="fairy-ring/uov_trapdoor.py">uov_trapdoor.py</a></li>
+</ul>
+</li>
+<li>keys</li>
+</ul>
+</blockquote>
+<p>Also check this <a href="https://priv.pub/posts/rainbow-attack/">defund’s gift</a> and this <a href="https://eprint.iacr.org/2020/1343.pdf">Improved cryptanalysis of UOV and Rainbow</a>!</p>
+<p>A good chance to learn more about MQ and UOV.</p>
+<h3 id="Multivariate-Quadratic"><a href="#Multivariate-Quadratic" class="headerlink" title="Multivariate Quadratic"></a>Multivariate Quadratic</h3><p>A Multivariate Quadratic (MQ) is a polynomial in $n$ variables over $\mathbb{F_q}$: $f(x_1, …, x_n) &#x3D; \sum_i^n \sum_j^n a_{i,j} x_i x_j + \sum_i^n b_{i} x_i + c$. We can represent it with matrix: $f(\vec{x}) &#x3D; \vec{x}^\top  A  \vec{x} + \vec{b}^\top  \vec{x} + c$.</p>
+<p>A Multivariate Quadratic Map $\mathcal{F}: \mathbb{F_q^n} \rightarrow \mathbb{F_q^m}$ is a collection of such polynomials $f_1, …, f_m$ where:<br>$$\mathcal{F}(\vec{x}) &#x3D; (f_1(\vec{x}), …, f_m(\vec{x}))$$</p>
+<p>Multivariate Quadratic Problem (MQP): Given arbitrary $\mathcal{F}: \mathbb{F_q^n} \rightarrow \mathbb{F_q^m}$ and $\vec{t} \in \mathbb{F_q^m}$, it’s NP-hard to find $\mathcal{F}(\vec{s}) &#x3D; \vec{t}$. </p>
+<h3 id="Polar-Form"><a href="#Polar-Form" class="headerlink" title="Polar Form"></a>Polar Form</h3><p>It’s clear that:<br>$$<br>\begin{aligned}<br>f(\vec{x} + \vec{y}) &amp;&#x3D; (\vec{x} + \vec{y})^\top  A  (\vec{x} + \vec{y}) + \vec{b}^\top  (\vec{x} + \vec{y}) + c \\<br>&amp;&#x3D; f(\vec{x}) + f(\vec{y}) - f(\vec{0}) + \vec{x}^\top  (A + A^\top)  \vec{y} \\<br>\end{aligned}<br>$$</p>
+<p>And we have the polar form: $f’(\vec{x}, \vec{y}) &#x3D; \vec{x}^\top  (A + A^\top)  \vec{y} &#x3D; f(\vec{x} + \vec{y}) - f(\vec{x}) - f(\vec{y}) + f(\vec{0})$. This also works for a Multivariate Quadratic Map: $\mathcal{F}’(\vec{x}, \vec{y}) &#x3D; \mathcal{F}(\vec{x} + \vec{y}) - \mathcal{F}(\vec{x}) - \mathcal{F}(\vec{y}) + \mathcal{F}(\vec{0})$.</p>
+<h3 id="Words"><a href="#Words" class="headerlink" title="Words"></a>Words</h3><p>We mainly focus on the quadratic part of a MQ, which serves as the core of the hardness. So we usually have $f(\vec{x}) &#x3D; \sum_i^n \sum_j^n a_{i,j} x_i x_j &#x3D; \vec{x}^\top  A  \vec{x}$. One can always find a symmertric $A$ since $\vec{x}^\top  A  \vec{x} &#x3D; \vec{x}^\top  A^\top  \vec{x} &#x3D; \vec{x}^\top  (\frac{A + A^\top}{2})  \vec{x}$. We can further simplify $A$ into a upper triangular matrix, which is more intuitive and leads to less storage overhead.</p>
+<p>And the polar form: $f’(\vec{x}, \vec{y}) &#x3D; f(\vec{x} + \vec{y}) - f(\vec{x}) - f(\vec{y})$.</p>
+<h3 id="UOV-Signature"><a href="#UOV-Signature" class="headerlink" title="UOV Signature"></a>UOV Signature</h3><p>The Unbalanced Oil and Vinegar (UOV) scheme is a signature scheme based on MQ.</p>
+<p>First we construct an easy-to-solve MQ $f(\vec{x}) &#x3D; \sum_i^n \sum_{j &gt; m}^n a_{i,j} x_i x_j$. Here we call oil variables $\vec{x_o} &#x3D; (x_1, …, x_m, 0, …, 0)$ and vinegar variables $\vec{x_v} &#x3D; (0, …, 0, x_{m+1}, …, x_{m+v})$ (where $n &#x3D; m+v$), and it’s clear that $\mathcal{F}$ is linear to $\vec{x_o}$. By randomly choosing $\vec{x_v}$, one can solve the linear system to get the answer.</p>
+<p>Matrix form:<br>$$<br>A &#x3D; \begin{bmatrix}<br>O_{m \times m} &amp; B_{m \times v} \\<br>O_{v \times m} &amp; C_{v \times v}<br>\end{bmatrix}<br>\rightarrow<br>(\vec{x_o} + \vec{x_v})^\top  A  (\vec{x_o} + \vec{x_v}) &#x3D; \vec{x_o}’^\top  B  \vec{x_v}’ + \vec{x_v}’^\top  C  \vec{x_v}’<br>$$</p>
+<p>Polar form:<br>$$<br>\mathcal{F}(\vec{x_o}) &#x3D; \vec{0} \rightarrow \mathcal{F}(\vec{x_o} + \vec{x_v}) &#x3D; \mathcal{F}’(\vec{x_o}, \vec{x_v}) + \mathcal{F}(\vec{x_v})<br>$$</p>
+<p>In UOV, we use $\mathcal{F}$ as the private key and the public key is $\mathcal{P} &#x3D; \mathcal{F} \circ \mathcal{T}$, where $\mathcal{T}$ is an invertable linear transformation. For a message $m$, the signature $\vec{s}$ satisfies $\mathcal{P}(\vec{s}) &#x3D; \mathcal{Hash}(m)$. The signer just solves $\mathcal{F}(\vec{x}) &#x3D; \mathcal{Hash}(m)$ and computes $\vec{s} &#x3D; \mathcal{T}^{-1}(\vec{x})$.</p>
+<p>The main idea is to find a linear space $\mathcal{O}$ with rank $r \geq m$, and for all $\vec{o} \in \mathcal{O}$ we have $\mathcal{P}(\vec{o}) &#x3D; \vec{0}$. It’s also worth mentioning that for any valid signature $\vec{s}$, $\vec{s} + \mathcal{O}$ is still valid.</p>
+<h3 id="Ring-Signature"><a href="#Ring-Signature" class="headerlink" title="Ring Signature"></a>Ring Signature</h3><p>In this challenge, we have a ring signature scheme based on UOV. Any one of the $n$ users can generate a signature on behalf of the group, and no one can distinguish the signer.</p>
+<ul>
+<li>$\mathcal{Setup}:$ Each user generates a UOV key pair $(\mathcal{P}, \mathcal{F})$.</li>
+<li>$\mathcal{Sign}:$ For message $m$, user $a$ randomly chooses $(\vec{x_1}, …, \vec{x_{a-1}}, \vec{x_{a+1}},…, \vec{x_n})$ and compute $\vec{t} &#x3D; \mathcal{Hash}(m) - \sum_{i \neq a}^n \mathcal{P_i}(\vec{x_i})$. Then user $a$ solve $\mathcal{P_a}(\vec{x_a}) &#x3D; \vec{t}$ with the private key $\mathcal{F_a}$. The signature is $(\vec{x_1}, …, \vec{x_n})$.</li>
+<li>$\mathcal{Verify}:$ Check whether $\mathcal{Hash}(m) &#x3D; \sum_{i}^n \mathcal{P_i}(\vec{x_i})$ satisfies.</li>
+</ul>
+<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>The solution is easy but elegant.</p>
+<p>We can pick the same public key more than once, and actually it’s possible for us to forge a valid signature for any message (yeah it’s completely broken). Consider a public key $\mathcal{P}$, we have</p>
+<p>$$\vec{t} &#x3D; \mathcal{P}(\vec{x} + \vec{y}) - \mathcal{P}(\vec{x}) &#x3D; \mathcal{P}’(\vec{x}, \vec{y}) + \mathcal{P}(\vec{y})$$</p>
+<p>Here $\vec{t}$ is linear to $\vec{x}$, that’s all we need to solve this challenge. For a given message $m$, we can pick the same public key $\mathcal{P}$ twice, then randomly choose a $\vec{y}$ and find the solution $\mathcal{Hash}(m) &#x3D; \mathcal{P}(\vec{x} + \vec{y}) - \mathcal{P}(\vec{x})$ (it’s the same for ‘$+$’ and ‘$\oplus$’ on $\mathbb{F_{2^8}}$). And $(\vec{x} + \vec{y}, \vec{x})$ is a valid signature.</p>
+<p><a href="fairy-ring/exp.py">exp.py</a></p>
+]]></content>
+      <tags>
+        <tag>UOV</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>These Walls::Codegate CTF 2025 Qual</title>
     <url>/2025/04/05/2025-codegatectf/</url>
     <content><![CDATA[<p>Time: 2025.03.29 (online)</p>
@@ -410,55 +591,71 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
       </tags>
   </entry>
   <entry>
-    <title>fairy-ring::Dice CTF 2025 Qual</title>
-    <url>/2025/04/01/2025-dicectf/</url>
-    <content><![CDATA[<p>Time: 2025.03.29-31 (online)</p>
-<h2 id="fairy-ring-7-solves"><a href="#fairy-ring-7-solves" class="headerlink" title="fairy-ring (7 solves)"></a>fairy-ring (7 solves)</h2><p><a href="https://priv.pub/posts/dicectf-quals-2025/#fairy-ring">Original Writeup</a></p>
-<p><a href="https://github.com/defund/ctf/tree/master/dicectf-quals-2025/fairy-ring">https://github.com/defund/ctf/tree/master/dicectf-quals-2025/fairy-ring</a></p>
-<blockquote>
+    <title>Hitcon CTF 2025</title>
+    <url>/2025/08/25/2025-hitconctf/</url>
+    <content><![CDATA[<p>I played Hitcon CTF last weekend with r3kapig, enjoyed.</p>
+<h2 id="MRSA"><a href="#MRSA" class="headerlink" title="MRSA"></a>MRSA</h2><blockquote>
 <ul>
-<li><a href="fairy-ring/server.py">server.py</a></li>
-<li><a href="https://github.com/mjosaarinen/uov-py/tree/main">https://github.com/mjosaarinen/uov-py/tree/main</a></li>
-<li><ul>
-<li><a href="fairy-ring/uov.py">uov.py</a></li>
-</ul>
-</li>
-<li><ul>
-<li><a href="fairy-ring/uov_trapdoor.py">uov_trapdoor.py</a></li>
-</ul>
-</li>
-<li>keys</li>
+<li><a href="MRSA/chall.py">chall.py</a></li>
 </ul>
 </blockquote>
-<p>Also check this <a href="https://priv.pub/posts/rainbow-attack/">defund’s gift</a> and this <a href="https://eprint.iacr.org/2020/1343.pdf">Improved cryptanalysis of UOV and Rainbow</a>!</p>
-<p>A good chance to learn more about MQ and UOV.</p>
-<h3 id="Multivariate-Quadratic"><a href="#Multivariate-Quadratic" class="headerlink" title="Multivariate Quadratic"></a>Multivariate Quadratic</h3><p>A Multivariate Quadratic (MQ) is a polynomial in $n$ variables over $\mathbb{F_q}$: $f(x_1, …, x_n) &#x3D; \sum_i^n \sum_j^n a_{i,j} x_i x_j + \sum_i^n b_{i} x_i + c$. We can represent it with matrix: $f(\vec{x}) &#x3D; \vec{x}^\top  A  \vec{x} + \vec{b}^\top  \vec{x} + c$.</p>
-<p>A Multivariate Quadratic Map $\mathcal{F}: \mathbb{F_q^n} \rightarrow \mathbb{F_q^m}$ is a collection of such polynomials $f_1, …, f_m$ where:<br>$$\mathcal{F}(\vec{x}) &#x3D; (f_1(\vec{x}), …, f_m(\vec{x}))$$</p>
-<p>Multivariate Quadratic Problem (MQP): Given arbitrary $\mathcal{F}: \mathbb{F_q^n} \rightarrow \mathbb{F_q^m}$ and $\vec{t} \in \mathbb{F_q^m}$, it’s NP-hard to find $\mathcal{F}(\vec{s}) &#x3D; \vec{t}$. </p>
-<h3 id="Polar-Form"><a href="#Polar-Form" class="headerlink" title="Polar Form"></a>Polar Form</h3><p>It’s clear that:<br>$$<br>\begin{aligned}<br>f(\vec{x} + \vec{y}) &amp;&#x3D; (\vec{x} + \vec{y})^\top  A  (\vec{x} + \vec{y}) + \vec{b}^\top  (\vec{x} + \vec{y}) + c \\<br>&amp;&#x3D; f(\vec{x}) + f(\vec{y}) - f(\vec{0}) + \vec{x}^\top  (A + A^\top)  \vec{y} \\<br>\end{aligned}<br>$$</p>
-<p>And we have the polar form: $f’(\vec{x}, \vec{y}) &#x3D; \vec{x}^\top  (A + A^\top)  \vec{y} &#x3D; f(\vec{x} + \vec{y}) - f(\vec{x}) - f(\vec{y}) + f(\vec{0})$. This also works for a Multivariate Quadratic Map: $\mathcal{F}’(\vec{x}, \vec{y}) &#x3D; \mathcal{F}(\vec{x} + \vec{y}) - \mathcal{F}(\vec{x}) - \mathcal{F}(\vec{y}) + \mathcal{F}(\vec{0})$.</p>
-<h3 id="Words"><a href="#Words" class="headerlink" title="Words"></a>Words</h3><p>We mainly focus on the quadratic part of a MQ, which serves as the core of the hardness. So we usually have $f(\vec{x}) &#x3D; \sum_i^n \sum_j^n a_{i,j} x_i x_j &#x3D; \vec{x}^\top  A  \vec{x}$. One can always find a symmertric $A$ since $\vec{x}^\top  A  \vec{x} &#x3D; \vec{x}^\top  A^\top  \vec{x} &#x3D; \vec{x}^\top  (\frac{A + A^\top}{2})  \vec{x}$. We can further simplify $A$ into a upper triangular matrix, which is more intuitive and leads to less storage overhead.</p>
-<p>And the polar form: $f’(\vec{x}, \vec{y}) &#x3D; f(\vec{x} + \vec{y}) - f(\vec{x}) - f(\vec{y})$.</p>
-<h3 id="UOV-Signature"><a href="#UOV-Signature" class="headerlink" title="UOV Signature"></a>UOV Signature</h3><p>The Unbalanced Oil and Vinegar (UOV) scheme is a signature scheme based on MQ.</p>
-<p>First we construct an easy-to-solve MQ $f(\vec{x}) &#x3D; \sum_i^n \sum_{j &gt; m}^n a_{i,j} x_i x_j$. Here we call oil variables $\vec{x_o} &#x3D; (x_1, …, x_m, 0, …, 0)$ and vinegar variables $\vec{x_v} &#x3D; (0, …, 0, x_{m+1}, …, x_{m+v})$ (where $n &#x3D; m+v$), and it’s clear that $\mathcal{F}$ is linear to $\vec{x_o}$. By randomly choosing $\vec{x_v}$, one can solve the linear system to get the answer.</p>
-<p>Matrix form:<br>$$<br>A &#x3D; \begin{bmatrix}<br>O_{m \times m} &amp; B_{m \times v} \\<br>O_{v \times m} &amp; C_{v \times v}<br>\end{bmatrix}<br>\rightarrow<br>(\vec{x_o} + \vec{x_v})^\top  A  (\vec{x_o} + \vec{x_v}) &#x3D; \vec{x_o}’^\top  B  \vec{x_v}’ + \vec{x_v}’^\top  C  \vec{x_v}’<br>$$</p>
-<p>Polar form:<br>$$<br>\mathcal{F}(\vec{x_o}) &#x3D; \vec{0} \rightarrow \mathcal{F}(\vec{x_o} + \vec{x_v}) &#x3D; \mathcal{F}’(\vec{x_o}, \vec{x_v}) + \mathcal{F}(\vec{x_v})<br>$$</p>
-<p>In UOV, we use $\mathcal{F}$ as the private key and the public key is $\mathcal{P} &#x3D; \mathcal{F} \circ \mathcal{T}$, where $\mathcal{T}$ is an invertable linear transformation. For a message $m$, the signature $\vec{s}$ satisfies $\mathcal{P}(\vec{s}) &#x3D; \mathcal{Hash}(m)$. The signer just solves $\mathcal{F}(\vec{x}) &#x3D; \mathcal{Hash}(m)$ and computes $\vec{s} &#x3D; \mathcal{T}^{-1}(\vec{x})$.</p>
-<p>The main idea is to find a linear space $\mathcal{O}$ with rank $r \geq m$, and for all $\vec{o} \in \mathcal{O}$ we have $\mathcal{P}(\vec{o}) &#x3D; \vec{0}$. It’s also worth mentioning that for any valid signature $\vec{s}$, $\vec{s} + \mathcal{O}$ is still valid.</p>
-<h3 id="Ring-Signature"><a href="#Ring-Signature" class="headerlink" title="Ring Signature"></a>Ring Signature</h3><p>In this challenge, we have a ring signature scheme based on UOV. Any one of the $n$ users can generate a signature on behalf of the group, and no one can distinguish the signer.</p>
+<p>In this challenge, we need to recover a $k \cdot k$ small (8bit) secret matrix $M$ with $C &#x3D; M^e \pmod{n}$, where $n$ is omitted.</p>
+<h3 id="Our-Solution"><a href="#Our-Solution" class="headerlink" title="Our Solution"></a>Our Solution</h3><p>We implemented our solution based on the truth that $M \cdot C &#x3D; C \cdot M \pmod{n}$, which gives us $k \cdot k$ equations about $M$. Take a certain position $(i, j)$ as an example: </p>
+<p>$$<br>\begin{aligned}<br>(M \cdot C)[i, j] &amp;&#x3D; (C \cdot M)[i, j] \pmod{n} \\<br>M[i] \cdot C^T[j] &amp;&#x3D; C[i] \cdot M^T[j] \pmod{n} \\<br>&amp;\Rightarrow \\<br>t_{i, j} \cdot n &amp;&#x3D; M[i] \cdot C^T[j] - C[i] \cdot M^T[j]<br>\end{aligned}<br>$$</p>
+<p>And we can construct an equation on $\mathbb{Z}$ with two separate positions $(i_0, j_0)$ and $(i_1, j_1)$:</p>
+<p>$$<br>t_{i_1, j_1} \cdot (M[i_0] \cdot C^T[j_0] - C[i_0] \cdot M^T[j_0]) &#x3D; t_{i_0, j_0} \cdot (M[i_1] \cdot C^T[j_1] - C[i_1] \cdot M^T[j_1])<br>$$</p>
+<p>Here $t$ is a small value, since $M$ is very small. So we can combine $t \cdot M[i]$ as a secret and solve it by applying <code>LLL</code> to the kernel space. For an optimized strategy, we can pick $i_0 &#x3D; i_1 &#x3D; i$ and reduce the unknown variables from $k \cdot 4 &#x3D; 64$ to $k \cdot 3 &#x3D; 48$, that is:</p>
+<p>$$<br>(t_{i, j_1} \cdot M[i]) \cdot C^T[j_0] - (t_{i, j_0} \cdot M[i]) \cdot C^T[j_1] &#x3D; C[i] \cdot (t_{i, j_1} \cdot M^T[j_0] - t_{i, j_0} \cdot M^T[j_1])<br>$$</p>
+<p>With the equation, we can find $(t \cdot M[i]) \Rightarrow M[i]$, and solve $M$ row by row. </p>
+<p>It’s worth mentioning that for any position $(i, j)$, $(M[i, i], M[j, j])$ will always be eliminated in the equation. So we can only recover $M$ without $M[i, i]$. But it’s enough for us to brute force 3 bytes to get the flag.</p>
+<blockquote>
 <ul>
-<li>$\mathcal{Setup}:$ Each user generates a UOV key pair $(\mathcal{P}, \mathcal{F})$.</li>
-<li>$\mathcal{Sign}:$ For message $m$, user $a$ randomly chooses $(\vec{x_1}, …, \vec{x_{a-1}}, \vec{x_{a+1}},…, \vec{x_n})$ and compute $\vec{t} &#x3D; \mathcal{Hash}(m) - \sum_{i \neq a}^n \mathcal{P_i}(\vec{x_i})$. Then user $a$ solve $\mathcal{P_a}(\vec{x_a}) &#x3D; \vec{t}$ with the private key $\mathcal{F_a}$. The signature is $(\vec{x_1}, …, \vec{x_n})$.</li>
-<li>$\mathcal{Verify}:$ Check whether $\mathcal{Hash}(m) &#x3D; \sum_{i}^n \mathcal{P_i}(\vec{x_i})$ satisfies.</li>
+<li><a href="MRSA/exp.py">exp.py</a></li>
 </ul>
-<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>The solution is easy but elegant.</p>
-<p>We can pick the same public key more than once, and actually it’s possible for us to forge a valid signature for any message (yeah it’s completely broken). Consider a public key $\mathcal{P}$, we have</p>
-<p>$$\vec{t} &#x3D; \mathcal{P}(\vec{x} + \vec{y}) - \mathcal{P}(\vec{x}) &#x3D; \mathcal{P}’(\vec{x}, \vec{y}) + \mathcal{P}(\vec{y})$$</p>
-<p>Here $\vec{t}$ is linear to $\vec{x}$, that’s all we need to solve this challenge. For a given message $m$, we can pick the same public key $\mathcal{P}$ twice, then randomly choose a $\vec{y}$ and find the solution $\mathcal{Hash}(m) &#x3D; \mathcal{P}(\vec{x} + \vec{y}) - \mathcal{P}(\vec{x})$ (it’s the same for ‘$+$’ and ‘$\oplus$’ on $\mathbb{F_{2^8}}$). And $(\vec{x} + \vec{y}, \vec{x})$ is a valid signature.</p>
-<p><a href="fairy-ring/exp.py">exp.py</a></p>
+</blockquote>
+<h3 id="Other-solutions"><a href="#Other-solutions" class="headerlink" title="Other solutions"></a>Other solutions</h3><p>We can implement some new solutions with <a href="https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem">Cayley-Hamiltion Theorem</a>.</p>
+<blockquote>
+<p>For a $k \cdot k$ matrix $M$, let $p_{M}(x) &#x3D; \Sigma_{i&#x3D;0}^{k-1} a_i \cdot x^i$ be the characteristic polynomial of $M$, we have $p_{M}(M) &#x3D; 0$.</p>
+</blockquote>
+<p>And this, my friend, gives us a way to find a linear expression with $[M^0, …, M^{k-1}]$ for any $M^e$, since we can use $p_M(M)$ to build a quotient ring.</p>
+<p>Back to the challenge, we can find $[b_0, …, b_{k-1}]$ such that $C &#x3D; \Sigma_{i&#x3D;0}^{k-1} b_i \cdot M^i \pmod{n}$. Since $M^i$ is still small enough, we can costruct $k \cdot k$ HCLPs with each $C[i, j]$ and $[M^0[i, j], …, M^{k-1}[i, j]]$.</p>
+<h2 id="BabyLWE"><a href="#BabyLWE" class="headerlink" title="BabyLWE"></a>BabyLWE</h2><blockquote>
+<ul>
+<li><a href="BabyLWE/chall.py">chall.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to solve a LWE problem with a special noise distribution: $e_i$ is not small but picked from a random ternary error set $errs$ ($|errs| &#x3D; 3$).</p>
+<p>Months before, me and @糖醋小鸡块 discussed about the binary error set scenario ($|errs| &#x3D; 2$). Based on the fact that for any binary set $errs &#x3D; \{ e_0, e_1 \}$, we can always find an affine map $f(x) &#x3D; a \cdot x + b$, such that $f(errs) &#x3D; \{0, 1\}$. And this affined error vector is short enough to be obtained on the following lattice: </p>
+<p>$$<br>b &#x3D; s \cdot A + e \pmod{p}<br>\Rightarrow<br>\begin{bmatrix}<br>A \\<br>b \\<br>\textbf{1}^m \\<br>p \cdot I<br>\end{bmatrix}<br>$$</p>
+<p>where $\textbf{1}^m$ is an all-1 vector and $I$ is the identity matrix. With the recovered binary vector, we can learn the pick-up situations of the error vector and solve LWE in a linear system of $(s, errs)$.</p>
+<p>The method also works in this challenge. We’re not able to find a strictly small vector (say binary vector) through affine map with $|errs| &gt; 2$. But it turns out that in this challenge, an affined ternary vector is short enough to be solved through <code>LLL</code>. Then we can solve LWE with the same steps above.</p>
+<h2 id="Pedantic"><a href="#Pedantic" class="headerlink" title="Pedantic"></a>Pedantic</h2><blockquote>
+<ul>
+<li><a href="Pedantic/server.py">server.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to break a zkp protocol with bad Fiat-Shamir Transformation.</p>
+<h3 id="Fiat-Shamir-Transformation"><a href="#Fiat-Shamir-Transformation" class="headerlink" title="Fiat-Shamir Transformation"></a>Fiat-Shamir Transformation</h3><p>Fiat-Shamir Transformation is a practical way to transform an interactive sigma protocol into a non-interactive version. In short, we construct a determined Random Oracle by hashing the current states, and replace the “challenge” generated by the verifier. You can check how <code>hash_points_to_scalars</code> is used in both <code>prove</code> and <code>verify</code> in this challenge.</p>
+<p>RO is the core of the security here: we must make sure the hash function is well-constructed, and the current states are carefully selected. So, the linear structure of <code>hash_points_to_scalars</code> is definitely not a good choice. Xp</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hash_points_to_scalars</span>(<span class="params">pts: <span class="built_in">list</span>[Point], n: <span class="built_in">int</span></span>):</span><br><span class="line">    s = <span class="built_in">sum</span>([hash_point(pt) <span class="keyword">for</span> pt <span class="keyword">in</span> pts]) % q</span><br><span class="line">    ret = []</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        ret.append(s)</span><br><span class="line">        s = (<span class="number">1337</span> * s + <span class="number">7331</span>) % q</span><br><span class="line">    <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+
+<h3 id="Our-Solution-1"><a href="#Our-Solution-1" class="headerlink" title="Our Solution"></a>Our Solution</h3><p>The most part of the protocol remains secure due to <code>secp256k1</code>, which means we’re not able to forge a valid proof without the knowledge of <code>x</code>. But if we can predict the challenge <code>c</code> in some way, things will be a little different since we can randomly pick <code>z</code> first, and compute <code>Gr = Y*c - G*z</code>.</p>
+<p>For the iteration part, we can use a fixed point:</p>
+<p>$$<br>c &#x3D; a \cdot c + b \Rightarrow c &#x3D; \frac{b}{1 - a} \pmod{q}<br>$$</p>
+<p>Now <code>c</code> is the same in each round, we can focus on how to construct a valid <code>Grs</code> to get the target <code>c</code>. We can generate a set of <code>zs</code> and the corresponding <code>Grs</code> first. Consider there exists a valid subset of <code>Grs</code> satisfying our target, we have:</p>
+<p>$$<br>c &#x3D; \Sigma_{i} k_i \cdot \mathcal{H}(Gr_i) \pmod{q}<br>$$</p>
+<p>where $k_i$ is a binary variable and $\mathcal{H}$ is the hash function <code>hash_point</code>. This is a typical knapsack problem, and we can try to find a solution with <code>LLL</code>.</p>
+<h2 id="Paranoid"><a href="#Paranoid" class="headerlink" title="(*)Paranoid"></a>(*)Paranoid</h2><blockquote>
+<ul>
+<li><a href="Paranoid/server.py">server.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to break a zkp protocol with <strong>NOT THAT BAD</strong> Fiat-Shamir Transformation.</p>
+<h3 id="Some-Discussions"><a href="#Some-Discussions" class="headerlink" title="Some Discussions"></a>Some Discussions</h3><p>For this one, we can still <strong>1)</strong> fix the <code>c</code> first, and <strong>2)</strong> construct a valid <code>Grs</code> to get <code>c</code>. But this time we’re not able to find a fixed point, so the iteration part is unavoidable. </p>
+<p>In this case, we may have to fix a <code>c</code> and randomly get <code>k</code> groups of <code>Grs</code>, picking one out of each group to combine <code>c</code>. This leads to a <code>k</code>-sum problem, while wagner algorithm is an efficient way to solve it. I found a python-implemented version to use, but that’s not enough for this problem. Maybe cpp and careful optimization are necessary for this challenge ig.</p>
 ]]></content>
       <tags>
-        <tag>UOV</tag>
+        <tag>LLL</tag>
       </tags>
   </entry>
   <entry>
@@ -556,451 +753,6 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
 ]]></content>
       <tags>
         <tag>ZKP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hitcon CTF 2025</title>
-    <url>/2025/08/25/2025-hitconctf/</url>
-    <content><![CDATA[<p>I played Hitcon CTF last weekend with r3kapig, enjoyed.</p>
-<h2 id="MRSA"><a href="#MRSA" class="headerlink" title="MRSA"></a>MRSA</h2><blockquote>
-<ul>
-<li><a href="MRSA/chall.py">chall.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge, we need to recover a $k \cdot k$ small (8bit) secret matrix $M$ with $C &#x3D; M^e \pmod{n}$, where $n$ is omitted.</p>
-<h3 id="Our-Solution"><a href="#Our-Solution" class="headerlink" title="Our Solution"></a>Our Solution</h3><p>We implemented our solution based on the truth that $M \cdot C &#x3D; C \cdot M \pmod{n}$, which gives us $k \cdot k$ equations about $M$. Take a certain position $(i, j)$ as an example: </p>
-<p>$$<br>\begin{aligned}<br>(M \cdot C)[i, j] &amp;&#x3D; (C \cdot M)[i, j] \pmod{n} \\<br>M[i] \cdot C^T[j] &amp;&#x3D; C[i] \cdot M^T[j] \pmod{n} \\<br>&amp;\Rightarrow \\<br>t_{i, j} \cdot n &amp;&#x3D; M[i] \cdot C^T[j] - C[i] \cdot M^T[j]<br>\end{aligned}<br>$$</p>
-<p>And we can construct an equation on $\mathbb{Z}$ with two separate positions $(i_0, j_0)$ and $(i_1, j_1)$:</p>
-<p>$$<br>t_{i_1, j_1} \cdot (M[i_0] \cdot C^T[j_0] - C[i_0] \cdot M^T[j_0]) &#x3D; t_{i_0, j_0} \cdot (M[i_1] \cdot C^T[j_1] - C[i_1] \cdot M^T[j_1])<br>$$</p>
-<p>Here $t$ is a small value, since $M$ is very small. So we can combine $t \cdot M[i]$ as a secret and solve it by applying <code>LLL</code> to the kernel space. For an optimized strategy, we can pick $i_0 &#x3D; i_1 &#x3D; i$ and reduce the unknown variables from $k \cdot 4 &#x3D; 64$ to $k \cdot 3 &#x3D; 48$, that is:</p>
-<p>$$<br>(t_{i, j_1} \cdot M[i]) \cdot C^T[j_0] - (t_{i, j_0} \cdot M[i]) \cdot C^T[j_1] &#x3D; C[i] \cdot (t_{i, j_1} \cdot M^T[j_0] - t_{i, j_0} \cdot M^T[j_1])<br>$$</p>
-<p>With the equation, we can find $(t \cdot M[i]) \Rightarrow M[i]$, and solve $M$ row by row. </p>
-<p>It’s worth mentioning that for any position $(i, j)$, $(M[i, i], M[j, j])$ will always be eliminated in the equation. So we can only recover $M$ without $M[i, i]$. But it’s enough for us to brute force 3 bytes to get the flag.</p>
-<blockquote>
-<ul>
-<li><a href="MRSA/exp.py">exp.py</a></li>
-</ul>
-</blockquote>
-<h3 id="Other-solutions"><a href="#Other-solutions" class="headerlink" title="Other solutions"></a>Other solutions</h3><p>We can implement some new solutions with <a href="https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem">Cayley-Hamiltion Theorem</a>.</p>
-<blockquote>
-<p>For a $k \cdot k$ matrix $M$, let $p_{M}(x) &#x3D; \Sigma_{i&#x3D;0}^{k-1} a_i \cdot x^i$ be the characteristic polynomial of $M$, we have $p_{M}(M) &#x3D; 0$.</p>
-</blockquote>
-<p>And this, my friend, gives us a way to find a linear expression with $[M^0, …, M^{k-1}]$ for any $M^e$, since we can use $p_M(M)$ to build a quotient ring.</p>
-<p>Back to the challenge, we can find $[b_0, …, b_{k-1}]$ such that $C &#x3D; \Sigma_{i&#x3D;0}^{k-1} b_i \cdot M^i \pmod{n}$. Since $M^i$ is still small enough, we can costruct $k \cdot k$ HCLPs with each $C[i, j]$ and $[M^0[i, j], …, M^{k-1}[i, j]]$.</p>
-<h2 id="BabyLWE"><a href="#BabyLWE" class="headerlink" title="BabyLWE"></a>BabyLWE</h2><blockquote>
-<ul>
-<li><a href="BabyLWE/chall.py">chall.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to solve a LWE problem with a special noise distribution: $e_i$ is not small but picked from a random ternary error set $errs$ ($|errs| &#x3D; 3$).</p>
-<p>Months before, me and @糖醋小鸡块 discussed about the binary error set scenario ($|errs| &#x3D; 2$). Based on the fact that for any binary set $errs &#x3D; \{ e_0, e_1 \}$, we can always find an affine map $f(x) &#x3D; a \cdot x + b$, such that $f(errs) &#x3D; \{0, 1\}$. And this affined error vector is short enough to be obtained on the following lattice: </p>
-<p>$$<br>b &#x3D; s \cdot A + e \pmod{p}<br>\Rightarrow<br>\begin{bmatrix}<br>A \\<br>b \\<br>\textbf{1}^m \\<br>p \cdot I<br>\end{bmatrix}<br>$$</p>
-<p>where $\textbf{1}^m$ is an all-1 vector and $I$ is the identity matrix. With the recovered binary vector, we can learn the pick-up situations of the error vector and solve LWE in a linear system of $(s, errs)$.</p>
-<p>The method also works in this challenge. We’re not able to find a strictly small vector (say binary vector) through affine map with $|errs| &gt; 2$. But it turns out that in this challenge, an affined ternary vector is short enough to be solved through <code>LLL</code>. Then we can solve LWE with the same steps above.</p>
-<h2 id="Pedantic"><a href="#Pedantic" class="headerlink" title="Pedantic"></a>Pedantic</h2><blockquote>
-<ul>
-<li><a href="Pedantic/server.py">server.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to break a zkp protocol with bad Fiat-Shamir Transformation.</p>
-<h3 id="Fiat-Shamir-Transformation"><a href="#Fiat-Shamir-Transformation" class="headerlink" title="Fiat-Shamir Transformation"></a>Fiat-Shamir Transformation</h3><p>Fiat-Shamir Transformation is a practical way to transform an interactive sigma protocol into a non-interactive version. In short, we construct a determined Random Oracle by hashing the current states, and replace the “challenge” generated by the verifier. You can check how <code>hash_points_to_scalars</code> is used in both <code>prove</code> and <code>verify</code> in this challenge.</p>
-<p>RO is the core of the security here: we must make sure the hash function is well-constructed, and the current states are carefully selected. So, the linear structure of <code>hash_points_to_scalars</code> is definitely not a good choice. Xp</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hash_points_to_scalars</span>(<span class="params">pts: <span class="built_in">list</span>[Point], n: <span class="built_in">int</span></span>):</span><br><span class="line">    s = <span class="built_in">sum</span>([hash_point(pt) <span class="keyword">for</span> pt <span class="keyword">in</span> pts]) % q</span><br><span class="line">    ret = []</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        ret.append(s)</span><br><span class="line">        s = (<span class="number">1337</span> * s + <span class="number">7331</span>) % q</span><br><span class="line">    <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
-
-<h3 id="Our-Solution-1"><a href="#Our-Solution-1" class="headerlink" title="Our Solution"></a>Our Solution</h3><p>The most part of the protocol remains secure due to <code>secp256k1</code>, which means we’re not able to forge a valid proof without the knowledge of <code>x</code>. But if we can predict the challenge <code>c</code> in some way, things will be a little different since we can randomly pick <code>z</code> first, and compute <code>Gr = Y*c - G*z</code>.</p>
-<p>For the iteration part, we can use a fixed point:</p>
-<p>$$<br>c &#x3D; a \cdot c + b \Rightarrow c &#x3D; \frac{b}{1 - a} \pmod{q}<br>$$</p>
-<p>Now <code>c</code> is the same in each round, we can focus on how to construct a valid <code>Grs</code> to get the target <code>c</code>. We can generate a set of <code>zs</code> and the corresponding <code>Grs</code> first. Consider there exists a valid subset of <code>Grs</code> satisfying our target, we have:</p>
-<p>$$<br>c &#x3D; \Sigma_{i} k_i \cdot \mathcal{H}(Gr_i) \pmod{q}<br>$$</p>
-<p>where $k_i$ is a binary variable and $\mathcal{H}$ is the hash function <code>hash_point</code>. This is a typical knapsack problem, and we can try to find a solution with <code>LLL</code>.</p>
-<h2 id="Paranoid"><a href="#Paranoid" class="headerlink" title="(*)Paranoid"></a>(*)Paranoid</h2><blockquote>
-<ul>
-<li><a href="Paranoid/server.py">server.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to break a zkp protocol with <strong>NOT THAT BAD</strong> Fiat-Shamir Transformation.</p>
-<h3 id="Some-Discussions"><a href="#Some-Discussions" class="headerlink" title="Some Discussions"></a>Some Discussions</h3><p>For this one, we can still <strong>1)</strong> fix the <code>c</code> first, and <strong>2)</strong> construct a valid <code>Grs</code> to get <code>c</code>. But this time we’re not able to find a fixed point, so the iteration part is unavoidable. </p>
-<p>In this case, we may have to fix a <code>c</code> and randomly get <code>k</code> groups of <code>Grs</code>, picking one out of each group to combine <code>c</code>. This leads to a <code>k</code>-sum problem, while wagner algorithm is an efficient way to solve it. I found a python-implemented version to use, but that’s not enough for this problem. Maybe cpp and careful optimization are necessary for this challenge ig.</p>
-]]></content>
-      <tags>
-        <tag>LLL</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>XCTF-ACTF 2025</title>
-    <url>/2025/04/27/2025-actf/</url>
-    <content><![CDATA[<p>Time: 2025.04.26-27 (online)</p>
-<p>I played XCTF-ACTF 2025 with N0wayBack this weekend, and we got 1st for the first time. My teammates are sooooo strong orz</p>
-<p><img src="/2025/04/27/2025-actf/images/rank.png" alt="rank.png"></p>
-<p>I with @糖醋小鸡块 solved all 4 crypto challenges. All of them are high-quality, and we actually found many interesting unintended solutions XD</p>
-<h2 id="easy-log-12-solves"><a href="#easy-log-12-solves" class="headerlink" title="easy_log (12 solves)"></a>easy_log (12 solves)</h2><blockquote>
-<ul>
-<li><a href="eazy_log/task.py">task.py</a></li>
-</ul>
-</blockquote>
-<p>Yet another DLP challenge. </p>
-<h3 id="Our-Solution"><a href="#Our-Solution" class="headerlink" title="Our Solution"></a>Our Solution</h3><p>At first glance this’s a classic curve problem, so we need to recover the curve first. We (@糖醋小鸡块) tried <a href="https://affine.group/writeup/2024-12-hxp-AlcoholicVariety">an interesting method</a> from @hellman. In this method we take many points as inputs and try to solve the curve parameters by polynomial interpolation. </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> product</span><br><span class="line">R, (x, y) = GF(p)[<span class="string">&quot;x&quot;</span>, <span class="string">&quot;y&quot;</span>].objgens() <span class="comment"># try on each p, since we need to compute kernel basis</span></span><br><span class="line">xt, yt = <span class="number">2</span>, <span class="number">2</span></span><br><span class="line"></span><br><span class="line">monomials = [x**i*y**j <span class="keyword">for</span> i, j <span class="keyword">in</span> product(<span class="built_in">range</span>(xt+<span class="number">1</span>), <span class="built_in">range</span>(yt+<span class="number">1</span>))]</span><br><span class="line">kG2 = [double_and_add(randint(<span class="number">0</span>, p), G2, p) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(monomials)+<span class="number">1</span>)]</span><br><span class="line">A = matrix(GF(p), [[monomial(x, y) <span class="keyword">for</span> monomial <span class="keyword">in</span> monomials] <span class="keyword">for</span> x, y <span class="keyword">in</span> kG2])</span><br><span class="line">coefs = A.right_kernel().basis()</span><br><span class="line"><span class="keyword">for</span> coef <span class="keyword">in</span> coefs:</span><br><span class="line">	f = <span class="built_in">sum</span>([fi*monomial <span class="keyword">for</span> fi, monomial <span class="keyword">in</span> <span class="built_in">zip</span>(coef, monomials)])</span><br><span class="line">	<span class="built_in">print</span>(coef)</span><br><span class="line">	<span class="built_in">print</span>(f)</span><br></pre></td></tr></table></figure>
-
-<p>And this is a universal method, you just need to pre-assume the monomials. We managed to recover the curve as $x^2 + x \cdot y - y^2 + 1 &#x3D; 0$ with <code>G2</code>, but IT DIDN’T WORK ON <code>G1</code>! (And this will be discussed later)</p>
-<p>Now this is a quadratic curve (a conic curve actually), and the order of the curve on $\mathbb{F_p}$ should be $p^2-1$. With some tests, this worked on both <code>G1</code> and <code>G2</code>. Based on this we can implement a PH-BSGS style attack to solve DLP.</p>
-<p>For the first part, we factor the given $n$.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">n = <span class="number">0x231d5fa471913e79facfd95e9b874e2d499def420e0914fab5c9f87e71c2418d1194066bd8376aa8f02ef35c1926f73a46477cd4a88beae89ba575bb3e1b04271426c6706356dd8cd9aa742d7ad0343f8939bfd2110d45122929d29dc022da26551e1ed7000</span></span><br><span class="line">ps = [</span><br><span class="line">    (<span class="number">2</span>, <span class="number">12</span>),</span><br><span class="line">    (<span class="number">5</span>, <span class="number">4</span>),</span><br><span class="line">    (<span class="number">15271784978279</span>, <span class="number">1</span>),</span><br><span class="line">    (<span class="number">10714146599832792643</span>, <span class="number">1</span>), </span><br><span class="line">    (<span class="number">222696442740376752383</span>, <span class="number">3</span>), </span><br><span class="line">    (<span class="number">899889935029682511225429150065010811552017719005924136271659168643090431</span>, <span class="number">1</span>),</span><br><span class="line">    (<span class="number">899889935029682511225429150065010811552017719005924136271659166808024139</span>, <span class="number">1</span>)</span><br><span class="line">]</span><br><span class="line"><span class="keyword">assert</span> n == prod([p**i <span class="keyword">for</span> p, i <span class="keyword">in</span> ps])</span><br></pre></td></tr></table></figure>
-
-<p>It turns out each factor is appropriate for the attack (note that the order on some certain primes are $p-1$). To recover the secret (8*68&#x3D;544bit), we also used p-adic field attack on <code>(222696442740376752383, 3)</code>. Somehow I could only solve it on $p^2$ instead of $p^3$, but that was enough.</p>
-<p>For the second part, we just constructed a smooth prime with several 16bit subgroups. </p>
-<blockquote>
-<p>solution: <a href="eazy_log/exp.py">exp.py</a></p>
-</blockquote>
-<p>Definitely not a pleasing code, but we have a worse one during the contest.</p>
-<h3 id="Some-Additional-Thoughts"><a href="#Some-Additional-Thoughts" class="headerlink" title="Some Additional Thoughts"></a>Some Additional Thoughts</h3><p>So far it’s enough to solve the challenge. We don’t need the curve itself, we just need the order actually. But it’s really weird that <code>G1</code> is not on the curve (not on any curve ig, considering @hellman’s method is universal), but has the same structure.</p>
-<p>After the contest I got the answer from @∝: this is not a curve operation but a matrix operation. </p>
-<p>$$<br>\begin{bmatrix}<br>y_3-x_3 &amp; x_3 \\<br>x_3 &amp; y_3<br>\end{bmatrix}&#x3D;<br>\begin{bmatrix}<br>y_2-x_2 &amp; x_2 \\<br>x_2 &amp; y_2<br>\end{bmatrix}<br>\cdot<br>\begin{bmatrix}<br>y_1-x_1 &amp; x_1 \\<br>x_1 &amp; y_1<br>\end{bmatrix}<br>$$</p>
-<p>This forms a multiplication matrix group. And when the elements satisfy the curve equation, it becomes isomorphic to the addition curve group. But the operation itself doesn’t need the element to be a curve point. And now it’s quite clear. We can analyze the eigenvalues or the group itself to get the order. With the eigenvalues we can also map the elements onto $\mathbb{F_p^2}$, gaining some optimization to solve DLP.</p>
-<p>Since this is not my first time to connect matrixs and quadratic curves, I may find some time to give a comprehensive learning these days. And we still need some math works on how to solve such DLP on $p^i$.</p>
-<h2 id="AAALLL-8-solves"><a href="#AAALLL-8-solves" class="headerlink" title="AAALLL (8 solves)"></a>AAALLL (8 solves)</h2><blockquote>
-<ul>
-<li><a href="AAALLL/task.sage">task.sage</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to find a $n$-degree small ternary polynomial $f$, with $\frac{n}{2}$ pairs of $(x_i, f(x_i))$ on $\mathbb{F_p}$. The special part is that $x_i$ is randomly picked from the roots of $x^n+1$. Here $n&#x3D;450$ and $pbit&#x3D;32$.</p>
-<h3 id="Solution-1-Unintended"><a href="#Solution-1-Unintended" class="headerlink" title="Solution 1 (Unintended)"></a>Solution 1 (Unintended)</h3><p>A direct way is to construct the primal lattice and solve $f$ with <code>flatter</code>. The main reason this worked is $pbit&#x3D;32$ is a little big for $n&#x3D;450$, and it’s enough to solve uSVP under BKZ-2 bound. One can pick a subset of the instances to get a better perfomance.</p>
-<h3 id="Solution-2-Intended"><a href="#Solution-2-Intended" class="headerlink" title="Solution 2 (Intended)"></a>Solution 2 (Intended)</h3><p>The intended solution captures the special structure of the lattice. Since $x_i$ is a root of $x^n+1$, we’re actually dealing with a subset of Vandermonde matrix columns. This is called Partial Vandermonde Knapsack Problem, and you can find a optimized solution in <a href="https://eprint.iacr.org/2024/366">this</a> from Eurocrypt 2024.</p>
-<p><img src="/2025/04/27/2025-actf/images/pvkp.png" alt="pvkp.png"></p>
-<p>To make it clear, we have $x^n + 1 &#x3D; 0 \rightarrow \frac{1}{x} &#x3D; -x^{n-1} \pmod{p}$, and this builds certain connections between $f(x)$ and $f(\frac{1}{x})$. For instance, we have $f(x) &#x3D; a_{n-1} \cdot x^{n-1} + …$ and $f(\frac{1}{x}) &#x3D; a_1 \cdot \frac{1}{x} + …$, and we can sum them up to get $f(x) + f(\frac{1}{x}) &#x3D; (a_{n-1}-a_1) \cdot x^{n-1} + …$.</p>
-<p>In short, we can construct new polynomials $(\phi_+(x), \phi_-(x))$ with $(f(x), f(\frac{1}{x}))$, where $(\phi_+(x), \phi_-(x))$ are small and can be generated with a shorter (about $\lfloor \frac{n}{2} \rfloor$) basis. The following code gives a better explanation.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_ternery_poly</span>(<span class="params">Q</span>):</span><br><span class="line">    <span class="keyword">return</span> Q([choice([-<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(Q.degree())])</span><br><span class="line"></span><br><span class="line">n = <span class="number">450</span></span><br><span class="line">p = <span class="number">3774877201</span></span><br><span class="line">t = n//<span class="number">2</span></span><br><span class="line"></span><br><span class="line">P, x = GF(p)[<span class="string">&quot;x&quot;</span>].objgen()</span><br><span class="line">g = x**n+<span class="number">1</span></span><br><span class="line">roots = [i[<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> g.roots()]</span><br><span class="line">Q = P.quotient(g)</span><br><span class="line"></span><br><span class="line">f = sample_ternery_poly(Q).lift()</span><br><span class="line">rs = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> roots:</span><br><span class="line">    <span class="keyword">if</span> r <span class="keyword">not</span> <span class="keyword">in</span> rs <span class="keyword">and</span> <span class="number">1</span>/r <span class="keyword">not</span> <span class="keyword">in</span> rs:</span><br><span class="line">        rs.append(r)</span><br><span class="line"></span><br><span class="line">xs = [[r**i + <span class="number">1</span>/r**i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n//<span class="number">2</span>+<span class="number">1</span>)] <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line">ys = [f(r) + f(<span class="number">1</span>/r) <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line"><span class="built_in">print</span>(matrix(GF(p), xs).solve_right(vector(ys)))</span><br><span class="line"></span><br><span class="line">xs = [[r**i - <span class="number">1</span>/r**i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n//<span class="number">2</span>+<span class="number">1</span>)] <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line">ys = [f(r) - f(<span class="number">1</span>/r) <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line"><span class="built_in">print</span>(matrix(GF(p), xs).solve_right(vector(ys)))</span><br></pre></td></tr></table></figure>
-
-<p>With high possibility, we can find some pairs of $(f(x), f(\frac{1}{x}))$ from the given data. Then we can solve $(\phi_+, \phi_-)$ from two smaller primal lattices and combine them to get the original polynomial $f$. </p>
-<h2 id="OhMyTetration-8-solves"><a href="#OhMyTetration-8-solves" class="headerlink" title="OhMyTetration (8 solves)"></a>OhMyTetration (8 solves)</h2><blockquote>
-<ul>
-<li><a href="OhMyTetration/task.py">task.py</a></li>
-</ul>
-</blockquote>
-<p>Here is a lottery center with some secret code in <code>lotteryCenter</code>. In short, we can send some $(g, times)$ to the server and receive a tetration $\mathcal{T}(p, g, x, times)$. For instance, $\mathcal{T}(p, g, x, 2) &#x3D; g^{g^x} \pmod{p}$. And our target is to recover $x$.</p>
-<h3 id="Some-Fuzzes"><a href="#Some-Fuzzes" class="headerlink" title="Some Fuzzes"></a>Some Fuzzes</h3><p>It turns out that each time the server randomly chooses a prime $p$ from a small prime set. Take one of them as an example:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p = <span class="number">1502305675703953507826564356364207463785905265358954425050832597353379827611347779894929874274487297076504174110953417469304402049079223143080164648064147459</span></span><br><span class="line">q = (p - <span class="number">1</span>) // <span class="number">2</span></span><br><span class="line">qs = [(<span class="number">2</span>, <span class="number">12</span>), (<span class="number">2449952539</span>, <span class="number">1</span>), (<span class="number">2580715139</span>, <span class="number">1</span>), (<span class="number">2792523953</span>, <span class="number">1</span>), (<span class="number">2945474351</span>, <span class="number">1</span>), (<span class="number">2996317717</span>, <span class="number">1</span>), (<span class="number">3172879987</span>, <span class="number">1</span>), (<span class="number">3229817321</span>, <span class="number">1</span>), (<span class="number">3272969519</span>, <span class="number">1</span>), (<span class="number">3435471803</span>, <span class="number">1</span>), (<span class="number">3606091481</span>, <span class="number">1</span>), (<span class="number">3613773421</span>, <span class="number">1</span>), (<span class="number">3696075863</span>, <span class="number">1</span>), (<span class="number">3706535681</span>, <span class="number">1</span>), (<span class="number">3729911617</span>, <span class="number">1</span>), (<span class="number">3912962413</span>, <span class="number">1</span>), (<span class="number">3919762169</span>, <span class="number">1</span>)]</span><br><span class="line"><span class="keyword">assert</span> q == prod(qi**i <span class="keyword">for</span> qi, i <span class="keyword">in</span> qs) + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>Here $p &#x3D; 2*q + 1$, where $q$ is another big prime and $q-1$ is very smooth. All other $p$ have the same structure so we can just use this one in the following steps. To achieve that in the code, I just kept reconnecting until the server chose my prime.</p>
-<p>Another point worth noting is that we cannot just choose $g$ arbitrarily because of <code>lotteryCenter.defineG(g)</code>. After some tests, we found that some certain primes can pass the check. While it doesn’t expose the underlying checking strategy, we still have the opportunity to get a valid one by keeping constructing some primes.</p>
-<h3 id="Solution-1-Unintended-1"><a href="#Solution-1-Unintended-1" class="headerlink" title="Solution 1 (Unintended)"></a>Solution 1 (Unintended)</h3><p>Considering $q-1$ is smooth, with several 32bit small primes, a PH-BSGS style attack works as:</p>
-<ol>
-<li>Choose a generator $g_i$ from the $q_i$-order subgroup of $\mathbb{F_q}$, here we have $q_i | (q-1)$.</li>
-<li>Receive $y &#x3D; \mathcal{T}(p, g_i, x, 2) &#x3D; g_i^{g_i^x} \pmod{p}$ from the server.</li>
-<li>For all $a \in [0, t]$, compute and store $g_i^{2 \cdot g^{a \cdot t} \pmod{q}} \pmod{p}$.</li>
-<li>For all $b \in [0, t]$, compute $y^{2 \cdot g_i^{-b} \pmod{q}} \pmod{p}$ and query for a corresponding $a$.</li>
-<li>Finally, we have $x &#x3D; a \cdot t + b \pmod{q_i}$, and we can combine them using <code>crt</code>.</li>
-</ol>
-<p>Here we choose $t &#x3D; \lceil \sqrt{q_i} \rceil$ for a balanced perfomance. You can check the correctnest by $y^{g_i^{-b}} &#x3D; g_i^{g_i^{x-b}} &#x3D; g_i^{g_i^{a \cdot t}}\pmod{p}$. The reason we need $g_i^{2 \cdot (…)} \pmod{p}$ instead of $g_i^{(…)} \pmod{p}$ is that the order of $g_i$ may be $p-1 &#x3D; 2 \cdot q$ on $\mathbb{F_p}$, where the order of $g_i^2 \pmod{p}$ is guaranteed to be $q$ (or 1, with negligible probability).</p>
-<p>That’s it. What we need to do is to find a valid prime generator $g_i$, get a piece of $x_i$ locally, and then recover $x \pmod{\frac{q-1}{2}}$ with <code>crt</code>. For this chall, we need a little bruteforce to get the real $x &#x3D; (x \pmod{\frac{q-1}{2}}) + k \cdot \frac{q-1}{2}$.</p>
-<blockquote>
-<ul>
-<li>solution: <a href="OhMyTetration/exp.py">exp.py</a></li>
-</ul>
-</blockquote>
-<p>It actually costed us plenty of time since <code>lotteryCenter.defineG(g)</code> is veryyyyy slow, somehow :o</p>
-<h3 id="Solution-2-Intended-1"><a href="#Solution-2-Intended-1" class="headerlink" title="Solution 2 (Intended)"></a>Solution 2 (Intended)</h3><p>For the intended solution, we need more complex tetrations. As we compute a “higher” tetration tower, the order decreases rapidly as $\phi(\phi(…\phi(p)))$ where $\phi(x)$ is the Euler function. With an appropriate order, we can bruteforce the solution and a piece of $x$ under some modulus.</p>
-<p>This is more complicated. But if the level of tetration got limited or $q-1$ was not that smooth, we might have to try this ig.</p>
-<h2 id="tinyCKKS-2-solves"><a href="#tinyCKKS-2-solves" class="headerlink" title="tinyCKKS (2 solves)"></a>tinyCKKS (2 solves)</h2><blockquote>
-<ul>
-<li><a href="tinyCKKS/main.sage">main.sage</a> # task file</li>
-<li><a href="tinyCKKS/ckks.sage">ckks.sage</a> # ckks main class</li>
-<li><a href="tinyCKKS/ciphertext.sage">ciphertext.sage</a> # ct class</li>
-<li><a href="tinyCKKS/poly.sage">poly.sage</a> # poly class</li>
-<li><a href="tinyCKKS/gadget.sage">gadget.sage</a> # ckks gadget function</li>
-<li><a href="tinyCKKS/distribution.sage">distribution.sage</a> # ckks distribution function</li>
-<li><a href="tinyCKKS/module_test.sage">module_test.sage</a> # module test</li>
-</ul>
-</blockquote>
-<p>A good chance to learn more about FHE-CKKS! Nice code from @den.g_feng :D</p>
-<h3 id="CKKS-Intro"><a href="#CKKS-Intro" class="headerlink" title="CKKS: Intro"></a>CKKS: Intro</h3><p>In CKKS we deal with polynomials on a quotient ring with a prime power modulus $q&#x3D;p^i$. At first the modulus is $p^{L+1}$. In general, CKKS is a RLWE style FHE scheme.</p>
-<ul>
-<li>$\mathcal{Keygen}$: Generate a secret ternary polynomial $sk$.</li>
-<li>$\mathcal{Encode}$: For message polynomial $m$, compute $pt_i &#x3D; \lfloor m_i \cdot p \rfloor$ and construct the plaintext polynomial $pt$.</li>
-<li>$\mathcal{Decode}$: Compute $m_i &#x3D; \frac{pt_i}{p}$ to recover the original $m$.</li>
-<li>$\mathcal{Enc}$: For the plaintext polynomial $pt$, sample a noise polynomial $e$ and a random polynomial $ct_0$. Then compute $ct_1 &#x3D; pt + e - ct_0 \cdot sk$, and the ciphertext pair is $(ct_0, ct_1)$.</li>
-<li>$\mathcal{Dec}$ Compute $pt’ &#x3D; ct_1 + ct_0 \cdot sk$.</li>
-</ul>
-<p>In this challenge we use a simpler encode&#x2F;decode strategy, the original CKKS scheme involves complex number and some other complicated operations.</p>
-<p>It’s important to know that CKKS handles float data, which means $m$ is a float sequence (but $pt$ and other parts are not). You can find out that we actually cannot recover the original $pt$ and $m$ in CKKS. The noise is retained and after decoding, it exists as a small error in $m$.</p>
-<h3 id="Solution-1-Intended"><a href="#Solution-1-Intended" class="headerlink" title="Solution 1 (Intended)"></a>Solution 1 (Intended)</h3><p>In this challenge our target is to submit the <strong>exact</strong> original <code>plain</code>.</p>
-<p>The intended solution uses an interesting feature about CKKS, which may be counter-intuitive to FHE newbies (me). By encoding the decrypted <code>plain</code> again, we can recover the exact $pt + e$, and then we can recover $sk$ with the ciphtext pair $ct$.</p>
-<p>I’m not sure about other FHE schemes but for CKKS, it’s <strong>NOT</strong> a secure option to open a decryption oracle. I think the main reason is that CKKS uses floats instead of integers.</p>
-<blockquote>
-<p>At least in this challenge it’s true. I heard a patched version is available in industrial implementations. </p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">load(<span class="string">&quot;ckks.sage&quot;</span>)</span><br><span class="line"></span><br><span class="line">N = <span class="number">1024</span></span><br><span class="line">p = <span class="number">947819</span></span><br><span class="line">B = <span class="number">2</span></span><br><span class="line">L = <span class="number">4</span></span><br><span class="line"></span><br><span class="line">r = <span class="number">10</span></span><br><span class="line">precision = <span class="number">4</span></span><br><span class="line"></span><br><span class="line">debug = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">ckks = tinyCKKS(N, p, B, L, debug)</span><br><span class="line">plain = [<span class="built_in">round</span>(np.random.uniform(<span class="number">0</span>, r), precision) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(N)]</span><br><span class="line">pt = ckks.encode(plain)</span><br><span class="line">ct = ckks.encrypt(pt)</span><br><span class="line">pt = ckks.decrypt(ct)</span><br><span class="line">plain = ckks.decode(pt)</span><br><span class="line"></span><br><span class="line"><span class="comment"># recover sk</span></span><br><span class="line">P, z = GF(p)[<span class="string">&quot;z&quot;</span>].objgen()</span><br><span class="line">Q = P.quotient_ring(z**N+<span class="number">1</span>)</span><br><span class="line">pt = ckks.encode(plain)</span><br><span class="line">sk = Q((pt - ct.b).poly.<span class="built_in">list</span>()) / Q(ct.a.poly.<span class="built_in">list</span>())</span><br><span class="line"><span class="keyword">assert</span> P(sk.<span class="built_in">list</span>()) == P(ckks.sk.poly.<span class="built_in">list</span>())</span><br><span class="line"></span><br><span class="line"><span class="comment"># recover e</span></span><br><span class="line">plain = [<span class="built_in">round</span>(np.random.uniform(<span class="number">0</span>, r), precision) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(N)]</span><br><span class="line">pt = ckks.encode(plain)</span><br><span class="line">ct = ckks.encrypt(pt)</span><br><span class="line">e = ct.b + ckks.sk*ct.a - pt</span><br><span class="line">e = [ZZ(_+p//<span class="number">2</span>)%p - p//<span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> e.poly.<span class="built_in">list</span>()]</span><br><span class="line"><span class="built_in">print</span>(e)</span><br></pre></td></tr></table></figure>
-
-<p>Remember our target is to submit the orignial <code>plain</code>, so we need to predict $e$ too. Since the server uses a sequence of consecutive <code>getrandbits(4)</code> to generate $e$, we can crack MT19937 with the current $e$ and predict the next one. And the solution is quite clear now: </p>
-<ol>
-<li>(<code>c=1</code>) Get any plaintext-ciphertext pair as your wish, recover $sk$.</li>
-<li>(<code>c=2</code>) Get a ciphertext and the original <code>plain</code>, use $sk$ to recover $e$.</li>
-<li>Recover the underlying MT19937 states and predict the next $e$.</li>
-<li>(<code>c=3</code>) Get a ciphertext, use $sk$ and $e$ to recover the orignal <code>plain</code>.</li>
-</ol>
-<p>It’s worth mentioning that the noise is kinda too small compared to $p$ (you can find it out in <code>module_test</code>, the error between the original <code>plain</code> and the decrypted one is quite small). So it’s also feasible to eliminate the effect of the noise by controlling the precision of the <code>plain</code> (thanks to @hash_hash).</p>
-<h3 id="Solution-2-Unintended"><a href="#Solution-2-Unintended" class="headerlink" title="Solution 2 (Unintended)"></a>Solution 2 (Unintended)</h3><p>My teammate @糖醋小鸡块 found an interesting vuln about MT19937. Another PRNG used in this challenge is <code>np.random</code>, which is also based on MT19937 (in certain versions maybe).</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># distribution.sage</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_uniform_poly</span>(<span class="params">Q</span>):</span><br><span class="line">    q = Q.base_ring().cardinality()</span><br><span class="line">    N = Q.degree()</span><br><span class="line">    <span class="keyword">return</span> polynomial(q, N, Q([np.random.choice([-<span class="number">1</span>, <span class="number">1</span>]) * randbelow(<span class="built_in">int</span>(q//<span class="number">2</span>)) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(Q.degree())]))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_ternery_poly</span>(<span class="params">Q</span>):</span><br><span class="line">    q = Q.base_ring().cardinality()</span><br><span class="line">    N = Q.degree()</span><br><span class="line">    <span class="keyword">return</span> polynomial(q, N, Q([np.random.choice([-<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(Q.degree())]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># main.sage</span></span><br><span class="line">plain = [<span class="built_in">round</span>(np.random.uniform(<span class="number">0</span>, r), precision) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(N)]</span><br></pre></td></tr></table></figure>
-
-<p>While <code>sample_ternery_poly</code> and <code>plain</code> may not be accessible, we can get <code>sample_uniform_poly</code> from <code>ct_0</code> (and somewhere else), and it turns out we can obtain <code>np.random.choice([-1, 1])</code> from the signs of the coefficients. </p>
-<p>Only with enough (say 19937bits) consecutive values of <code>np.random.choice([-1, 1])</code> can we recover the underlying states. So instead of <code>ct</code>, we need to use <code>gen_ksk</code> or <code>gen_relin_key</code> which gives <code>t</code> sets of ciphtertext-like data. Here <code>t=100</code> is big so we can get enough data in one shot. Here is how we solved it:</p>
-<ol>
-<li>(<code>c=1</code> and <code>ccc=3 or 4</code>) Get <code>t</code> sets of <code>sample_uniform_poly</code> data through <code>ksk</code> or <code>galois_key</code> (you can also use <code>relin_key</code> in <code>ccc=2</code>, which may be more complicated to implement). </li>
-<li>Recover the underlying MT19937 states and predict the next <code>plain</code> (you can also predict <code>sample_ternery_poly</code> to get the next $e$).</li>
-</ol>
-<p>We actually thought this is the intended solution since it could use <code>randbelow(q)</code> in <code>sample_uniform_poly</code>. And <code>B</code> is very small to <code>q</code> so <code>t</code> is big enough here, but in <code>module_test</code> we have <code>B=2^8</code>.</p>
-]]></content>
-      <tags>
-        <tag>LLL</tag>
-        <tag>FHE</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Srdnlen CTF 2025 Final (Sardinia, Italy🇮🇹)</title>
-    <url>/2025/09/29/2025-srdnlenctf-final/</url>
-    <content><![CDATA[<p>Time: 2025.09.25-26 (onsite)</p>
-<p>I attended the first Srdnlen CTF Final with r3kapig, and we ended up as rk7.</p>
-<p>We really enjoyed the whole event, sincere thanks to all srdnlen fellas :D</p>
-<p><img src="/2025/09/29/2025-srdnlenctf-final/images/scoreboard.png" alt="scoreboard"></p>
-<p><img src="/2025/09/29/2025-srdnlenctf-final/images/solves.jpg" alt="solves"></p>
-<h2 id="lone-ranger-10-solves"><a href="#lone-ranger-10-solves" class="headerlink" title="lone-ranger (10 solves)"></a>lone-ranger (10 solves)</h2><blockquote>
-<ul>
-<li><a href="lone-ranger/ecc.py">ecc.py</a></li>
-<li><a href="lone-ranger/field.py">field.py</a></li>
-<li><a href="lone-ranger/kzg.py">kzg.py</a></li>
-<li><a href="lone-ranger/prover.py">prover.py</a></li>
-<li><a href="lone-ranger/transcript.py">transcript.py</a></li>
-<li><a href="lone-ranger/output.json">output.json</a></li>
-<li><a href="lone-ranger/srs.json">srs.json</a></li>
-</ul>
-</blockquote>
-<p>People solving this challenge insanely fast, so we assumed it’s easier than it looks like. Then gpt-5 cooked the challenge in minutes.</p>
-<p>I should still go through the whole challenge later, maybe.</p>
-<h2 id="multiple-issues-4-solves"><a href="#multiple-issues-4-solves" class="headerlink" title="multiple-issues (4 solves)"></a>multiple-issues (4 solves)</h2><blockquote>
-<ul>
-<li><a href="multiple-issues/server.py">server.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to forge a valid UOV signature with a 256-time oracle.</p>
-<h3 id="Vuln"><a href="#Vuln" class="headerlink" title="Vuln"></a>Vuln</h3><p>Let’s take a deeper look into the funciton <code>sign</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UOV</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">expand_from_seed</span>(<span class="params">self, seed: <span class="built_in">bytes</span>, shape: <span class="built_in">tuple</span></span>) -&gt; np.ndarray:</span><br><span class="line">        a = np.frombuffer(hashlib.shake_256(seed).digest(np.prod(shape)), dtype=np.uint8)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.F(a % <span class="variable language_">self</span>.q).reshape(shape)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">sign</span>(<span class="params">self, msg: <span class="built_in">bytes</span></span>) -&gt; <span class="built_in">bytes</span>:</span><br><span class="line">        h = <span class="variable language_">self</span>.expand_from_seed(msg, (<span class="variable language_">self</span>.m,))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># deterministic signature thanks to Fiat-Shamir With Aborts</span></span><br><span class="line">        k = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            v = <span class="variable language_">self</span>.expand_from_seed(<span class="variable language_">self</span>.sigma + msg + int_to_bytes(k), (<span class="variable language_">self</span>.n,))     <span class="comment"># &lt;-----</span></span><br><span class="line">            M = <span class="variable language_">self</span>.F([v @ <span class="variable language_">self</span>.priv[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)])</span><br><span class="line">            u = h - <span class="variable language_">self</span>.F([v @ <span class="variable language_">self</span>.pub[i] @ v <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)])</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                o = <span class="variable language_">self</span>.O @ np.linalg.solve(M, u)</span><br><span class="line">                <span class="keyword">return</span> (o + v).tobytes()</span><br><span class="line">            <span class="keyword">except</span> np.linalg.LinAlgError:</span><br><span class="line">                k += <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>If we can find two signatures with the same $v$ but different $o$, we can extract a vector $o \in \mathcal{O}$. So the core idea is to find the collision of <code>self.expand_from_seed(self.sigma + msg + int_to_bytes(k), (self.n,))</code>.</p>
-<p>An interesting fact is <code>int_to_bytes(0) = &#39;&#39;</code>. Suppose we have <code>msg0</code> and <code>msg1 = msg0+int_to_bytes(k0)</code>. If we have: </p>
-<ul>
-<li><code>v0 = expand(sigma+msg0+int_to_bytes(k))</code> aborts at <code>k = k0</code>. </li>
-<li><code>v1 = expand(sigma+msg1+int_to_bytes(k))</code> aborts at <code>k = 0</code>.</li>
-</ul>
-<p>This constructs a collision: </p>
-<ul>
-<li><code>v1 = expand(sigma+msg1+&#39;&#39;) = expand(sigma+msg0+int_to_bytes(k0)) = v0</code>.</li>
-</ul>
-<p>Our strategy is to set a random <code>msg[0]</code> and let <code>msg[i+1] = msg[i] + int_to_bytes(1)</code> (you can also use other <code>k</code>). The collision will take place when <code>msg[i]</code> aborts at <code>k = 1</code>, and <code>msg[i+1]</code> aborts at <code>k = 0</code>. You can find the answer with the fact that $\mathcal{O}$ is the kernel space of the public key.</p>
-<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>For convenience, I may use quadratic mapping style expression:</p>
-<ul>
-<li>$\mathcal{P}_i(v) &#x3D; v \cdot P_i \cdot v$.</li>
-<li>$\mathcal{P}_i’(v_i, v_j) &#x3D; v_i \cdot P_i \cdot v_j$.</li>
-</ul>
-<p>With a single nontrivial vector $o \in \mathcal{O}$ leaked, we can recover the whole kernel space $\mathcal{O}$. For this part, we used <a href="https://affine.group/writeup/2023-07-CorCTF-OilSpill">Hellman’s writeup</a>.</p>
-<p>The general idea is to extract the kernel space of $\mathcal{K} &#x3D; \ker(\{ o \cdot P_i \}_i)$ first, where $\dim(\mathcal{K}) &#x3D; n-m$. Here we have $\mathcal{P}_i(v) &#x3D; 0$ for any $v \in \mathcal{K}$. This also works for $\mathcal{O}$ but stronger: we have $\mathcal{P}_i’(v_i, v_j) &#x3D; 0$ for any $v_i, v_j \in \mathcal{O}$. So $\mathcal{O} \subset \mathcal{K}$ and $\dim(\mathcal{O}) &#x3D; m$.</p>
-<p>Consider the basis set $\mathcal{K} &#x3D; \operatorname{span}(K_{n, n-m})$ and $\mathcal{O} &#x3D; \operatorname{span}(O_{n, m})$. We can always find a linear transformation $B_{n-m, m}$ s.t. $O &#x3D; K \cdot B$. Then we have $O^T \cdot P_i \cdot O &#x3D; B^T \cdot (K^T \cdot P_i \cdot K) \cdot B &#x3D; 0$, and we can extract such $B$ from $\ker(K^T \cdot P_i \cdot K)$, thus recovering the whole $\mathcal{O}$.</p>
-<h2 id="pqke-2-solves"><a href="#pqke-2-solves" class="headerlink" title="pqke (2 solves)"></a>pqke (2 solves)</h2><blockquote>
-<ul>
-<li><a href="pqke/ring.py">ring.py</a></li>
-<li><a href="pqke/server.py">server.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to crack a MLWE-based KE scheme.</p>
-<h3 id="Tricky-Trick"><a href="#Tricky-Trick" class="headerlink" title="Tricky Trick"></a>Tricky Trick</h3><p>The parameters used in this challenge is slightly weaker than Kyber256 (consider RLWE in Kyber512), with a larger modulus $q &#x3D; 65537$. But this still does NOT give us enough advantage to solve the RLWE.</p>
-<p>The key part of this challenge is a tricky way to generate uniform polynomials:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ring</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">binomial</span>(<span class="params">self, f: <span class="built_in">callable</span> = <span class="literal">None</span></span>) -&gt; <span class="string">&quot;RingElem&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> f <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            f = <span class="keyword">lambda</span>: secrets.randbits(<span class="variable language_">self</span>.s).bit_count() - secrets.randbits(<span class="variable language_">self</span>.s).bit_count()</span><br><span class="line">        <span class="keyword">return</span> RingElem(<span class="variable language_">self</span>, coeffs=<span class="variable language_">self</span>.Zq(np.array([f() % <span class="variable language_">self</span>.q <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n)])))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">uniform</span>(<span class="params">self</span>) -&gt; <span class="string">&quot;RingElem&quot;</span>:</span><br><span class="line">        elem = <span class="variable language_">self</span>.binomial()</span><br><span class="line">        <span class="keyword">return</span> RingElem(<span class="variable language_">self</span>, evals=elem.coeffs)</span><br></pre></td></tr></table></figure>
-
-<p>The challenge use <code>binomial</code> to generate small polynomials, the same way as in Kyber and Dilithium. But it calls <code>binomial</code> first and use the evaluations to generate uniform polynomials. This means the evaluations of the uniform polynomial $f(x_i)$ on the NTT points $x_i$ are small. If the evaluation $f(x_i) &#x3D; 0$ (with a non-negligible probability), $f$ contains $(x-x_i)$ as a factor, which serves as a common factor with $x^n+1 &#x3D; \Pi_i (x - x_i)$.</p>
-<p>Based on experiments, we can get a 45-degree common factor on average.</p>
-<h3 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h3><p>What can we do with this? Basically we can use the common factors to eliminate some variables and leak information about the others.</p>
-<p>Consider a single part of the MLWE as a RLWE instance: $b(x) &#x3D; s_0(x) \cdot m_0(x) + s_1(x) \cdot m_1(x) + e(x) \pmod{x^n+1}$. Let $g_{0, 1}(x) &#x3D; \gcd(m_0(x), m_1(x), x^n+1)$, we have $b(x) &#x3D; e(x) \pmod{g_{0, 1}(x)}$, which leads to a easier scenario (compared to the original one). And we can solve $e(x)$ with lattice reduction if the degree of $g(x)$ is big enough.</p>
-<p>Then we can solve the secret polynomials $(s_0(x), s_1(x))$ with $e(x)$. This time we use $g_0(x) &#x3D; \gcd(m_0(x), x^n + 1)$, and $b(x) - e(x) &#x3D; s_1(x) \cdot m_1(x) \pmod{g_0(x)}$. Now we can solve $s_1(x)$ (and $s_0(x)$ similarly).</p>
-<h2 id="aes-3-solves"><a href="#aes-3-solves" class="headerlink" title="(*)aes (3 solves)"></a>(*)aes (3 solves)</h2><blockquote>
-<ul>
-<li><a href="aes/server.py">server.py</a></li>
-<li><a href="aes/sboxes.json">sboxes.json</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to crack a cursed AES with a decryption oracle.</p>
-<h3 id="Cursed-Key-Expansion"><a href="#Cursed-Key-Expansion" class="headerlink" title="Cursed Key Expansion"></a>Cursed Key Expansion</h3><p>Apart from the cipher structure, the main change in the challenge is <code>expand_key</code>, with a strange series of sboxes. It can be noticed that the new sboxes contain several n-to-1 mappings. With deeper experiments, we found that this leads to the round keys gradually converging to a fixed value.</p>
-<p>Converging to the love for Sardinia, yay.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> server <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">aes = AES(key=os.urandom(<span class="number">16</span>))</span><br><span class="line"><span class="keyword">for</span> i, ki <span class="keyword">in</span> <span class="built_in">enumerate</span>(aes.round_keys):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;ki&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x802&lt;\xc7\xa7]\xc97u\x0f\xed@\xd2\x0c\xdd\x0c&#x27;</span></span><br><span class="line"><span class="string">b&#x27;9\x06:\x9b)\xb4&#123;&#125;\x10=sX&quot;n\xb2\x17&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x14\x9d\x1c\xc5\xa8\x0fa\x91\x80\xd0j9un1\x18&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x1b\xf19y\xc2\xc3\x1c\x88\\4\x0f~)n1D&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\xd6\xd2\xe0\x940\xa6\xa3\xd3\xe74\xe0\x9din1b&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3\xddl0ve\x04\x0c4r\xfbin1\xf6&#x27;               &lt;-----</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>The 6 round still has uncertainties, but it converges with an acceptable probability (1&#x2F;1024 approximately). This gives us a chance to extract a 4-round AES-style cipher from the original one. With a decryption oracle, square attack is a good choice.</p>
-<p>I didn’t have time to implement the attack when I figured it out, however.</p>
-<h3 id="4-Round-Square-Attack"><a href="#4-Round-Square-Attack" class="headerlink" title="4-Round Square Attack"></a>4-Round Square Attack</h3><p>For this attack you may find <a href="https://www.davidwong.fr/blockbreakers/">this</a> helpful. The last time I implemented the attack was in 2023, for Blocky challenges in PBCTF and 0CTF. </p>
-<p>In square attack we need a $\Lambda$-set, like <code>[bytes([i] + [0]*15) for i in range(256)]</code>, where all elements have only one different byte. An interesting fact is that <code>sub_bytes</code> and <code>add_round_key</code> does not disrupt the structure of the set, while <code>mix_columns</code> combined with <code>shift_rows</code> does.</p>
-<p><img src="/2025/09/29/2025-srdnlenctf-final/aes/4-r-square-attack.jpg" alt="4-r-square-attack"></p>
-<p>Let’s conduct a brief analysis on how the $\Lambda$-set changes (with this famous and clear flowchart by david). At the very beginning, there’s only one <strong>active</strong> byte. After the first <code>mix_columns</code>, the corresponding bytes in the other rows also get activated. And with the effect of <code>shift_rows</code>, the next <code>mix_columns</code> makes it even more chaotic.</p>
-<p>After the <strong>third</strong> <code>mix_columns</code>, our $\Lambda$-set does not exist anymore, but our adventure’s not over yet. At this point, each byte of the element is a linear combination of 4 previous active bytes, and we can get a linear combination of 4 zero if we sum them up (for “sum them up” I mean <code>pt[0][i] ^ pt[1][i]...</code>).</p>
-<p>The core of the attack is the fact that, the phenomenon described above provides us a key distinguisher.</p>
-<p>The following <code>add_round_key</code> does not change anything, but after <code>sub_byte</code> things will be different. For each byte of the last <code>round_keys[-1]</code> we can bruteforce it, step back to before the last <code>sub_bytes</code>, and recover <code>round_keys[-1]</code> by checking whether the property of the $\Lambda$-set holds. People should know that this is a parallel-friendly strategy.</p>
-<h3 id="5-Round-Square-Attack"><a href="#5-Round-Square-Attack" class="headerlink" title="5-Round Square Attack"></a>5-Round Square Attack</h3><p>One more round added, but there’re no significant changes actually.</p>
-<p><img src="/2025/09/29/2025-srdnlenctf-final/aes/5-r-square-attack.jpg" alt="5-r-square-attack"></p>
-<p>We still need the distinguisher, which means more effort to reverse the output backward to the point. Since there lies another <code>mix_columns</code> between the output and our target, we may have to recover 4 bytes of states in a group (bruteforcing 4 bytes of <code>round_keys[-1]</code>) at one time. The positions of the bytes are determined by <code>shift_rows</code>, as shown in the figure. </p>
-<p>An interesting trick is that we can always swap <code>mix_columns</code> and <code>add_round_key</code>. In this way, we only need to bruteforce <code>round_keys[-2]</code> byte by byte (instead of in groups of 4). Then we can recover <code>round_keys[-1]</code> with the distinguisher.</p>
-<p>The overall computational cost for a group of 4 keys is $\mathcal{O}(2^{40})$ (4+1 bytes). This is also highly parallelizable, thus leading to a $\mathcal{O}(k \cdot 2^{32})$. For implementation we may have to use cpp (or golang).</p>
-<h2 id="it-hiding"><a href="#it-hiding" class="headerlink" title="(*)it-hiding"></a>(*)it-hiding</h2><p>This challenge is for speed-run on the second day.</p>
-<blockquote>
-<ul>
-<li><a href="it-hiding/server.py">server.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to solve a Pedersen Commitment decision problem.</p>
-<h3 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h3><p>Curve W25519 in this challenge is isomorphic to curve ed25519, with the curve order $8 \cdot q$. Since <code>fastecdsa</code> use a $q$-order generator $G$, an apparent solution is to integrate a point in another subgroup, thus changing the order of the commitment $C$. People can be inspired by the Schnorr part ig, which forces the user to send a point generated by $G$.</p>
-<p>Consider we’re taking a 2-order point $B$, how can we by pass the Schnorr part? In Schnorr proof, we need to send $B, (z, c)$ satisfying $\operatorname{challenge}(z \cdot G-c \cdot B, B) &#x3D; c$. Though we’re not able to predict $c$, we know the fact that $c \cdot B &#x3D; O$ for any even $c$ (since $B$ is a 2-order point). Thus we can randomly pick $z$ for several times and compute $c &#x3D; \operatorname{challenge}(z \cdot G, B)$, and we can successfully forge a valid proof $(z, c)$ when we get an even $c$. This may lead to a 50% success rate, acceptable.</p>
-<blockquote>
-<ul>
-<li><a href="it-hiding/exp.py">exp.py</a></li>
-</ul>
-</blockquote>
-<p>One team used the time difference to do the decision, which seems to work locally. But I think this may be influenced badly by network delay and <code>fastecdsa</code>.</p>
-<p>Yeah I didn’t manage to solve it in time, cuz I misused $8 \cdot q$ instead of $q$ while forging a proof, disappointment.</p>
-<h2 id="Milan-Sardinia-Rome"><a href="#Milan-Sardinia-Rome" class="headerlink" title="Milan -&gt; Sardinia -&gt; Rome"></a>Milan -&gt; Sardinia -&gt; Rome</h2><p>My first time to EU, fascinated.</p>
-<p>Painful that I had to spend 30 hours on the plane, with bad sleep and endless plane food. But you always need to pay something ig.</p>
-<table>
-<thead>
-<tr>
-<th><img src="images/flight1.jpg" height="200"></th>
-<th><img src="images/flight2.jpg" height="200"></th>
-</tr>
-</thead>
-</table>
-<p>My body arrived in Milan early in the morning (while my soul arrived after hours), and honestly the weather was very cold, gloomy and frustrating. But when we landed in Sardinia, things got better. I myself is kinda weather-sensitive so that was such a relief.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/milan.jpg" alt="milan"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia.jpg" alt="sardinia"></th>
-</tr>
-</thead>
-</table>
-<p>No so sure I had Linguine or Spaghetti that night.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/day1dinner.jpg" alt="day1dinner"></th>
-</tr>
-</thead>
-</table>
-<p>The CTF event’s just impressive. We really enjoyed all crypto challenges (it’d be better if we cleared them XD).</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event1.jpg" alt="event1"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event2.jpg" alt="event2"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event3.jpg" alt="event3"></th>
-</tr>
-</thead>
-</table>
-<p>I had to refresh myself from time to time because of jet lag, taking a glimpse of the local life. I may spend more days on the island next time, if possible.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia1.jpg" alt="sardinia1"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia2.jpg" alt="sardinia2"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia3.jpg" alt="sardinia3"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia4.jpg" alt="sardinia4"></th>
-</tr>
-</thead>
-</table>
-<p>The first night’s pizza was on the host, and I had Spaghetti and Macaroni on the second day.</p>
-<p>Of courese I had things other than noodles lmao. It’s just fun trying to pick up different pastas.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/spaghetti.jpg" alt="spaghetti"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/macaroni.jpg" alt="macaroni"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/pizza.jpg" alt="pizza"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/food.jpg" alt="food"></th>
-</tr>
-</thead>
-</table>
-<p>Shouldn’t post the photo of them ig. But I think it’s a cool one XD</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/bar.jpg" alt="bar"></th>
-</tr>
-</thead>
-</table>
-<p>We spent one day and a half in Rome after the event. Here comes Rome’s Day and Night.</p>
-<p>I love pleasant weathers.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome1.jpg" alt="dayrome1"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome3.jpg" alt="dayrome3"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome2.jpg" alt="dayrome2"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome4.jpg" alt="dayrome4"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome5.jpg" alt="dayrome5"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome1.jpg" alt="nightrome1"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome3.jpg" alt="nightrome3"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome2.jpg" alt="nightrome2"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome4.jpg" alt="nightrome4"></th>
-</tr>
-</thead>
-</table>
-<p>A lemon🍋</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/lemon.jpg" alt="lemon"></th>
-</tr>
-</thead>
-</table>
-<p>I had Fettuccine for my last meal before leaving. They’re all tasty, but noodles will not be an option for my next month ig.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/fettuccine.jpg" alt="fettuccine"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/beef.jpg" alt="beef"></th>
-<th><img src="/2025/09/29/2025-srdnlenctf-final/images/chicken.jpg" alt="chicken"></th>
-</tr>
-</thead>
-</table>
-]]></content>
-      <tags>
-        <tag>ECC</tag>
-        <tag>UOV</tag>
-        <tag>ZKP</tag>
-        <tag>LLL</tag>
-        <tag>AES</tag>
       </tags>
   </entry>
   <entry>
@@ -1309,58 +1061,6 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
       </tags>
   </entry>
   <entry>
-    <title>zk-Openings::Srdnlen CTF 2025 Qual</title>
-    <url>/2025/03/24/2025-srdnlenctf/</url>
-    <content><![CDATA[<p>Time: 2025.01.19-20 (online)</p>
-<p>Interesting challenge, but I didn’t have enough time to solve it during the contest XDDD</p>
-<h2 id="zk-Openings-0-solve"><a href="#zk-Openings-0-solve" class="headerlink" title="zk-Openings (0 solve)"></a>zk-Openings (0 solve)</h2><blockquote>
-<ul>
-<li><a href="https://github.com/srdnlen/srdnlenctf-2025_public/tree/main/crypto_zk-openings/src">https://github.com/srdnlen/srdnlenctf-2025_public&#x2F;tree&#x2F;main&#x2F;crypto_zk-openings&#x2F;src</a></li>
-</ul>
-</blockquote>
-<p>I actually learnt a lot from the implementation, thank you @lrnzsir.</p>
-<h3 id="KZG-Commitment"><a href="#KZG-Commitment" class="headerlink" title="KZG Commitment"></a>KZG Commitment</h3><p>KZG commitment is a polynomial commitment scheme proposed by <a href="https://www.iacr.org/archive/asiacrypt2010/6477178/6477178.pdf">Kate et al in 2010</a>.</p>
-<p>While the original paper used a symmertric type-1 pairing, we prefer to use type-3 pairing these days. Basically we have three groups $(G_1, G_2, G_T)$ , two generators $(g_1 \in G_1, g_2 \in G_2)$, and a bilinear pairing function $e: G_1 \times G_2 \rightarrow G_T$. </p>
-<ol>
-<li>$\mathcal{Setup}(d) \rightarrow srs$: randomly samples a secret value $x$, and computes $srs &#x3D; (g_1^{x}, …, g_1^{x^d}, g_2^{x})$. While $x$ is considered to be “toxic waste”, it must be generated by trusted authority and deleted properly after use.</li>
-<li>$\mathcal{Commit}(srs, f) \rightarrow com$: computes the commitment $com &#x3D; g_1^{\Sigma_{i&#x3D;0}^d f_i \cdot x^i} &#x3D; \Pi_{i&#x3D;0}^{d} (g_1^{x^i})^{f_i}$ for the polynomial.</li>
-<li>$\mathcal{EvalProve}(srs, f, z) \rightarrow (\pi, f(z))$: computes a polynomial $q(x) &#x3D; \frac{f(x) - f(z)}{x-z}$. Then it computes the proof $\pi &#x3D; g_1^{\Sigma_{i&#x3D;0}^d q_i \cdot x^i} &#x3D; \Pi_{i&#x3D;0}^{d} (g_1^{x^i})^{q_i}$, proving that one knows the evaluation of $f$ over $z$.</li>
-<li>$\mathcal{EvalVerify}(srs, com, \pi, z, f(z)) \rightarrow 0&#x2F;1$: verifies the proof by checking $e(com \cdot g_1^{-f(z)}, g_2) \overset{?}{&#x3D;} e(\pi, g_2^{s} \cdot g_2^{-z})$.</li>
-</ol>
-<blockquote>
-<p>Note that KZG is a commitment (instead of ZKP) scheme. </p>
-</blockquote>
-<h3 id="The-Challenge"><a href="#The-Challenge" class="headerlink" title="The Challenge"></a>The Challenge</h3><p>For this challenge, we performs the KZG process on some secret polynomial $f$ and ended up with <code>opening.json</code>. Considering the difficulty of DLP under standard parameters, I actually just skip the content related to curve points. So basically we have $k&#x3D;20$ pairs of $(x_i, y_i&#x3D;f(x_i))$.</p>
-<p>And here is how we get the secret polynomial. </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">assert</span> n <span class="keyword">in</span> AES.key_size <span class="comment"># 32</span></span><br><span class="line">key = os.urandom(n)</span><br><span class="line">evals = <span class="built_in">list</span>(key)</span><br><span class="line">poly = P(intt(evals))</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">all</span>(poly(H[i]) == key[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">lcg</span>(<span class="params">m: <span class="built_in">int</span>, a: <span class="built_in">int</span>, c: <span class="built_in">int</span>, x: <span class="built_in">int</span></span>) -&gt; <span class="string">&quot;Generator[int, None, None]&quot;</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Linear Congruential Generator &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        x = (a * x + c) % m</span><br><span class="line">        <span class="keyword">yield</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a, c, x = [secrets.randbelow(p) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line">rng = lcg(p, a, c, x)</span><br><span class="line"></span><br><span class="line">k = <span class="number">20</span></span><br><span class="line">hiding_poly = P([<span class="built_in">next</span>(rng) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k)])</span><br><span class="line">hidden_poly = poly + hiding_poly * Z_H</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">all</span>(hidden_poly(H[i]) == key[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n))</span><br></pre></td></tr></table></figure>
-
-<p>In short, we have a 32-degree polynomial $f(x)$ and a 20-degree polynomial $g(x)$, where $f(H_i) &#x3D; key_i$ and $g_i$ is generated successively by a secret LCG. Then we have our secret polynomial $h(x) &#x3D; f(x) + g(x) \cdot (x^n-1)$ satisfying $h(H_i) &#x3D; f(H_i) &#x3D; key_i$ since $H_i^n &#x3D; 1$.</p>
-<p>According to previous discussion, we have 20 pairs of random points $(x_i, h(x_i))$, which is apparently not enough to recover $h(x)$. Considering $key_i$ is very small compared to $p$, LLL is our option. </p>
-<p>We can’t construct the Lattice directly, but we can resort to $g(x)$. The first step is to establish a linear representation between $g(x)$ and $key_i$, which is quite simple, since <code>ntt</code>, <code>intt</code> and <code>polynomial_evaluation</code> are all linear transformations. </p>
-<ul>
-<li>$\vec{key} &#x3D; NTT_{n \times n} \cdot \vec{f}$</li>
-<li>$\vec{y} &#x3D; X_{k \times (n+k)} \cdot \vec{h} &#x3D; FX_{k \times n} \cdot \vec{f}+ GX_{k \times k} \cdot \vec{g}$</li>
-</ul>
-<p>$\Rightarrow \vec{g} &#x3D; GX^{-1} \cdot (\vec{y} - FX \cdot NTT^{-1} \cdot \vec{key})$</p>
-<p>For $NTT^{-1}$, you can also compute $iNTT$.</p>
-<h3 id="Linearization-for-Unknown-LCG"><a href="#Linearization-for-Unknown-LCG" class="headerlink" title="Linearization for Unknown LCG"></a>Linearization for Unknown LCG</h3><p>We know that $g_{i+1} &#x3D; a \cdot g_i + b$, but $(a, b)$ are randomly chosen on $GF_p$. To get rid of them, we construct equations like $(g_{i+d_0} - g_{i}) \cdot (g_{j+d_1} - g_{j}) &#x3D; (g_{i+d_1} - g_{i}) \cdot (g_{j+d_0} - g_{j})$.</p>
-<p>Here comes an interesting (maybe) question: how many linearly independent equations can we get? Well this did appealled to me and @糖醋小鸡块. Since we can get $k-2$ equations like $y_{i+1} &#x3D; a \cdot y_i$, we can choose any two of them to eliminate $a$, and thus we have $C(k-2, 2)$ equations.</p>
-<p>For @lrnzsir’s strategy, he iterates $(g_{i+2}-g_{i+1}) \cdot (g_{j+1}-g_j) &#x3D; (g_{i+1}-g_i) \cdot (g_{j+2}-g_{j+1})$ for all $i, j \in [k - 2]$ and $i &lt; j$. We can get exactly $C(k-2, 2)$ equations and each equation contains a unique binomial (thus linear independent). So this is the best we can get.</p>
-<blockquote>
-<p>We (@糖醋小鸡块) believe there exists a better way for theoratical analysis.</p>
-</blockquote>
-<p>With linear transformation, we have $C(k-2, 2)$ quadratic equations about $key_i$ now, containing $n + C(n+1, 2)$ monomials. Then we can do LLL on the linearized system to recover the key. One can ignore some equations and utilize <code>flatter</code> for better efficiency.</p>
-<blockquote>
-<p><a href="zk-Openings/exp.py">exp.py</a></p>
-</blockquote>
-<p>There maybe some difference in my code since it’s implemented months ago XD</p>
-]]></content>
-      <tags>
-        <tag>LLL</tag>
-        <tag>KZG</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SECCON CTF 2025 Final (Tokyo, Japan🇯🇵)</title>
     <url>/2025/03/04/2025-secconctf-final/</url>
     <content><![CDATA[<p>Time: 2025.03.01-02 (onsite)</p>
@@ -1436,8 +1136,256 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
 <p>Sincere thanks to @crazyman :D (Wish I could go to Mt. Fuji.)<br>I realy enjoyed Tokyo. It’d be better if I can hang out for one or two two more days.</p>
 ]]></content>
       <tags>
-        <tag>UOV</tag>
         <tag>LLL</tag>
+        <tag>UOV</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Srdnlen CTF 2025 Final (Sardinia, Italy🇮🇹)</title>
+    <url>/2025/09/29/2025-srdnlenctf-final/</url>
+    <content><![CDATA[<p>Time: 2025.09.25-26 (onsite)</p>
+<p>I attended the first Srdnlen CTF Final with r3kapig, and we ended up as rk7.</p>
+<p>We really enjoyed the whole event, sincere thanks to all srdnlen fellas :D</p>
+<p><img src="/2025/09/29/2025-srdnlenctf-final/images/scoreboard.png" alt="scoreboard"></p>
+<p><img src="/2025/09/29/2025-srdnlenctf-final/images/solves.jpg" alt="solves"></p>
+<h2 id="lone-ranger-10-solves"><a href="#lone-ranger-10-solves" class="headerlink" title="lone-ranger (10 solves)"></a>lone-ranger (10 solves)</h2><blockquote>
+<ul>
+<li><a href="lone-ranger/ecc.py">ecc.py</a></li>
+<li><a href="lone-ranger/field.py">field.py</a></li>
+<li><a href="lone-ranger/kzg.py">kzg.py</a></li>
+<li><a href="lone-ranger/prover.py">prover.py</a></li>
+<li><a href="lone-ranger/transcript.py">transcript.py</a></li>
+<li><a href="lone-ranger/output.json">output.json</a></li>
+<li><a href="lone-ranger/srs.json">srs.json</a></li>
+</ul>
+</blockquote>
+<p>People solving this challenge insanely fast, so we assumed it’s easier than it looks like. Then gpt-5 cooked the challenge in minutes.</p>
+<p>I should still go through the whole challenge later, maybe.</p>
+<h2 id="multiple-issues-4-solves"><a href="#multiple-issues-4-solves" class="headerlink" title="multiple-issues (4 solves)"></a>multiple-issues (4 solves)</h2><blockquote>
+<ul>
+<li><a href="multiple-issues/server.py">server.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to forge a valid UOV signature with a 256-time oracle.</p>
+<h3 id="Vuln"><a href="#Vuln" class="headerlink" title="Vuln"></a>Vuln</h3><p>Let’s take a deeper look into the funciton <code>sign</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UOV</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">expand_from_seed</span>(<span class="params">self, seed: <span class="built_in">bytes</span>, shape: <span class="built_in">tuple</span></span>) -&gt; np.ndarray:</span><br><span class="line">        a = np.frombuffer(hashlib.shake_256(seed).digest(np.prod(shape)), dtype=np.uint8)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.F(a % <span class="variable language_">self</span>.q).reshape(shape)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">sign</span>(<span class="params">self, msg: <span class="built_in">bytes</span></span>) -&gt; <span class="built_in">bytes</span>:</span><br><span class="line">        h = <span class="variable language_">self</span>.expand_from_seed(msg, (<span class="variable language_">self</span>.m,))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># deterministic signature thanks to Fiat-Shamir With Aborts</span></span><br><span class="line">        k = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            v = <span class="variable language_">self</span>.expand_from_seed(<span class="variable language_">self</span>.sigma + msg + int_to_bytes(k), (<span class="variable language_">self</span>.n,))     <span class="comment"># &lt;-----</span></span><br><span class="line">            M = <span class="variable language_">self</span>.F([v @ <span class="variable language_">self</span>.priv[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)])</span><br><span class="line">            u = h - <span class="variable language_">self</span>.F([v @ <span class="variable language_">self</span>.pub[i] @ v <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)])</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                o = <span class="variable language_">self</span>.O @ np.linalg.solve(M, u)</span><br><span class="line">                <span class="keyword">return</span> (o + v).tobytes()</span><br><span class="line">            <span class="keyword">except</span> np.linalg.LinAlgError:</span><br><span class="line">                k += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>If we can find two signatures with the same $v$ but different $o$, we can extract a vector $o \in \mathcal{O}$. So the core idea is to find the collision of <code>self.expand_from_seed(self.sigma + msg + int_to_bytes(k), (self.n,))</code>.</p>
+<p>An interesting fact is <code>int_to_bytes(0) = &#39;&#39;</code>. Suppose we have <code>msg0</code> and <code>msg1 = msg0+int_to_bytes(k0)</code>. If we have: </p>
+<ul>
+<li><code>v0 = expand(sigma+msg0+int_to_bytes(k))</code> aborts at <code>k = k0</code>. </li>
+<li><code>v1 = expand(sigma+msg1+int_to_bytes(k))</code> aborts at <code>k = 0</code>.</li>
+</ul>
+<p>This constructs a collision: </p>
+<ul>
+<li><code>v1 = expand(sigma+msg1+&#39;&#39;) = expand(sigma+msg0+int_to_bytes(k0)) = v0</code>.</li>
+</ul>
+<p>Our strategy is to set a random <code>msg[0]</code> and let <code>msg[i+1] = msg[i] + int_to_bytes(1)</code> (you can also use other <code>k</code>). The collision will take place when <code>msg[i]</code> aborts at <code>k = 1</code>, and <code>msg[i+1]</code> aborts at <code>k = 0</code>. You can find the answer with the fact that $\mathcal{O}$ is the kernel space of the public key.</p>
+<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>For convenience, I may use quadratic mapping style expression:</p>
+<ul>
+<li>$\mathcal{P}_i(v) &#x3D; v \cdot P_i \cdot v$.</li>
+<li>$\mathcal{P}_i’(v_i, v_j) &#x3D; v_i \cdot P_i \cdot v_j$.</li>
+</ul>
+<p>With a single nontrivial vector $o \in \mathcal{O}$ leaked, we can recover the whole kernel space $\mathcal{O}$. For this part, we used <a href="https://affine.group/writeup/2023-07-CorCTF-OilSpill">Hellman’s writeup</a>.</p>
+<p>The general idea is to extract the kernel space of $\mathcal{K} &#x3D; \ker(\{ o \cdot P_i \}_i)$ first, where $\dim(\mathcal{K}) &#x3D; n-m$. Here we have $\mathcal{P}_i(v) &#x3D; 0$ for any $v \in \mathcal{K}$. This also works for $\mathcal{O}$ but stronger: we have $\mathcal{P}_i’(v_i, v_j) &#x3D; 0$ for any $v_i, v_j \in \mathcal{O}$. So $\mathcal{O} \subset \mathcal{K}$ and $\dim(\mathcal{O}) &#x3D; m$.</p>
+<p>Consider the basis set $\mathcal{K} &#x3D; \operatorname{span}(K_{n, n-m})$ and $\mathcal{O} &#x3D; \operatorname{span}(O_{n, m})$. We can always find a linear transformation $B_{n-m, m}$ s.t. $O &#x3D; K \cdot B$. Then we have $O^T \cdot P_i \cdot O &#x3D; B^T \cdot (K^T \cdot P_i \cdot K) \cdot B &#x3D; 0$, and we can extract such $B$ from $\ker(K^T \cdot P_i \cdot K)$, thus recovering the whole $\mathcal{O}$.</p>
+<h2 id="pqke-2-solves"><a href="#pqke-2-solves" class="headerlink" title="pqke (2 solves)"></a>pqke (2 solves)</h2><blockquote>
+<ul>
+<li><a href="pqke/ring.py">ring.py</a></li>
+<li><a href="pqke/server.py">server.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to crack a MLWE-based KE scheme.</p>
+<h3 id="Tricky-Trick"><a href="#Tricky-Trick" class="headerlink" title="Tricky Trick"></a>Tricky Trick</h3><p>The parameters used in this challenge is slightly weaker than Kyber256 (consider RLWE in Kyber512), with a larger modulus $q &#x3D; 65537$. But this still does NOT give us enough advantage to solve the RLWE.</p>
+<p>The key part of this challenge is a tricky way to generate uniform polynomials:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ring</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">binomial</span>(<span class="params">self, f: <span class="built_in">callable</span> = <span class="literal">None</span></span>) -&gt; <span class="string">&quot;RingElem&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> f <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            f = <span class="keyword">lambda</span>: secrets.randbits(<span class="variable language_">self</span>.s).bit_count() - secrets.randbits(<span class="variable language_">self</span>.s).bit_count()</span><br><span class="line">        <span class="keyword">return</span> RingElem(<span class="variable language_">self</span>, coeffs=<span class="variable language_">self</span>.Zq(np.array([f() % <span class="variable language_">self</span>.q <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n)])))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">uniform</span>(<span class="params">self</span>) -&gt; <span class="string">&quot;RingElem&quot;</span>:</span><br><span class="line">        elem = <span class="variable language_">self</span>.binomial()</span><br><span class="line">        <span class="keyword">return</span> RingElem(<span class="variable language_">self</span>, evals=elem.coeffs)</span><br></pre></td></tr></table></figure>
+
+<p>The challenge use <code>binomial</code> to generate small polynomials, the same way as in Kyber and Dilithium. But it calls <code>binomial</code> first and use the evaluations to generate uniform polynomials. This means the evaluations of the uniform polynomial $f(x_i)$ on the NTT points $x_i$ are small. If the evaluation $f(x_i) &#x3D; 0$ (with a non-negligible probability), $f$ contains $(x-x_i)$ as a factor, which serves as a common factor with $x^n+1 &#x3D; \Pi_i (x - x_i)$.</p>
+<p>Based on experiments, we can get a 45-degree common factor on average.</p>
+<h3 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h3><p>What can we do with this? Basically we can use the common factors to eliminate some variables and leak information about the others.</p>
+<p>Consider a single part of the MLWE as a RLWE instance: $b(x) &#x3D; s_0(x) \cdot m_0(x) + s_1(x) \cdot m_1(x) + e(x) \pmod{x^n+1}$. Let $g_{0, 1}(x) &#x3D; \gcd(m_0(x), m_1(x), x^n+1)$, we have $b(x) &#x3D; e(x) \pmod{g_{0, 1}(x)}$, which leads to a easier scenario (compared to the original one). And we can solve $e(x)$ with lattice reduction if the degree of $g(x)$ is big enough.</p>
+<p>Then we can solve the secret polynomials $(s_0(x), s_1(x))$ with $e(x)$. This time we use $g_0(x) &#x3D; \gcd(m_0(x), x^n + 1)$, and $b(x) - e(x) &#x3D; s_1(x) \cdot m_1(x) \pmod{g_0(x)}$. Now we can solve $s_1(x)$ (and $s_0(x)$ similarly).</p>
+<h2 id="aes-3-solves"><a href="#aes-3-solves" class="headerlink" title="(*)aes (3 solves)"></a>(*)aes (3 solves)</h2><blockquote>
+<ul>
+<li><a href="aes/server.py">server.py</a></li>
+<li><a href="aes/sboxes.json">sboxes.json</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to crack a cursed AES with a decryption oracle.</p>
+<h3 id="Cursed-Key-Expansion"><a href="#Cursed-Key-Expansion" class="headerlink" title="Cursed Key Expansion"></a>Cursed Key Expansion</h3><p>Apart from the cipher structure, the main change in the challenge is <code>expand_key</code>, with a strange series of sboxes. It can be noticed that the new sboxes contain several n-to-1 mappings. With deeper experiments, we found that this leads to the round keys gradually converging to a fixed value.</p>
+<p>Converging to the love for Sardinia, yay.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> server <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">aes = AES(key=os.urandom(<span class="number">16</span>))</span><br><span class="line"><span class="keyword">for</span> i, ki <span class="keyword">in</span> <span class="built_in">enumerate</span>(aes.round_keys):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;ki&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x802&lt;\xc7\xa7]\xc97u\x0f\xed@\xd2\x0c\xdd\x0c&#x27;</span></span><br><span class="line"><span class="string">b&#x27;9\x06:\x9b)\xb4&#123;&#125;\x10=sX&quot;n\xb2\x17&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x14\x9d\x1c\xc5\xa8\x0fa\x91\x80\xd0j9un1\x18&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x1b\xf19y\xc2\xc3\x1c\x88\\4\x0f~)n1D&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\xd6\xd2\xe0\x940\xa6\xa3\xd3\xe74\xe0\x9din1b&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3\xddl0ve\x04\x0c4r\xfbin1\xf6&#x27;               &lt;-----</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>The 6 round still has uncertainties, but it converges with an acceptable probability (1&#x2F;1024 approximately). This gives us a chance to extract a 4-round AES-style cipher from the original one. With a decryption oracle, square attack is a good choice.</p>
+<p>I didn’t have time to implement the attack when I figured it out, however.</p>
+<h3 id="4-Round-Square-Attack"><a href="#4-Round-Square-Attack" class="headerlink" title="4-Round Square Attack"></a>4-Round Square Attack</h3><p>For this attack you may find <a href="https://www.davidwong.fr/blockbreakers/">this</a> helpful. The last time I implemented the attack was in 2023, for Blocky challenges in PBCTF and 0CTF. </p>
+<p>In square attack we need a $\Lambda$-set, like <code>[bytes([i] + [0]*15) for i in range(256)]</code>, where all elements have only one different byte. An interesting fact is that <code>sub_bytes</code> and <code>add_round_key</code> does not disrupt the structure of the set, while <code>mix_columns</code> combined with <code>shift_rows</code> does.</p>
+<p><img src="/2025/09/29/2025-srdnlenctf-final/aes/4-r-square-attack.jpg" alt="4-r-square-attack"></p>
+<p>Let’s conduct a brief analysis on how the $\Lambda$-set changes (with this famous and clear flowchart by david). At the very beginning, there’s only one <strong>active</strong> byte. After the first <code>mix_columns</code>, the corresponding bytes in the other rows also get activated. And with the effect of <code>shift_rows</code>, the next <code>mix_columns</code> makes it even more chaotic.</p>
+<p>After the <strong>third</strong> <code>mix_columns</code>, our $\Lambda$-set does not exist anymore, but our adventure’s not over yet. At this point, each byte of the element is a linear combination of 4 previous active bytes, and we can get a linear combination of 4 zero if we sum them up (for “sum them up” I mean <code>pt[0][i] ^ pt[1][i]...</code>).</p>
+<p>The core of the attack is the fact that, the phenomenon described above provides us a key distinguisher.</p>
+<p>The following <code>add_round_key</code> does not change anything, but after <code>sub_byte</code> things will be different. For each byte of the last <code>round_keys[-1]</code> we can bruteforce it, step back to before the last <code>sub_bytes</code>, and recover <code>round_keys[-1]</code> by checking whether the property of the $\Lambda$-set holds. People should know that this is a parallel-friendly strategy.</p>
+<h3 id="5-Round-Square-Attack"><a href="#5-Round-Square-Attack" class="headerlink" title="5-Round Square Attack"></a>5-Round Square Attack</h3><p>One more round added, but there’re no significant changes actually.</p>
+<p><img src="/2025/09/29/2025-srdnlenctf-final/aes/5-r-square-attack.jpg" alt="5-r-square-attack"></p>
+<p>We still need the distinguisher, which means more effort to reverse the output backward to the point. Since there lies another <code>mix_columns</code> between the output and our target, we may have to recover 4 bytes of states in a group (bruteforcing 4 bytes of <code>round_keys[-1]</code>) at one time. The positions of the bytes are determined by <code>shift_rows</code>, as shown in the figure. </p>
+<p>An interesting trick is that we can always swap <code>mix_columns</code> and <code>add_round_key</code>. In this way, we only need to bruteforce <code>round_keys[-2]</code> byte by byte (instead of in groups of 4). Then we can recover <code>round_keys[-1]</code> with the distinguisher.</p>
+<p>The overall computational cost for a group of 4 keys is $\mathcal{O}(2^{40})$ (4+1 bytes). This is also highly parallelizable, thus leading to a $\mathcal{O}(k \cdot 2^{32})$. For implementation we may have to use cpp (or golang).</p>
+<h2 id="it-hiding"><a href="#it-hiding" class="headerlink" title="(*)it-hiding"></a>(*)it-hiding</h2><p>This challenge is for speed-run on the second day.</p>
+<blockquote>
+<ul>
+<li><a href="it-hiding/server.py">server.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to solve a Pedersen Commitment decision problem.</p>
+<h3 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h3><p>Curve W25519 in this challenge is isomorphic to curve ed25519, with the curve order $8 \cdot q$. Since <code>fastecdsa</code> use a $q$-order generator $G$, an apparent solution is to integrate a point in another subgroup, thus changing the order of the commitment $C$. People can be inspired by the Schnorr part ig, which forces the user to send a point generated by $G$.</p>
+<p>Consider we’re taking a 2-order point $B$, how can we by pass the Schnorr part? In Schnorr proof, we need to send $B, (z, c)$ satisfying $\operatorname{challenge}(z \cdot G-c \cdot B, B) &#x3D; c$. Though we’re not able to predict $c$, we know the fact that $c \cdot B &#x3D; O$ for any even $c$ (since $B$ is a 2-order point). Thus we can randomly pick $z$ for several times and compute $c &#x3D; \operatorname{challenge}(z \cdot G, B)$, and we can successfully forge a valid proof $(z, c)$ when we get an even $c$. This may lead to a 50% success rate, acceptable.</p>
+<blockquote>
+<ul>
+<li><a href="it-hiding/exp.py">exp.py</a></li>
+</ul>
+</blockquote>
+<p>One team used the time difference to do the decision, which seems to work locally. But I think this may be influenced badly by network delay and <code>fastecdsa</code>.</p>
+<p>Yeah I didn’t manage to solve it in time, cuz I misused $8 \cdot q$ instead of $q$ while forging a proof, disappointment.</p>
+<h2 id="Milan-Sardinia-Rome"><a href="#Milan-Sardinia-Rome" class="headerlink" title="Milan -&gt; Sardinia -&gt; Rome"></a>Milan -&gt; Sardinia -&gt; Rome</h2><p>My first time to EU, fascinated.</p>
+<p>Painful that I had to spend 30 hours on the plane, with bad sleep and endless plane food. But you always need to pay something ig.</p>
+<table>
+<thead>
+<tr>
+<th><img src="images/flight1.jpg" height="200"></th>
+<th><img src="images/flight2.jpg" height="200"></th>
+</tr>
+</thead>
+</table>
+<p>My body arrived in Milan early in the morning (while my soul arrived after hours), and honestly the weather was very cold, gloomy and frustrating. But when we landed in Sardinia, things got better. I myself is kinda weather-sensitive so that was such a relief.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/milan.jpg" alt="milan"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia.jpg" alt="sardinia"></th>
+</tr>
+</thead>
+</table>
+<p>No so sure I had Linguine or Spaghetti that night.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/day1dinner.jpg" alt="day1dinner"></th>
+</tr>
+</thead>
+</table>
+<p>The CTF event’s just impressive. We really enjoyed all crypto challenges (it’d be better if we cleared them XD).</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event1.jpg" alt="event1"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event2.jpg" alt="event2"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event3.jpg" alt="event3"></th>
+</tr>
+</thead>
+</table>
+<p>I had to refresh myself from time to time because of jet lag, taking a glimpse of the local life. I may spend more days on the island next time, if possible.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia1.jpg" alt="sardinia1"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia2.jpg" alt="sardinia2"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia3.jpg" alt="sardinia3"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia4.jpg" alt="sardinia4"></th>
+</tr>
+</thead>
+</table>
+<p>The first night’s pizza was on the host, and I had Spaghetti and Macaroni on the second day.</p>
+<p>Of courese I had things other than noodles lmao. It’s just fun trying to pick up different pastas.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/spaghetti.jpg" alt="spaghetti"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/macaroni.jpg" alt="macaroni"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/pizza.jpg" alt="pizza"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/food.jpg" alt="food"></th>
+</tr>
+</thead>
+</table>
+<p>Shouldn’t post the photo of them ig. But I think it’s a cool one XD</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/bar.jpg" alt="bar"></th>
+</tr>
+</thead>
+</table>
+<p>We spent one day and a half in Rome after the event. Here comes Rome’s Day and Night.</p>
+<p>I love pleasant weathers.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome1.jpg" alt="dayrome1"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome3.jpg" alt="dayrome3"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome2.jpg" alt="dayrome2"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome4.jpg" alt="dayrome4"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome5.jpg" alt="dayrome5"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome1.jpg" alt="nightrome1"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome3.jpg" alt="nightrome3"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome2.jpg" alt="nightrome2"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome4.jpg" alt="nightrome4"></th>
+</tr>
+</thead>
+</table>
+<p>A lemon🍋</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/lemon.jpg" alt="lemon"></th>
+</tr>
+</thead>
+</table>
+<p>I had Fettuccine for my last meal before leaving. They’re all tasty, but noodles will not be an option for my next month ig.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/fettuccine.jpg" alt="fettuccine"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/beef.jpg" alt="beef"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/chicken.jpg" alt="chicken"></th>
+</tr>
+</thead>
+</table>
+]]></content>
+      <tags>
+        <tag>LLL</tag>
+        <tag>UOV</tag>
+        <tag>ECC</tag>
+        <tag>ZKP</tag>
+        <tag>AES</tag>
       </tags>
   </entry>
   <entry>
@@ -1479,7 +1427,7 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
 <li>The content of the flag is a uuid4 string, which is a fixed-format hexadecimal string.</li>
 </ol>
 <p>Here we can use a special trick for hexadecimal strings. The only unknown part in the flag is the hex characters, each of which can we consider as two variables: high 4-bits and low 4-bits. Taking a deep look, you will find out that the high 4-bits has only 2 possible values.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> <span class="string">&#x27;0123456789abcdef&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(ch, <span class="built_in">bin</span>(<span class="built_in">ord</span>(ch))[<span class="number">2</span>:].zfill(<span class="number">8</span>))</span><br><span class="line"><span class="number">0</span> 00110000</span><br><span class="line"><span class="number">1</span> 00110001</span><br><span class="line"><span class="number">2</span> 00110010</span><br><span class="line"><span class="number">3</span> 00110011</span><br><span class="line"><span class="number">4</span> 00110100</span><br><span class="line"><span class="number">5</span> 00110101</span><br><span class="line"><span class="number">6</span> 00110110</span><br><span class="line"><span class="number">7</span> 00110111</span><br><span class="line"><span class="number">8</span> 00111000</span><br><span class="line"><span class="number">9</span> 00111001</span><br><span class="line">a 01100001</span><br><span class="line">b 01100010</span><br><span class="line">c 01100011</span><br><span class="line">d 01100100</span><br><span class="line">e 01100101</span><br><span class="line">f 01100110</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> <span class="string">&#x27;0123456789abcdef&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(ch, <span class="built_in">bin</span>(<span class="built_in">ord</span>(ch))[<span class="number">2</span>:].zfill(<span class="number">8</span>))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0 00110000</span></span><br><span class="line"><span class="string">1 00110001</span></span><br><span class="line"><span class="string">2 00110010</span></span><br><span class="line"><span class="string">3 00110011</span></span><br><span class="line"><span class="string">4 00110100</span></span><br><span class="line"><span class="string">5 00110101</span></span><br><span class="line"><span class="string">6 00110110</span></span><br><span class="line"><span class="string">7 00110111</span></span><br><span class="line"><span class="string">8 00111000</span></span><br><span class="line"><span class="string">9 00111001</span></span><br><span class="line"><span class="string">a 01100001</span></span><br><span class="line"><span class="string">b 01100010</span></span><br><span class="line"><span class="string">c 01100011</span></span><br><span class="line"><span class="string">d 01100100</span></span><br><span class="line"><span class="string">e 01100101</span></span><br><span class="line"><span class="string">f 01100110</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>So we can transform the possible values of high&#x2F;low 4-bits into $[0, 1]\cap \mathbb{Z}$ and $[-5, 4]\cap \mathbb{Z}$, and build a linear system optimized for LLL-based attack. The parsing stuff is painful so I managed to implement an abstract way to build the linear system, which seems to be helpful in many similar conditions.</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">s2v</span>(<span class="params">s: <span class="built_in">str</span></span>):</span><br><span class="line">    v = <span class="built_in">list</span>()</span><br><span class="line">    <span class="keyword">for</span> si <span class="keyword">in</span> s:</span><br><span class="line">        x = (<span class="built_in">ord</span>(si) &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0xf</span> <span class="comment"># 3, 6</span></span><br><span class="line">        x = (x - <span class="number">3</span>) * inverse_mod(<span class="number">3</span>, G_order) % G_order</span><br><span class="line">        v.append(x) <span class="comment"># 0, 1</span></span><br><span class="line"></span><br><span class="line">        y = <span class="built_in">ord</span>(si) &amp; <span class="number">0xf</span> <span class="comment"># 0, ..., 9</span></span><br><span class="line">        y = (y - <span class="number">5</span>) % G_order</span><br><span class="line">        v.append(y) <span class="comment"># -5, ... 4</span></span><br><span class="line">    <span class="keyword">return</span> v</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">v2s</span>(<span class="params">v: <span class="built_in">list</span></span>):</span><br><span class="line">    s = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(v), <span class="number">2</span>):</span><br><span class="line">        x = v[i]</span><br><span class="line">        x = (x * <span class="number">3</span> + <span class="number">3</span>) % G_order</span><br><span class="line"></span><br><span class="line">        y = v[i+<span class="number">1</span>]</span><br><span class="line">        y = (y + <span class="number">5</span>) % G_order</span><br><span class="line"></span><br><span class="line">        s += <span class="built_in">chr</span>((x &lt;&lt; <span class="number">4</span>) | y)</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">X, Y = <span class="built_in">list</span>(), <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">    FLAG = <span class="string">&quot;alictf&#123;&quot;</span>+<span class="built_in">str</span>(uuid4())+<span class="string">&quot;&#125;&quot;</span></span><br><span class="line">    X.append(s2v(FLAG[<span class="number">7</span>:-<span class="number">1</span>].replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>)))</span><br><span class="line">    Y.append(<span class="built_in">int</span>(FLAG.encode().<span class="built_in">hex</span>(), <span class="number">16</span>) % G_order)</span><br><span class="line">X, Y = matrix(Zmod(G_order), X), vector(Zmod(G_order), Y)</span><br><span class="line">H = (X[:-<span class="number">1</span>] - X[<span class="number">1</span>:]).solve_right(Y[:-<span class="number">1</span>] - Y[<span class="number">1</span>:])</span><br><span class="line">Y0 = Y[<span class="number">0</span>] - X[<span class="number">0</span>]*H</span><br><span class="line"></span><br><span class="line"><span class="comment"># check</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    FLAG = <span class="string">&quot;alictf&#123;&quot;</span>+<span class="built_in">str</span>(uuid4())+<span class="string">&quot;&#125;&quot;</span></span><br><span class="line">    v = vector(Zmod(G_order), s2v(FLAG[<span class="number">7</span>:-<span class="number">1</span>].replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    ct = <span class="built_in">int</span>(FLAG.encode().<span class="built_in">hex</span>(), <span class="number">16</span>) % G_order</span><br><span class="line">    <span class="keyword">assert</span> v*H + Y0 == ct</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -1500,6 +1448,58 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
         <tag>ChaCha20-Poly1305</tag>
         <tag>Reed-Solomon</tag>
         <tag>MT19937</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>zk-Openings::Srdnlen CTF 2025 Qual</title>
+    <url>/2025/03/24/2025-srdnlenctf/</url>
+    <content><![CDATA[<p>Time: 2025.01.19-20 (online)</p>
+<p>Interesting challenge, but I didn’t have enough time to solve it during the contest XDDD</p>
+<h2 id="zk-Openings-0-solve"><a href="#zk-Openings-0-solve" class="headerlink" title="zk-Openings (0 solve)"></a>zk-Openings (0 solve)</h2><blockquote>
+<ul>
+<li><a href="https://github.com/srdnlen/srdnlenctf-2025_public/tree/main/crypto_zk-openings/src">https://github.com/srdnlen/srdnlenctf-2025_public&#x2F;tree&#x2F;main&#x2F;crypto_zk-openings&#x2F;src</a></li>
+</ul>
+</blockquote>
+<p>I actually learnt a lot from the implementation, thank you @lrnzsir.</p>
+<h3 id="KZG-Commitment"><a href="#KZG-Commitment" class="headerlink" title="KZG Commitment"></a>KZG Commitment</h3><p>KZG commitment is a polynomial commitment scheme proposed by <a href="https://www.iacr.org/archive/asiacrypt2010/6477178/6477178.pdf">Kate et al in 2010</a>.</p>
+<p>While the original paper used a symmertric type-1 pairing, we prefer to use type-3 pairing these days. Basically we have three groups $(G_1, G_2, G_T)$ , two generators $(g_1 \in G_1, g_2 \in G_2)$, and a bilinear pairing function $e: G_1 \times G_2 \rightarrow G_T$. </p>
+<ol>
+<li>$\mathcal{Setup}(d) \rightarrow srs$: randomly samples a secret value $x$, and computes $srs &#x3D; (g_1^{x}, …, g_1^{x^d}, g_2^{x})$. While $x$ is considered to be “toxic waste”, it must be generated by trusted authority and deleted properly after use.</li>
+<li>$\mathcal{Commit}(srs, f) \rightarrow com$: computes the commitment $com &#x3D; g_1^{\Sigma_{i&#x3D;0}^d f_i \cdot x^i} &#x3D; \Pi_{i&#x3D;0}^{d} (g_1^{x^i})^{f_i}$ for the polynomial.</li>
+<li>$\mathcal{EvalProve}(srs, f, z) \rightarrow (\pi, f(z))$: computes a polynomial $q(x) &#x3D; \frac{f(x) - f(z)}{x-z}$. Then it computes the proof $\pi &#x3D; g_1^{\Sigma_{i&#x3D;0}^d q_i \cdot x^i} &#x3D; \Pi_{i&#x3D;0}^{d} (g_1^{x^i})^{q_i}$, proving that one knows the evaluation of $f$ over $z$.</li>
+<li>$\mathcal{EvalVerify}(srs, com, \pi, z, f(z)) \rightarrow 0&#x2F;1$: verifies the proof by checking $e(com \cdot g_1^{-f(z)}, g_2) \overset{?}{&#x3D;} e(\pi, g_2^{s} \cdot g_2^{-z})$.</li>
+</ol>
+<blockquote>
+<p>Note that KZG is a commitment (instead of ZKP) scheme. </p>
+</blockquote>
+<h3 id="The-Challenge"><a href="#The-Challenge" class="headerlink" title="The Challenge"></a>The Challenge</h3><p>For this challenge, we performs the KZG process on some secret polynomial $f$ and ended up with <code>opening.json</code>. Considering the difficulty of DLP under standard parameters, I actually just skip the content related to curve points. So basically we have $k&#x3D;20$ pairs of $(x_i, y_i&#x3D;f(x_i))$.</p>
+<p>And here is how we get the secret polynomial. </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">assert</span> n <span class="keyword">in</span> AES.key_size <span class="comment"># 32</span></span><br><span class="line">key = os.urandom(n)</span><br><span class="line">evals = <span class="built_in">list</span>(key)</span><br><span class="line">poly = P(intt(evals))</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">all</span>(poly(H[i]) == key[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">lcg</span>(<span class="params">m: <span class="built_in">int</span>, a: <span class="built_in">int</span>, c: <span class="built_in">int</span>, x: <span class="built_in">int</span></span>) -&gt; <span class="string">&quot;Generator[int, None, None]&quot;</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Linear Congruential Generator &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        x = (a * x + c) % m</span><br><span class="line">        <span class="keyword">yield</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a, c, x = [secrets.randbelow(p) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line">rng = lcg(p, a, c, x)</span><br><span class="line"></span><br><span class="line">k = <span class="number">20</span></span><br><span class="line">hiding_poly = P([<span class="built_in">next</span>(rng) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k)])</span><br><span class="line">hidden_poly = poly + hiding_poly * Z_H</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">all</span>(hidden_poly(H[i]) == key[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n))</span><br></pre></td></tr></table></figure>
+
+<p>In short, we have a 32-degree polynomial $f(x)$ and a 20-degree polynomial $g(x)$, where $f(H_i) &#x3D; key_i$ and $g_i$ is generated successively by a secret LCG. Then we have our secret polynomial $h(x) &#x3D; f(x) + g(x) \cdot (x^n-1)$ satisfying $h(H_i) &#x3D; f(H_i) &#x3D; key_i$ since $H_i^n &#x3D; 1$.</p>
+<p>According to previous discussion, we have 20 pairs of random points $(x_i, h(x_i))$, which is apparently not enough to recover $h(x)$. Considering $key_i$ is very small compared to $p$, LLL is our option. </p>
+<p>We can’t construct the Lattice directly, but we can resort to $g(x)$. The first step is to establish a linear representation between $g(x)$ and $key_i$, which is quite simple, since <code>ntt</code>, <code>intt</code> and <code>polynomial_evaluation</code> are all linear transformations. </p>
+<ul>
+<li>$\vec{key} &#x3D; NTT_{n \times n} \cdot \vec{f}$</li>
+<li>$\vec{y} &#x3D; X_{k \times (n+k)} \cdot \vec{h} &#x3D; FX_{k \times n} \cdot \vec{f}+ GX_{k \times k} \cdot \vec{g}$</li>
+</ul>
+<p>$\Rightarrow \vec{g} &#x3D; GX^{-1} \cdot (\vec{y} - FX \cdot NTT^{-1} \cdot \vec{key})$</p>
+<p>For $NTT^{-1}$, you can also compute $iNTT$.</p>
+<h3 id="Linearization-for-Unknown-LCG"><a href="#Linearization-for-Unknown-LCG" class="headerlink" title="Linearization for Unknown LCG"></a>Linearization for Unknown LCG</h3><p>We know that $g_{i+1} &#x3D; a \cdot g_i + b$, but $(a, b)$ are randomly chosen on $GF_p$. To get rid of them, we construct equations like $(g_{i+d_0} - g_{i}) \cdot (g_{j+d_1} - g_{j}) &#x3D; (g_{i+d_1} - g_{i}) \cdot (g_{j+d_0} - g_{j})$.</p>
+<p>Here comes an interesting (maybe) question: how many linearly independent equations can we get? Well this did appealled to me and @糖醋小鸡块. Since we can get $k-2$ equations like $y_{i+1} &#x3D; a \cdot y_i$, we can choose any two of them to eliminate $a$, and thus we have $C(k-2, 2)$ equations.</p>
+<p>For @lrnzsir’s strategy, he iterates $(g_{i+2}-g_{i+1}) \cdot (g_{j+1}-g_j) &#x3D; (g_{i+1}-g_i) \cdot (g_{j+2}-g_{j+1})$ for all $i, j \in [k - 2]$ and $i &lt; j$. We can get exactly $C(k-2, 2)$ equations and each equation contains a unique binomial (thus linear independent). So this is the best we can get.</p>
+<blockquote>
+<p>We (@糖醋小鸡块) believe there exists a better way for theoratical analysis.</p>
+</blockquote>
+<p>With linear transformation, we have $C(k-2, 2)$ quadratic equations about $key_i$ now, containing $n + C(n+1, 2)$ monomials. Then we can do LLL on the linearized system to recover the key. One can ignore some equations and utilize <code>flatter</code> for better efficiency.</p>
+<blockquote>
+<p><a href="zk-Openings/exp.py">exp.py</a></p>
+</blockquote>
+<p>There maybe some difference in my code since it’s implemented months ago XD</p>
+]]></content>
+      <tags>
+        <tag>LLL</tag>
+        <tag>KZG</tag>
       </tags>
   </entry>
   <entry>
