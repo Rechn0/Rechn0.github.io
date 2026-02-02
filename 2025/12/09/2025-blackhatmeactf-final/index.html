@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Time: 2025.12.02-04 (onsite) I attended the Black Hat MEA CTF 2025 Final with r3kapig in Riyadh, Saudi Arabia. After three days working we got the 2nd place 🥈 in the competition, GG to all my teammat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)">
+<meta property="og:url" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/index.html">
+<meta property="og:site_name" content="Rec|rEc|reC">
+<meta property="og:description" content="Time: 2025.12.02-04 (onsite) I attended the Black Hat MEA CTF 2025 Final with r3kapig in Riyadh, Saudi Arabia. After three days working we got the 2nd place 🥈 in the competition, GG to all my teammat">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/scoreboard.png">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/aes_gcm.png">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/team1.jpg">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/team2.jpg">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/bhmea.jpg">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/3.jpg">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/4.jpg">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/2.jpg">
+<meta property="og:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/5.jpg">
+<meta property="article:published_time" content="2025-12-09T08:45:32.000Z">
+<meta property="article:modified_time" content="2026-02-02T15:15:13.370Z">
+<meta property="article:author" content="rec">
+<meta property="article:tag" content="AES-GCM">
+<meta property="article:tag" content="SPN">
+<meta property="article:tag" content="McEliece">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/images/scoreboard.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/1.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/1.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/1.png">
+        
+      
+    
+    <!-- title -->
+    <title>BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/links/">Links</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2025/12/22/2025-0ctf/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/09/29/2025-srdnlenctf-final/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&text=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&is_video=false&description=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)&body=Check out this article: http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&name=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&t=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#day1"><span class="toc-number">1.</span> <span class="toc-text">day1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Que"><span class="toc-number">1.1.</span> <span class="toc-text">Que?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tampering-Detection-System"><span class="toc-number">1.2.</span> <span class="toc-text">Tampering Detection System</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AES-GCM"><span class="toc-number">1.2.1.</span> <span class="toc-text">AES-GCM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCM-Routine"><span class="toc-number">1.2.2.</span> <span class="toc-text">GCM Routine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AAD-Construction"><span class="toc-number">1.2.3.</span> <span class="toc-text">AAD Construction</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#day2"><span class="toc-number">2.</span> <span class="toc-text">day2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#doloRSitAmet"><span class="toc-number">2.1.</span> <span class="toc-text">doloRSitAmet</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#All-about-Sample-Strategy"><span class="toc-number">2.1.1.</span> <span class="toc-text">All about Sample Strategy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#limeade"><span class="toc-number">2.2.</span> <span class="toc-text">limeade</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Structure-Analysis"><span class="toc-number">2.2.1.</span> <span class="toc-text">Structure Analysis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Boomerang-Style-Attack"><span class="toc-number">2.2.2.</span> <span class="toc-text">Boomerang Style Attack</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ella"><span class="toc-number">2.3.</span> <span class="toc-text">(*)ella</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#day3"><span class="toc-number">3.</span> <span class="toc-text">day3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#NoisyChannel"><span class="toc-number">3.1.</span> <span class="toc-text">NoisyChannel</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Our-Solution"><span class="toc-number">3.1.1.</span> <span class="toc-text">Our Solution</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LCC-LLC"><span class="toc-number">3.2.</span> <span class="toc-text">(*)LCC LLC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Decode-Failure-Oracle"><span class="toc-number">3.2.1.</span> <span class="toc-text">Decode Failure Oracle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Optimization"><span class="toc-number">3.2.2.</span> <span class="toc-text">Optimization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JSON-Manipulation"><span class="toc-number">3.2.3.</span> <span class="toc-text">JSON Manipulation</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#In-Saudi-Arabia"><span class="toc-number">4.</span> <span class="toc-text">In Saudi Arabia</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">rec</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-12-09T08:45:32.000Z" class="dt-published" itemprop="datePublished">2025-12-09</time>
+        
+        (Updated: <time datetime="2026-02-02T15:15:13.370Z" class="dt-updated" itemprop="dateModified">2026-02-02</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/AES-GCM/" rel="tag">AES-GCM</a>, <a class="p-category" href="/tags/McEliece/" rel="tag">McEliece</a>, <a class="p-category" href="/tags/SPN/" rel="tag">SPN</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>Time: 2025.12.02-04 (onsite)</p>
+<p>I attended the Black Hat MEA CTF 2025 Final with r3kapig in Riyadh, Saudi Arabia.</p>
+<p>After three days working we got the 2nd place 🥈 in the competition, GG to all my teammates!</p>
+<p><img src="/2025/12/09/2025-blackhatmeactf-final/images/scoreboard.png" alt="scoreboard"></p>
+<h1 id="day1"><a href="#day1" class="headerlink" title="day1"></a>day1</h1><h2 id="Que"><a href="#Que" class="headerlink" title="Que?"></a>Que?</h2><ul>
+<li><a href="day1/que/que.py">que.py</a></li>
+</ul>
+<p>@chatgpt didn’t get a chance to take a look. XD</p>
+<h2 id="Tampering-Detection-System"><a href="#Tampering-Detection-System" class="headerlink" title="Tampering Detection System"></a>Tampering Detection System</h2><ul>
+<li><a href="day1/TDS/server.py">server.py</a></li>
+</ul>
+<h3 id="AES-GCM"><a href="#AES-GCM" class="headerlink" title="AES-GCM"></a>AES-GCM</h3><p><img src="/2025/12/09/2025-blackhatmeactf-final/images/aes_gcm.png" alt="aes-gcm"></p>
+<p>Some code by me for a better understanding. (I prefer $E_0$ while it’s $J_0$ in the figure.)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> GF</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> long_to_bytes, bytes_to_long</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">z0 = GF(<span class="number">2</span>)[<span class="string">&quot;z0&quot;</span>].gen()</span><br><span class="line">F, z = GF(<span class="number">2</span>**<span class="number">128</span>, name=<span class="string">&quot;z&quot;</span>, modulus=z0**<span class="number">128</span> + z0**<span class="number">7</span> + z0**<span class="number">2</span> + z0 + <span class="number">1</span>).objgen()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">xor</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">bytes</span>([ai^bi <span class="keyword">for</span> ai, bi <span class="keyword">in</span> <span class="built_in">zip</span>(a, b)])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pad128</span>(<span class="params">pt</span>):</span><br><span class="line">    <span class="keyword">return</span> pt + <span class="string">b&#x27;\x00&#x27;</span> * ((<span class="number">16</span> - <span class="built_in">len</span>(pt))%<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">len64</span>(<span class="params">pt</span>):</span><br><span class="line">    <span class="keyword">return</span> long_to_bytes(<span class="built_in">len</span>(pt)*<span class="number">8</span>, <span class="number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">b2gf</span>(<span class="params">b</span>):</span><br><span class="line">    <span class="keyword">return</span> F(<span class="built_in">list</span>(<span class="built_in">bin</span>(bytes_to_long(b))[<span class="number">2</span>:].zfill(<span class="number">128</span>)))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gf2b</span>(<span class="params">g</span>):</span><br><span class="line">    <span class="keyword">return</span> long_to_bytes(<span class="built_in">int</span>(<span class="string">&#x27;&#x27;</span>.join(<span class="built_in">map</span>(<span class="built_in">str</span>, g.<span class="built_in">list</span>())), <span class="number">2</span>), <span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">TAG</span>(<span class="params">key: <span class="built_in">bytes</span>, aad: <span class="built_in">bytes</span>, nonce: <span class="built_in">bytes</span>, ct: <span class="built_in">bytes</span></span>):</span><br><span class="line">    aes = AES.new(key=key, mode=AES.MODE_ECB)</span><br><span class="line">    E0 = aes.encrypt(nonce + long_to_bytes(<span class="number">1</span>, <span class="number">4</span>))</span><br><span class="line">    H = aes.encrypt(long_to_bytes(<span class="number">0</span>, <span class="number">16</span>))</span><br><span class="line">    C = pad128(aad) + pad128(ct) + len64(aad) + len64(ct)</span><br><span class="line">    TAG = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(C), <span class="number">16</span>):</span><br><span class="line">        TAG += b2gf(C[i:i+<span class="number">16</span>])</span><br><span class="line">        TAG *= b2gf(H)</span><br><span class="line">    TAG += b2gf(E0)</span><br><span class="line">    <span class="keyword">return</span> gf2b(TAG) <span class="comment"># GHASH(H, C) + E0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">CT</span>(<span class="params">key: <span class="built_in">bytes</span>, nonce: <span class="built_in">bytes</span>, pt: <span class="built_in">bytes</span></span>):</span><br><span class="line">    aes = AES.new(key=key, mode=AES.MODE_ECB)</span><br><span class="line">    H = aes.encrypt(long_to_bytes(<span class="number">0</span>, <span class="number">16</span>))</span><br><span class="line">    ctr = nonce + long_to_bytes(<span class="number">1</span>, <span class="number">4</span>)</span><br><span class="line">    ct = <span class="string">b&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(pt), <span class="number">16</span>):</span><br><span class="line">        ctr = long_to_bytes(bytes_to_long(ctr) + <span class="number">1</span>, <span class="number">16</span>)</span><br><span class="line">        pti = pt[i: i+<span class="number">16</span>]</span><br><span class="line">        cti = xor(pti, aes.encrypt(ctr)[:<span class="built_in">len</span>(pti)])</span><br><span class="line">        ct += cti</span><br><span class="line">    <span class="keyword">return</span> ct    </span><br></pre></td></tr></table></figure>
+
+<h3 id="GCM-Routine"><a href="#GCM-Routine" class="headerlink" title="GCM Routine"></a>GCM Routine</h3><p>As always, we need to recover <code>(H, E0)</code> first. We have: </p>
+<ul>
+<li><code>tag = GHASH(H, C) + E0</code></li>
+<li><code>tag2 - tag1 = GHASH(H, C2) - GHASH(H, C1) = GHASH(H, xor(C2, C1))</code></li>
+</ul>
+<p>Then we can find the roots of the polynomial on GF, which includes <code>H</code>. We don’t know <code>(ct1, ct2)</code> but for AES-GCM we have <code>xor(ct1, ct2) = xor(pt1, pt2)</code>, and <code>xor(C1, C2) = 0_128||xor(pt1, pt2)||0_64||0_64</code>.</p>
+<p>With <code>H</code>, we can solve <code>E0 = tag_flag - GHASH(H, C_flag)</code>, thus enabling us to forge a valid tag for any ciphertext.</p>
+<h3 id="AAD-Construction"><a href="#AAD-Construction" class="headerlink" title="AAD Construction"></a>AAD Construction</h3><p>In the second part we’re given a decryption oracle, requiring truncating <code>length</code> and <code>aad</code>. Our target is to recover <code>ct</code> and decrypt the flag.</p>
+<p>One may notice that each <code>ct</code> corresponds to a unique <code>aad</code>, which can be solved from a linear equation on GF. Consider we have recovered <code>ct[:i]</code>, we can bruteforce <code>ct[:i+1] = ct[:i] + ch</code> and find the real <code>ch</code> by checking the corresponding <code>aad</code>, thus recovering <code>ct</code> byte by byte.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">z0 = GF(<span class="number">2</span>)[<span class="string">&quot;z0&quot;</span>].gen()</span><br><span class="line">F, z = GF(<span class="number">2</span>**<span class="number">128</span>, name=<span class="string">&quot;z&quot;</span>, modulus=z0**<span class="number">128</span> + z0**<span class="number">7</span> + z0**<span class="number">2</span> + z0 + <span class="number">1</span>).objgen()</span><br><span class="line">x = F[<span class="string">&quot;x&quot;</span>].gen()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">    aad = <span class="string">b&quot;\x00&quot;</span>*<span class="number">16</span></span><br><span class="line">    ct = prefix + <span class="built_in">bytes</span>([ch])</span><br><span class="line">    C = pad128(aad) + pad128(ct) + len64(aad) + len64(ct)</span><br><span class="line">    ftag = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(C), <span class="number">16</span>):</span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">0</span>:</span><br><span class="line">            Ci = x</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            Ci = b2gf(C[i: i+<span class="number">16</span>])</span><br><span class="line">        ftag += Ci</span><br><span class="line">        ftag *= b2gf(H)</span><br><span class="line">    ftag += b2gf(E0) + b2gf(tag2)</span><br><span class="line">    ans = ftag.univariate_polynomial().roots()</span><br><span class="line">    aad = gf2b(ans[<span class="number">0</span>][<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+
+<p>With a long enough <code>ct</code>, we can decrypt our flag now.</p>
+<ul>
+<li><a href="day1/TDS/exp.py">exp.py</a></li>
+</ul>
+<h1 id="day2"><a href="#day2" class="headerlink" title="day2"></a>day2</h1><h2 id="doloRSitAmet"><a href="#doloRSitAmet" class="headerlink" title="doloRSitAmet"></a>doloRSitAmet</h2><ul>
+<li><a href="day2/doloRSitAmet/server.py">server.py</a></li>
+</ul>
+<h3 id="All-about-Sample-Strategy"><a href="#All-about-Sample-Strategy" class="headerlink" title="All about Sample Strategy"></a>All about Sample Strategy</h3><p>Clearly, 4 equations are not enough to solve the whole system, but we can ‘glue’ some variables by setting certain seeds. For instance we can fix <code>1,2</code> showing up together, which leads to a new variable.</p>
+<p>At first I tried to split them into 3 parts like <code>[(0), (1,2,3), (4)]</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Seed 15901 gives [0, 1, 2, 3, 4]</span><br><span class="line">Seed 22733 gives [4, 1, 2, 3, 0]</span><br><span class="line">Seed 15054 gives [1, 2, 3, 0, 4]</span><br><span class="line">Seed 17502 gives [1, 2, 3, 4, 0]</span><br></pre></td></tr></table></figure>
+
+<p>With 4 equations we can obtain a linear equation of the form $a \cdot x + b \cdot y + c &#x3D; 0 \pmod{n}$. It’s indeed solvable with LLL, but we need some (too much) luck to get <strong>2 small variables</strong>. This costed me a lot of time.</p>
+<p>Then I realized if we glue 4 variables together, there’s only 2 variables left in 2 equations, and we can obtain a univariate polynomial. Just do it twice:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Seed 15901 gives [0, 1, 2, 3, 4]</span><br><span class="line">Seed 17502 gives [1, 2, 3, 4, 0]</span><br><span class="line">Seed 4145  gives [0, 2, 3, 4, 5]</span><br><span class="line">Seed 15589 gives [2, 3, 4, 5, 0]</span><br></pre></td></tr></table></figure>
+
+<p>With 2 polynomials, we can solve the first variable by <code>gcd</code>. This gives us another linear equation with 2 variables (the first sentence and the flag sentence) but much smaller (there’s only 32 bytes unknown in the flag sentence), so we just LLL and get the flag.</p>
+<ul>
+<li><a href="day2/doloRSitAmet/exp.py">exp.py</a></li>
+</ul>
+<h2 id="limeade"><a href="#limeade" class="headerlink" title="limeade"></a>limeade</h2><ul>
+<li><a href="day2/limeade/limeade.py">limeade.py</a></li>
+</ul>
+<p>A juicy challenge, for real.</p>
+<h3 id="Structure-Analysis"><a href="#Structure-Analysis" class="headerlink" title="Structure Analysis"></a>Structure Analysis</h3><p>To put it briefly, <code>Lime</code> includes permutation (<code>Roll</code>) and substitution (<code>Squeeze</code>) funcion. And <code>Jucier</code> essentially constructs a 2-round SPN cipher with each round using the same key:</p>
+<ol>
+<li>permuted (lime[0]) key addition</li>
+<li>16 times substitution (lime[1]) and permutation (lime[2])</li>
+<li>permuted (lime[3]) key addition</li>
+<li>16 times substitution (lime[4]) and permutation (lime[5])</li>
+<li>permuted (lime[6]) key addition</li>
+</ol>
+<h3 id="Boomerang-Style-Attack"><a href="#Boomerang-Style-Attack" class="headerlink" title="Boomerang Style Attack"></a>Boomerang Style Attack</h3><p>We are provided Encryption&#x2F;Decryption Oracle with <strong>additional</strong> fault injection on the key. But first let’s think about what we can do with <strong>xor</strong> fault injection.</p>
+<p>An interesting observation is that $P \oplus K &#x3D; (P \oplus 1) \oplus (K \oplus 1)$, so if we inject 1 bit fault on both the key and <strong>the plaintext</strong> at the same position, it shows no difference after the first round of encryption. But with the second key addition, the fault will be injected and the final ciphertext goes completely different.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Encryption</span><br><span class="line">↓   P0, K                   →   P0+perm[0](1), K+1</span><br><span class="line"></span><br><span class="line">:   P0                      →   P0+perm[0](1)</span><br><span class="line">↓perm[0] key add</span><br><span class="line">:   P0+perm[0](K)           →   P0+perm[0](1)+perm[0](K+1) = P0+perm[0](K)</span><br><span class="line">↓16 sub[1]-perm[2]</span><br><span class="line">:   P1                      →   P1</span><br><span class="line">↓perm[3] key add</span><br><span class="line">:   P1+perm[3](K)           →   P1+perm[3](K+1)</span><br><span class="line">↓16 sub[4]-perm[5]</span><br><span class="line">:   P2                      →   P2&#x27;</span><br><span class="line">↓perm[6] key add</span><br><span class="line">:   P2+perm[6](K)           →   P2&#x27;+perm[6](K+1)</span><br><span class="line"></span><br><span class="line">=   P2+perm[6](K)           →   P2&#x27;+perm[6](K+1)</span><br></pre></td></tr></table></figure>
+
+<p>Why don’t we do it again? This time let’s inject on both the key and <strong>the ciphertext</strong>, and do the decryption.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">=   P0+perm[0](1)           →   P0&#x27;&#x27;</span><br><span class="line"></span><br><span class="line">:   P0+perm[0](1)           →   P0&#x27;&#x27;</span><br><span class="line">↑perm[0] key add</span><br><span class="line">:   P0+perm[0](K)           →   P0&#x27;&#x27;+perm[0](K)</span><br><span class="line">↑16 sub[1]-perm[2]</span><br><span class="line">:   P1                      →   P1+perm[3](1)</span><br><span class="line">↑perm[3] key add</span><br><span class="line">:   P1+perm[3](K+1)         →   P1+perm[3](K+1)</span><br><span class="line">↑16 sub[4]-perm[5]</span><br><span class="line">:   P2&#x27;                     →   P2&#x27;</span><br><span class="line">↑perm[6] key add</span><br><span class="line">:   P2&#x27;+perm[6](K+1)        →   P2&#x27;+perm[6](K)</span><br><span class="line"></span><br><span class="line">↑   P2&#x27;+perm[6](K+1), K+1   →   P2&#x27;+perm[6](K), K</span><br><span class="line">Decryption</span><br></pre></td></tr></table></figure>
+
+<p>This means a lot: now we have a pair of $(P_0, P_0’’)$ which only have 1 bit difference after the first round of encryption. Let take another step forward…</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Encryption</span><br><span class="line">↓   P0&#x27;&#x27;, K                 →   P0&#x27;&#x27;+perm[0](1), K+1</span><br><span class="line"></span><br><span class="line">:   P0&#x27;&#x27;                    →   P0&#x27;&#x27;+perm[0](1)</span><br><span class="line">↓perm[0] key add</span><br><span class="line">:   P0&#x27;&#x27;+perm[0](K)         →   P0&#x27;&#x27;+perm[0](1)+perm[0](K+1) = P0&#x27;&#x27;+perm[0](K)</span><br><span class="line">↓16 sub[1]-perm[2]</span><br><span class="line">:   P1+perm[3](1)           →   P1+perm[3](1)</span><br><span class="line">↓perm[3] key add</span><br><span class="line">:   P1+perm[3](K+1)         →   P1+perm[3](K+1)+perm[3](K+1) = P1</span><br><span class="line">↓16 sub[4]-perm[5]</span><br><span class="line">:   P2&#x27;                     →   P2</span><br><span class="line">↓perm[6] key add</span><br><span class="line">:   P2&#x27;+perm[6](K)          →   P2+perm[6](K+1) = P2+perm[6](K)+perm[6](1)</span><br><span class="line"></span><br><span class="line">=   P2&#x27;+perm[6](K)          →   P2+perm[6](K)+perm[6](1)</span><br></pre></td></tr></table></figure>
+
+<p>Finally, we manage to obtain a ciphertext with 1 bit difference compared to the original one. Based on this we can construct a distinguisher with our additional fault injection:</p>
+<ol>
+<li>Encrypt a random plaintext with the original key.</li>
+<li>Inject 1 bit additional fault on the i-th bit of the key.</li>
+<li>Obtain the magic ciphertext with 1 bit fault injected.</li>
+</ol>
+<p>If success, the additional fault on the i-th bit equals to a 1 bit xor fault. For most parts of the key, this implies the i-th bit is 0 (with high probability). Injection on the MSB may always cause 1 bit fault so we need to bruteforce it instead.</p>
+<ul>
+<li><a href="day2/limeade/exp.py">exp.py</a></li>
+</ul>
+<h2 id="ella"><a href="#ella" class="headerlink" title="(*)ella"></a>(*)ella</h2><ul>
+<li><a href="day2/ella/ella.py">ella.py</a></li>
+</ul>
+<blockquote>
+<p>No need for any paper, it’s just parity statistics.</p>
+</blockquote>
+<p>I may spend more time on this challenge later.</p>
+<h1 id="day3"><a href="#day3" class="headerlink" title="day3"></a>day3</h1><h2 id="NoisyChannel"><a href="#NoisyChannel" class="headerlink" title="NoisyChannel"></a>NoisyChannel</h2><ul>
+<li><a href="day3/NoisyChannel/server.py">server.py</a></li>
+</ul>
+<h3 id="Our-Solution"><a href="#Our-Solution" class="headerlink" title="Our Solution"></a>Our Solution</h3><p>It turns out that <code>randbytes</code> is implemented with <code>getrandbits</code>, with MT19937 as the prng core.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># random.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">randbytes</span>(<span class="params">self, n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Generate n random bytes.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">self</span>.getrandbits(n * <span class="number">8</span>).to_bytes(n, <span class="string">&#x27;little&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>Our target is to find a kernel vector that can be used for any random seeds. If this is even possible, it implies we are dealing with a non-full-rank linear system. Therefore, we can randomly generate sets of data, concatenate them, and then extract a non-trivial vector from its left kernel space as the answer.</p>
+<ul>
+<li><a href="day3/NoisyChannel/exp.py">exp.py</a></li>
+</ul>
+<h2 id="LCC-LLC"><a href="#LCC-LLC" class="headerlink" title="(*)LCC LLC"></a>(*)LCC LLC</h2><ul>
+<li><a href="day3/lccllc/app.py">app.py</a></li>
+<li><a href="day3/lccllc/crypto.py">crypto.py</a></li>
+<li>static</li>
+<li><ul>
+<li><a href="day3/lccllc/static/page.css">page.css</a></li>
+</ul>
+</li>
+<li>templates</li>
+<li><ul>
+<li><a href="day3/lccllc/templates/index.html">index.html</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="day3/lccllc/templates/layout.html">layout.html</a></li>
+</ul>
+</li>
+</ul>
+<p>Here comes a McEliece challenge.</p>
+<h3 id="Decode-Failure-Oracle"><a href="#Decode-Failure-Oracle" class="headerlink" title="Decode Failure Oracle"></a>Decode Failure Oracle</h3><p>Core functions below. </p>
+<p>The server uses McEliece to generate access tokens, and our target is to forge a valid token with admin privilege. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">McEliece</span>(<span class="title class_ inherited__">BinaryGoppaCode</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">Encrypt</span>(<span class="params">self, msg: <span class="built_in">bytes</span>, eloc: <span class="type">List</span>[<span class="built_in">int</span>] = <span class="literal">None</span></span>) -&gt; <span class="built_in">bytes</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot; Encrypts a message. &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">assert</span> <span class="number">8</span> * <span class="built_in">len</span>(msg) &lt;= <span class="variable language_">self</span>.k</span><br><span class="line">        mvec = Bytes2BitVec(msg, <span class="variable language_">self</span>.k)</span><br><span class="line">        <span class="keyword">if</span> eloc <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            evec = <span class="variable language_">self</span>._RandomMaxWeight()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            evec = Matrix(GF(<span class="number">2</span>), [<span class="number">1</span> <span class="keyword">if</span> i <span class="keyword">in</span> eloc <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n)])</span><br><span class="line">        cvec = mvec * <span class="variable language_">self</span>.maskedG + evec</span><br><span class="line">        <span class="keyword">return</span> BitVec2Bytes(cvec)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">Decrypt</span>(<span class="params">self, cip: <span class="built_in">bytes</span></span>) -&gt; <span class="type">Tuple</span>[<span class="built_in">bytes</span>, <span class="built_in">set</span>]:</span><br><span class="line">        <span class="string">&quot;&quot;&quot; Decrypts a ciphertext. &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">len</span>(cip) &lt;= -(-<span class="variable language_">self</span>.n // <span class="number">8</span>)</span><br><span class="line">        cvec = Bytes2BitVec(cip, <span class="variable language_">self</span>.n)</span><br><span class="line">        mvec, evec = <span class="variable language_">self</span>.DecodeCodeWord(cvec * <span class="variable language_">self</span>.Pinv)</span><br><span class="line">        eloc = <span class="built_in">set</span>([i <span class="keyword">for</span> i,j <span class="keyword">in</span> <span class="built_in">enumerate</span>((evec * <span class="variable language_">self</span>.P).<span class="built_in">list</span>()) <span class="keyword">if</span> j])</span><br><span class="line">        <span class="keyword">return</span> BitVec2Bytes(mvec * <span class="variable language_">self</span>.Sinv), eloc</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LCC</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">GenerateToken</span>(<span class="params">self, username: <span class="built_in">str</span>, admin: <span class="built_in">bool</span> = <span class="literal">False</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot; Generates a token. &quot;&quot;&quot;</span></span><br><span class="line">        salt = os.urandom(<span class="number">24</span>)</span><br><span class="line">        token = json.dumps(&#123;</span><br><span class="line">            <span class="string">&#x27;username&#x27;</span> : username,</span><br><span class="line">            <span class="string">&#x27;admin&#x27;</span> : admin,</span><br><span class="line">            <span class="string">&#x27;salt&#x27;</span> : B64Encode(salt)</span><br><span class="line">        &#125;).encode()</span><br><span class="line">        timestamp, eloc, etag = <span class="variable language_">self</span>.HashErrorLocs(salt)</span><br><span class="line">        encToken = <span class="variable language_">self</span>.code.Encrypt(token, eloc)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;.&#x27;</span>.join(B64Encode(i) <span class="keyword">for</span> i <span class="keyword">in</span> [timestamp, salt, etag, encToken])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">LoadToken</span>(<span class="params">self, token: <span class="built_in">str</span></span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot; Loads a token. &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            timestamp, salt, etag, encToken = [B64Decode(i) <span class="keyword">for</span> i <span class="keyword">in</span> token.split(<span class="string">&#x27;.&#x27;</span>)]</span><br><span class="line">            decToken, eloc = <span class="variable language_">self</span>.code.Decrypt(encToken)</span><br><span class="line">            loadedToken = json.loads(decToken.strip(<span class="string">b&#x27;\0&#x27;</span>))</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&#x27;Failed to load token...&#x27;</span>)</span><br><span class="line">        <span class="comment"># _, _eloc, _etag = self.HashErrorLocs(salt, timestamp)</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="comment"># assert _eloc == eloc</span></span><br><span class="line">            <span class="comment"># assert _etag == etag</span></span><br><span class="line">            <span class="keyword">assert</span> salt == B64Decode(loadedToken[<span class="string">&#x27;salt&#x27;</span>])</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&#x27;Invalid token...&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> loadedToken</span><br><span class="line"></span><br><span class="line"><span class="comment"># Homepage</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    token = request.cookies.get(<span class="string">&#x27;token&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> token:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            userData = lcc.LoadToken(token)</span><br><span class="line">            flash(<span class="string">&#x27;Succesfully loaded your token.&#x27;</span>, <span class="string">&#x27;success&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> userData[<span class="string">&#x27;admin&#x27;</span>] == <span class="literal">True</span>:</span><br><span class="line">                content = FLAG.decode()</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                content = <span class="string">&#x27;Nothing to see here. Where you looking for something?&#x27;</span></span><br><span class="line">            <span class="keyword">return</span> render_template(</span><br><span class="line">                <span class="string">&#x27;index.html&#x27;</span>,</span><br><span class="line">                username = <span class="string">&#x27; &#x27;</span> + userData[<span class="string">&#x27;username&#x27;</span>],</span><br><span class="line">                content = content</span><br><span class="line">            )</span><br><span class="line">        <span class="keyword">except</span> ValueError <span class="keyword">as</span> e:</span><br><span class="line">            flash(<span class="string">&#x27;ERROR:: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(e)), <span class="string">&#x27;error&#x27;</span>)</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;ERROR:: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(e)))</span><br><span class="line">            flash(<span class="string">&#x27;Something went wrong...&#x27;</span>, <span class="string">&#x27;error&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        flash(<span class="string">&#x27;No token found. Get a token by visiting &quot;./gettoken/&lt;username&gt;&quot;.&#x27;</span>, <span class="string">&#x27;warning&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;index.html&#x27;</span>, username=<span class="string">&#x27;&#x27;</span>, content=<span class="string">&#x27;Please load your token or generate a new one.&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>There’s not so much we can do actually, since we’re only provided with some partly controllable tokens (even without the public key).</p>
+<p>You can notice that <code>LoadToken</code> does not check <code>eloc</code> or <code>etag</code>, which may lead to something interesting. For McEliece, <code>Decrypt</code> works if there’re <strong>less than</strong> <code>t</code> positions of errors. This means if we inject 1 more bit error into a token, it will not be decoded successfully. But if we inject noise again at a “dirty” position, the effects of the noise will be cancelled out and it still serves as a valid token (again, because <code>eloc</code> is not checked).</p>
+<p>So we can flip each bit of the token and try to decode it. By checking the response status, we can leak the “dirty” bits of the token, thus recovering a “clean” McEliece token. This gives us some advantages to forge new tokens based on the existing ones: if one tries to do so with “dirty” tokens (i.e. linear combinations), noise accumulation will make it unusable. “NOT CLEAN ENOUGH”</p>
+<h3 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h3><p>For one token recovery, we need <code>n</code> times interactions, which costed 20~30 minutes during the competition. Parallelization should be a good strategy in <code>flask</code> but it didn’t work due to some deployment issues. This took all my time during the competition and it’s kinda disappointing actually…still cool challenge though :D</p>
+<p>Another optimization is that we can flip 2 bits at one time:</p>
+<ol>
+<li>2 “clean” bits: the token will be <strong>rejected</strong> since there’re <code>t+2</code> “dirty” bits.</li>
+<li>1 “clean” bit and 1 “dirty” bit: the token will be <strong>accepted</strong> since there’re still <code>t</code> “dirty” bits.</li>
+<li>2 “dirty” bits: the token will be <strong>accepted</strong> since there’re <code>t-2</code> “dirty” bits.</li>
+</ol>
+<p>By doing this <code>n/2</code> times, we can ambiguously locate each “dirty” bits. With another <code>2*t</code> (less than this actually) checks and we can recover the exact <code>eloc</code>.</p>
+<h3 id="JSON-Manipulation"><a href="#JSON-Manipulation" class="headerlink" title="JSON Manipulation"></a>JSON Manipulation</h3><p>Let’s delve deeper into this challenge. It may be a choice to recover the public key with enough “clean” tokens, which enables us to forge any valid tokens. But it requires too much interactions.</p>
+<p>Since we can control the <code>username</code> part of the token, it can be optimized with some JSON tricks. But first we need to make something clear. </p>
+<p>You may notice that <code>json</code> works a little different on the server. This is because <code>app.json</code> instead of <code>json</code> will be called when <code>flask.app</code> is working, which will sort the keys first before serializing a JSON object.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">a = &#123;<span class="string">&quot;username&quot;</span>: <span class="string">&quot;&quot;</span>, <span class="string">&quot;admin&quot;</span>: <span class="literal">False</span>, <span class="string">&quot;salt&quot;</span>: <span class="string">&quot;&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line">json.dumps(a)</span><br><span class="line"><span class="comment"># &#123;&quot;username&quot;: &quot;&quot;, &quot;admin&quot;: false, &quot;salt&quot;: &quot;&quot;&#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> app</span><br><span class="line">app = Flask(__name__)</span><br><span class="line">app.json.sort_keys</span><br><span class="line"><span class="comment"># True</span></span><br><span class="line">app.json.dumps(a)</span><br><span class="line"><span class="comment"># &#123;&quot;admin&quot;: false, &quot;salt&quot;: &quot;&quot;, &quot;username&quot;: &quot;&quot;&#125;</span></span><br><span class="line">app.json.sort_keys = <span class="literal">False</span></span><br><span class="line">app.json.dumps(a)</span><br><span class="line"><span class="comment"># &#123;&quot;username&quot;: &quot;&quot;, &quot;admin&quot;: false, &quot;salt&quot;: &quot;&quot;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>In this case, we are enabled to manipulate JSON by constructing a malicious <code>username</code>. For instance: </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">username = <span class="string">&#x27;&quot;,&quot;admin&quot;:true,&quot;salt&quot;:&quot;&#x27;</span></span><br><span class="line">a = <span class="string">&#x27;&#123;&quot;admin&quot;: false, &quot;salt&quot;: &quot;&quot;, &quot;username&quot;: &quot;$&quot;&#125;&#x27;</span>.replace(<span class="string">&quot;$&quot;</span>, username)</span><br><span class="line">json.loads(a)</span><br><span class="line"><span class="comment"># &#123;&#x27;admin&#x27;: True, &#x27;salt&#x27;: &#x27;&#x27;, &#x27;username&#x27;: &#x27;&#x27;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>By doing this we can 1) set <code>admin</code> to <code>True</code> and 2) set <code>salt</code> to a valid <code>B64</code> string (an empty string here).</p>
+<p>We can not do this directly, however. Instead we should construct 3 usernames satisfying <code>xor(a, xor(b, c)) = target</code>, and xor the corresponding tokens together. With high probability, we can get a valid token (since we need the <code>salt</code> part to be valid as well). Here we only need 2 “clean” tokens to make the result token accepted. </p>
+<h1 id="In-Saudi-Arabia"><a href="#In-Saudi-Arabia" class="headerlink" title="In Saudi Arabia"></a>In Saudi Arabia</h1><p>Still can’t believe we did it, my teammates are so strong. Got some luck too I guess.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/team1.jpg" alt="team1"></th>
+</tr>
+</thead>
+</table>
+<p>Met so many old and new friends here, enjoyed. </p>
+<p>But 3-day competition is really tiring and we didn’t have so much time or energy to travel around. Will do more exploitation in the city if I come next year.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/team2.jpg" alt="team2"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/bhmea.jpg" alt="bhmea"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/3.jpg" alt="3"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/4.jpg" alt="4"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/2.jpg" alt="2"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/5.jpg" alt="5"></th>
+</tr>
+</thead>
+</table>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/links/">Links</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#day1"><span class="toc-number">1.</span> <span class="toc-text">day1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Que"><span class="toc-number">1.1.</span> <span class="toc-text">Que?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tampering-Detection-System"><span class="toc-number">1.2.</span> <span class="toc-text">Tampering Detection System</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AES-GCM"><span class="toc-number">1.2.1.</span> <span class="toc-text">AES-GCM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCM-Routine"><span class="toc-number">1.2.2.</span> <span class="toc-text">GCM Routine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AAD-Construction"><span class="toc-number">1.2.3.</span> <span class="toc-text">AAD Construction</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#day2"><span class="toc-number">2.</span> <span class="toc-text">day2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#doloRSitAmet"><span class="toc-number">2.1.</span> <span class="toc-text">doloRSitAmet</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#All-about-Sample-Strategy"><span class="toc-number">2.1.1.</span> <span class="toc-text">All about Sample Strategy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#limeade"><span class="toc-number">2.2.</span> <span class="toc-text">limeade</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Structure-Analysis"><span class="toc-number">2.2.1.</span> <span class="toc-text">Structure Analysis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Boomerang-Style-Attack"><span class="toc-number">2.2.2.</span> <span class="toc-text">Boomerang Style Attack</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ella"><span class="toc-number">2.3.</span> <span class="toc-text">(*)ella</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#day3"><span class="toc-number">3.</span> <span class="toc-text">day3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#NoisyChannel"><span class="toc-number">3.1.</span> <span class="toc-text">NoisyChannel</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Our-Solution"><span class="toc-number">3.1.1.</span> <span class="toc-text">Our Solution</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LCC-LLC"><span class="toc-number">3.2.</span> <span class="toc-text">(*)LCC LLC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Decode-Failure-Oracle"><span class="toc-number">3.2.1.</span> <span class="toc-text">Decode Failure Oracle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Optimization"><span class="toc-number">3.2.2.</span> <span class="toc-text">Optimization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JSON-Manipulation"><span class="toc-number">3.2.3.</span> <span class="toc-text">JSON Manipulation</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#In-Saudi-Arabia"><span class="toc-number">4.</span> <span class="toc-text">In Saudi Arabia</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&text=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&is_video=false&description=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)&body=Check out this article: http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&title=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&name=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://rechn0.github.io/2025/12/09/2025-blackhatmeactf-final/&t=BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    1984-2026
+    rec
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/links/">Links</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+  <script type="text/javascript">
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?8411e09da389ccf9ca0908e876ad4d4d";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

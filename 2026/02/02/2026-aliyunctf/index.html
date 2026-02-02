@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Nice challenges from @hash_hash and @AquaCat, all of which are short enough but hard enough. Griffin chal.sage  Curve StuffFirst things first we need to recover the curve and do some basic analysis. 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Aliyun CTF 2026">
+<meta property="og:url" content="http://rechn0.github.io/2026/02/02/2026-aliyunctf/index.html">
+<meta property="og:site_name" content="Rec|rEc|reC">
+<meta property="og:description" content="Nice challenges from @hash_hash and @AquaCat, all of which are short enough but hard enough. Griffin chal.sage  Curve StuffFirst things first we need to recover the curve and do some basic analysis. 1">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-02-02T04:34:35.000Z">
+<meta property="article:modified_time" content="2026-02-02T15:15:05.393Z">
+<meta property="article:author" content="rec">
+<meta property="article:tag" content="AES-GCM">
+<meta property="article:tag" content="ZKP">
+<meta property="article:tag" content="ChaCha20-Poly1305">
+<meta property="article:tag" content="Reed-Solomon">
+<meta property="article:tag" content="MT19937">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/1.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/1.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/1.png">
+        
+      
+    
+    <!-- title -->
+    <title>Aliyun CTF 2026</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/links/">Links</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/12/31/2025-rec/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://rechn0.github.io/2026/02/02/2026-aliyunctf/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&text=Aliyun CTF 2026"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&is_video=false&description=Aliyun CTF 2026"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Aliyun CTF 2026&body=Check out this article: http://rechn0.github.io/2026/02/02/2026-aliyunctf/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&name=Aliyun CTF 2026&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&t=Aliyun CTF 2026"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Griffin"><span class="toc-number">1.</span> <span class="toc-text">Griffin</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Curve-Stuff"><span class="toc-number">1.1.</span> <span class="toc-text">Curve Stuff</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reed-Solomon-Code-Distinction"><span class="toc-number">1.2.</span> <span class="toc-text">Reed-Solomon Code Distinction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Polynomial-Recovery"><span class="toc-number">1.3.</span> <span class="toc-text">Polynomial Recovery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Last-But-Not-Least"><span class="toc-number">1.4.</span> <span class="toc-text">Last But Not Least</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DiceG-me"><span class="toc-number">2.</span> <span class="toc-text">(*)DiceG@me+</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Schrodinger%E2%80%99s-AEAD"><span class="toc-number">3.</span> <span class="toc-text">(*)Schrödinger’s AEAD</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Aliyun CTF 2026
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">rec</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2026-02-02T04:34:35.000Z" class="dt-published" itemprop="datePublished">2026-02-02</time>
+        
+        (Updated: <time datetime="2026-02-02T15:15:05.393Z" class="dt-updated" itemprop="dateModified">2026-02-02</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/AES-GCM/" rel="tag">AES-GCM</a>, <a class="p-category" href="/tags/ChaCha20-Poly1305/" rel="tag">ChaCha20-Poly1305</a>, <a class="p-category" href="/tags/MT19937/" rel="tag">MT19937</a>, <a class="p-category" href="/tags/Reed-Solomon/" rel="tag">Reed-Solomon</a>, <a class="p-category" href="/tags/ZKP/" rel="tag">ZKP</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>Nice challenges from @hash_hash and @AquaCat, all of which are short enough but hard enough.</p>
+<h2 id="Griffin"><a href="#Griffin" class="headerlink" title="Griffin"></a>Griffin</h2><ul>
+<li><a href="griffin/chal.sage">chal.sage</a></li>
+</ul>
+<h3 id="Curve-Stuff"><a href="#Curve-Stuff" class="headerlink" title="Curve Stuff"></a>Curve Stuff</h3><p>First things first we need to recover the curve and do some basic analysis.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a, b = ZZ[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>].gens()</span><br><span class="line">Fs = [x**<span class="number">3</span> + a*x + b - y**<span class="number">2</span> <span class="keyword">for</span> x, y <span class="keyword">in</span> Griffin[<span class="number">0</span>][:<span class="number">10</span>]]</span><br><span class="line">B = Ideal(Fs).groebner_basis()</span><br><span class="line">p = B[-<span class="number">1</span>]</span><br><span class="line">a = ZZ(-B[<span class="number">0</span>].univariate_polynomial()(<span class="number">0</span>) % p)</span><br><span class="line">b = ZZ(-B[<span class="number">1</span>].univariate_polynomial()(<span class="number">0</span>) % p)</span><br><span class="line"></span><br><span class="line">E = EllipticCurve(GF(p), [a, b])</span><br><span class="line">G = E.lift_x(GF(p)(<span class="number">3137</span>))</span><br><span class="line">order = G.order()</span><br><span class="line">facs = [<span class="number">66179</span>, <span class="number">67247</span>, <span class="number">70271</span>, <span class="number">76679</span>, <span class="number">78803</span>, <span class="number">86693</span>, <span class="number">107791</span>, <span class="number">116273</span>, <span class="number">119677</span>, <span class="number">121309</span>]</span><br><span class="line"><span class="keyword">assert</span> prod(facs) == order</span><br></pre></td></tr></table></figure>
+
+<p>Turns out the curve is smooth enough to solve the DLPs, so from now on we just need to consider operations on $\mathbb{Z}_n$.</p>
+<p>Actually we just need to recover some specific DLPs based on our needs, saving a lot of time.</p>
+<h3 id="Reed-Solomon-Code-Distinction"><a href="#Reed-Solomon-Code-Distinction" class="headerlink" title="Reed-Solomon Code Distinction"></a>Reed-Solomon Code Distinction</h3><p>Let’s consider the problem on $\mathbb{F}_q$ where $ q | n $. What we’re supposed to do here is to distinguish all $2 \cdot d$ of the Reed-Solomon codes, combined with $k$ junks. It’s worth noting the degree of the polynomials is $d-1$.</p>
+<p>Since I am not familiar with RS Code, I’ll just give a solution based on linear algebra. Consider $x_i$ and the code vector $ \vec{v_i} &#x3D; [f_{0}(x_i), …, f_{m-1}(x_i)] &#x3D; [1, x_i, …, x_i^{d-1}] \cdot F_{d \times m} $. For the linear space $\mathcal{C} &#x3D; Span( \{ \vec{v_0}, …, \vec{v_{2 \cdot d - 1}} \} )\subset \mathbb{F}_q^m $, we have $\dim(\mathcal{C}) &#x3D; d$. We can construct a distinguisher leveraging the dimension property:</p>
+<blockquote>
+<p>For a vector set $\mathcal{V} \subseteq \{ \vec{v_0}, …, \vec{v_{2 \cdot d - 1}} \} $ uniformly sampled from <code>Griffin</code>, which contains $h$ <code>Hawk</code> vectors and $t-h$ <code>Lion</code> vectors (s.t. $| \mathcal{V} | &#x3D; t$), we have $\dim(Span(\mathcal{V})) &#x3D; \min(m, t-\max(h-d, 0))$.</p>
+</blockquote>
+<p>We only pick up $t \in [m, m+d) \cap \mathbb{Z}$ to construct the distinguisher, which also leads to different success rate (I used $t&#x3D;m$ during the competition and it’s acceptable). My strategy goes as follows:</p>
+<ol>
+<li>Uniformly sample $\mathcal{V}$, where $| \mathcal{V} | &#x3D; m$. </li>
+<li>Check $1[\dim(Span( \mathcal{V}) &lt; m]$, which indicates whether the number of <code>Hawk</code> vectors is larger than $d$. </li>
+<li>For a vector $\vec{v}$ from <code>Griffin</code>, $\vec{v}$ is a <code>Hawk</code> vector if and only if:<ul>
+<li>$\vec{v} \notin \mathcal{V} \Rightarrow \dim(Span( \mathcal{V} \cup \{ \vec{v} \} )) &#x3D; \dim(Span( \mathcal{V} ))$, or the dimension will increase by 1.</li>
+<li>$\vec{v} \in \mathcal{V} \Rightarrow \dim(Span( \mathcal{V} \setminus \{ \vec{v} \} )) &#x3D; \dim(Span( \mathcal{V} ))$, or the dimension will decrease by 1.</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">q = <span class="number">66179</span> <span class="comment"># facs[0]</span></span><br><span class="line">F = GF(q)</span><br><span class="line"></span><br><span class="line">G0 = G*(order // q)</span><br><span class="line">griffin = [[E(Griffin[i][j])*(order // q).log(G0) <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Griffin[i]))] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Griffin))]</span><br><span class="line"></span><br><span class="line">hawk_inds = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    pos = sample(<span class="built_in">range</span>(k+<span class="number">2</span>*d), m)</span><br><span class="line">    <span class="keyword">if</span> matrix(F, [griffin[i] <span class="keyword">for</span> i <span class="keyword">in</span> pos]).T.rank() == m-<span class="number">1</span>:</span><br><span class="line">        <span class="keyword">for</span> ind <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(griffin)):</span><br><span class="line">            now = pos[:]</span><br><span class="line">            <span class="keyword">if</span> ind <span class="keyword">in</span> pos:</span><br><span class="line">                now.remove(ind)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                now.append(ind)</span><br><span class="line">            <span class="keyword">if</span> matrix(F, [griffin[i] <span class="keyword">for</span> i <span class="keyword">in</span> now]).T.rank() == m-<span class="number">1</span>:</span><br><span class="line">                hawk_inds.append(ind)</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">len</span>(hawk_inds) == <span class="number">2</span>*d</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Polynomial-Recovery"><a href="#Polynomial-Recovery" class="headerlink" title="Polynomial Recovery"></a>Polynomial Recovery</h3><p>We need to solve <code>xs</code> for the recovery of the secret polynomials. I used Orthongonal Lattice since <code>xs</code> is sampled from <code>range(1, 257)</code>. An all-1s vector is contained in the lattice so we need to bruteforce an offset, thus leading to many candidate <code>xs</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">hawk = [[E(Griffin[ind][j]).log(G) <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Griffin[ind]))] <span class="keyword">for</span> ind <span class="keyword">in</span> hawk_inds]</span><br><span class="line">ys = [i[<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> hawk]</span><br><span class="line"></span><br><span class="line">K = <span class="number">2</span>**<span class="number">256</span></span><br><span class="line">L = block_matrix(ZZ, [</span><br><span class="line">    [<span class="number">1</span>, K*matrix(ZZ, hawk)],</span><br><span class="line">    [<span class="number">0</span>, K*order]</span><br><span class="line">]).LLL()[:<span class="number">2</span>*d-d, :<span class="number">2</span>*d]</span><br><span class="line">L = block_matrix(ZZ, [</span><br><span class="line">    [<span class="number">1</span>, K*L.T]</span><br><span class="line">]).LLL()[:d, :<span class="number">2</span>*d]</span><br><span class="line"></span><br><span class="line">cand_xs = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> a <span class="keyword">in</span> <span class="built_in">range</span>(-<span class="number">257</span>, <span class="number">257</span>):</span><br><span class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> <span class="built_in">range</span>(-<span class="number">2</span>, <span class="number">2</span>):</span><br><span class="line">        xs = (a*L[<span class="number">0</span>] + b*L[<span class="number">1</span>]).<span class="built_in">list</span>()</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">all</span>([(<span class="number">1</span> &lt;= x <span class="keyword">and</span> x &lt;= <span class="number">257</span>) <span class="keyword">for</span> x <span class="keyword">in</span> xs]) <span class="keyword">and</span> <span class="built_in">len</span>(<span class="built_in">set</span>(xs)) == <span class="number">2</span>*d:</span><br><span class="line">            cand_xs.append(xs)</span><br><span class="line"></span><br><span class="line">cand_ct = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> xs <span class="keyword">in</span> cand_xs:</span><br><span class="line">    pts = [(x, y) <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(xs, ys)]</span><br><span class="line">    res = <span class="built_in">list</span>()</span><br><span class="line">    <span class="keyword">for</span> fac <span class="keyword">in</span> facs:</span><br><span class="line">        R = GF(fac)[<span class="string">&quot;x&quot;</span>]</span><br><span class="line">        f = R.lagrange_polynomial(pts)</span><br><span class="line">        ans = (f - flagct).roots()</span><br><span class="line">        res.append([ZZ(i[<span class="number">0</span>]) <span class="keyword">for</span> i <span class="keyword">in</span> ans])</span><br><span class="line">    <span class="keyword">for</span> tab <span class="keyword">in</span> itertools.product(*res):</span><br><span class="line">        cand_ct.append(crt(<span class="built_in">list</span>(tab), facs))</span><br></pre></td></tr></table></figure>
+
+<p>The intended solution from @hash_hash is to decompose the RS Code public key.</p>
+<h3 id="Last-But-Not-Least"><a href="#Last-But-Not-Least" class="headerlink" title="Last But Not Least"></a>Last But Not Least</h3><p>You’ll find out flag is much bigger than the 160-bits <code>p</code>, so we’re not able to get the flag directly. Luckily there lies specific properties of the flag:</p>
+<ol>
+<li>The template of the flag is known.</li>
+<li>The content of the flag is a uuid4 string, which is a fixed-format hexadecimal string.</li>
+</ol>
+<p>Here we can use a special trick for hexadecimal strings. The only unknown part in the flag is the hex characters, each of which can we consider as two variables: high 4-bits and low 4-bits. Taking a deep look, you will find out that the high 4-bits has only 2 possible values.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> <span class="string">&#x27;0123456789abcdef&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(ch, <span class="built_in">bin</span>(<span class="built_in">ord</span>(ch))[<span class="number">2</span>:].zfill(<span class="number">8</span>))</span><br><span class="line"><span class="number">0</span> 00110000</span><br><span class="line"><span class="number">1</span> 00110001</span><br><span class="line"><span class="number">2</span> 00110010</span><br><span class="line"><span class="number">3</span> 00110011</span><br><span class="line"><span class="number">4</span> 00110100</span><br><span class="line"><span class="number">5</span> 00110101</span><br><span class="line"><span class="number">6</span> 00110110</span><br><span class="line"><span class="number">7</span> 00110111</span><br><span class="line"><span class="number">8</span> 00111000</span><br><span class="line"><span class="number">9</span> 00111001</span><br><span class="line">a 01100001</span><br><span class="line">b 01100010</span><br><span class="line">c 01100011</span><br><span class="line">d 01100100</span><br><span class="line">e 01100101</span><br><span class="line">f 01100110</span><br></pre></td></tr></table></figure>
+
+<p>So we can transform the possible values of high&#x2F;low 4-bits into $[0, 1]\cap \mathbb{Z}$ and $[-5, 4]\cap \mathbb{Z}$, and build a linear system optimized for LLL-based attack. The parsing stuff is painful so I managed to implement an abstract way to build the linear system, which seems to be helpful in many similar conditions.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">s2v</span>(<span class="params">s: <span class="built_in">str</span></span>):</span><br><span class="line">    v = <span class="built_in">list</span>()</span><br><span class="line">    <span class="keyword">for</span> si <span class="keyword">in</span> s:</span><br><span class="line">        x = (<span class="built_in">ord</span>(si) &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0xf</span> <span class="comment"># 3, 6</span></span><br><span class="line">        x = (x - <span class="number">3</span>) * inverse_mod(<span class="number">3</span>, order) % order</span><br><span class="line">        v.append(x) <span class="comment"># 0, 1</span></span><br><span class="line"></span><br><span class="line">        y = <span class="built_in">ord</span>(si) &amp; <span class="number">0xf</span> <span class="comment"># 0, ..., 9</span></span><br><span class="line">        y = (y - <span class="number">5</span>) % order</span><br><span class="line">        v.append(y) <span class="comment"># -5, ... 4</span></span><br><span class="line">    <span class="keyword">return</span> v</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">v2s</span>(<span class="params">v: <span class="built_in">list</span></span>):</span><br><span class="line">    s = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(v), <span class="number">2</span>):</span><br><span class="line">        x = v[i]</span><br><span class="line">        x = (x * <span class="number">3</span> + <span class="number">3</span>) % order</span><br><span class="line"></span><br><span class="line">        y = v[i+<span class="number">1</span>]</span><br><span class="line">        y = (y + <span class="number">5</span>) % order</span><br><span class="line"></span><br><span class="line">        s += <span class="built_in">chr</span>((x &lt;&lt; <span class="number">4</span>) | y)</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">X, Y = <span class="built_in">list</span>(), <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">    FLAG = <span class="string">&quot;alictf&#123;&quot;</span>+<span class="built_in">str</span>(uuid4())+<span class="string">&quot;&#125;&quot;</span></span><br><span class="line">    X.append(s2v(FLAG[<span class="number">7</span>:-<span class="number">1</span>].replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>)))</span><br><span class="line">    Y.append(<span class="built_in">int</span>(FLAG.encode().<span class="built_in">hex</span>(), <span class="number">16</span>) % order)</span><br><span class="line">X, Y = matrix(Zmod(order), X), vector(Zmod(order), Y)</span><br><span class="line">H = (X[:-<span class="number">1</span>] - X[<span class="number">1</span>:]).solve_right(Y[:-<span class="number">1</span>] - Y[<span class="number">1</span>:])</span><br><span class="line">Y0 = Y[<span class="number">0</span>] - X[<span class="number">0</span>]*H</span><br><span class="line"></span><br><span class="line"><span class="comment"># check</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    FLAG = <span class="string">&quot;alictf&#123;&quot;</span>+<span class="built_in">str</span>(uuid4())+<span class="string">&quot;&#125;&quot;</span></span><br><span class="line">    v = vector(Zmod(G_order), s2v(FLAG[<span class="number">7</span>:-<span class="number">1</span>].replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    ct = <span class="built_in">int</span>(FLAG.encode().<span class="built_in">hex</span>(), <span class="number">16</span>) % G_order</span><br><span class="line">    <span class="keyword">assert</span> v*H + Y0 == ct</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>It’s such a relief that BKZ-22 is enough for this challenge, gg.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">A = matrix(ZZ, H.<span class="built_in">list</span>()[:<span class="number">24</span>] + H.<span class="built_in">list</span>()[<span class="number">26</span>:]).T <span class="comment"># remove 0 element, since uuid4 has a fixed &#x27;4&#x27; in the middle</span></span><br><span class="line">bounds = <span class="built_in">sum</span>([[<span class="number">1</span>, <span class="number">4</span>]]*<span class="number">31</span>, []) + [<span class="number">1</span>]</span><br><span class="line">Q = diagonal_matrix(ZZ, [order // bound <span class="keyword">for</span> bound <span class="keyword">in</span> bounds])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        s = v2s(x.<span class="built_in">list</span>())</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">all</span>(ch <span class="keyword">in</span> <span class="string">&quot;0123456789abcdef&quot;</span> <span class="keyword">for</span> ch <span class="keyword">in</span> s)</span><br><span class="line">        s = <span class="string">&quot;alictf&#123;&quot;</span> + s[<span class="number">0</span>:<span class="number">8</span>] + <span class="string">&#x27;-&#x27;</span> + s[<span class="number">8</span>:<span class="number">12</span>] + <span class="string">&#x27;-&#x27;</span> + <span class="string">&#x27;4&#x27;</span> + s[<span class="number">12</span>:<span class="number">15</span>] + <span class="string">&#x27;-&#x27;</span> + s[<span class="number">15</span>:<span class="number">19</span>] + <span class="string">&#x27;-&#x27;</span> + s[<span class="number">19</span>:] + <span class="string">&quot;&#125;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;s = &#125;</span>\n<span class="subst">&#123;ct = &#125;</span>\n<span class="subst">&#123;<span class="built_in">float</span>(x.norm()) = &#125;</span>\n<span class="subst">&#123;x = &#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm.trange(<span class="built_in">len</span>(cts)):</span><br><span class="line">    ct = cts[i]</span><br><span class="line">    b = matrix(ZZ, [ct - Y0]).T</span><br><span class="line">    L = block_matrix(ZZ, [</span><br><span class="line">        [<span class="number">1</span>, -A[:-<span class="number">1</span>]*inverse_mod(A[-<span class="number">1</span>, <span class="number">0</span>], order), <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, order, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, b*inverse_mod(A[-<span class="number">1</span>, <span class="number">0</span>], order), <span class="number">1</span>]</span><br><span class="line">    ])</span><br><span class="line">    L = (L*Q).BKZ(block_size=<span class="number">22</span>)</span><br><span class="line">    L = (L/Q).change_ring(ZZ)</span><br><span class="line">    <span class="keyword">for</span> v <span class="keyword">in</span> L:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">abs</span>(v[-<span class="number">1</span>]) == <span class="number">1</span>:</span><br><span class="line">            func(v[:-<span class="number">1</span>])</span><br><span class="line">            func(-v[:-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+
+<h2 id="DiceG-me"><a href="#DiceG-me" class="headerlink" title="(*)DiceG@me+"></a>(*)DiceG@me+</h2><ul>
+<li><a href="dice/task.py">task.py</a></li>
+</ul>
+<h2 id="Schrodinger’s-AEAD"><a href="#Schrodinger’s-AEAD" class="headerlink" title="(*)Schrödinger’s AEAD"></a>(*)Schrödinger’s AEAD</h2><ul>
+<li><a href="aead/server.py">server.py</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/links/">Links</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Griffin"><span class="toc-number">1.</span> <span class="toc-text">Griffin</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Curve-Stuff"><span class="toc-number">1.1.</span> <span class="toc-text">Curve Stuff</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reed-Solomon-Code-Distinction"><span class="toc-number">1.2.</span> <span class="toc-text">Reed-Solomon Code Distinction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Polynomial-Recovery"><span class="toc-number">1.3.</span> <span class="toc-text">Polynomial Recovery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Last-But-Not-Least"><span class="toc-number">1.4.</span> <span class="toc-text">Last But Not Least</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DiceG-me"><span class="toc-number">2.</span> <span class="toc-text">(*)DiceG@me+</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Schrodinger%E2%80%99s-AEAD"><span class="toc-number">3.</span> <span class="toc-text">(*)Schrödinger’s AEAD</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://rechn0.github.io/2026/02/02/2026-aliyunctf/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&text=Aliyun CTF 2026"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&is_video=false&description=Aliyun CTF 2026"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Aliyun CTF 2026&body=Check out this article: http://rechn0.github.io/2026/02/02/2026-aliyunctf/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&title=Aliyun CTF 2026"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&name=Aliyun CTF 2026&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://rechn0.github.io/2026/02/02/2026-aliyunctf/&t=Aliyun CTF 2026"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    1984-2026
+    rec
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/links/">Links</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+  <script type="text/javascript">
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?8411e09da389ccf9ca0908e876ad4d4d";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

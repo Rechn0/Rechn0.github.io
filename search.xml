@@ -2,10 +2,10 @@
 <search>
   <entry>
     <title>ZKpuzzle::0CTF 2025</title>
-    <url>/2025/12/22/0ctf2025/</url>
+    <url>/2025/12/22/2025-0ctf/</url>
     <content><![CDATA[<p>Time: 2025.12.20-21 (online)</p>
 <p>I participated in 0CTF 2025 with r3kapig this weekend, we ended up as 1st place gg.</p>
-<p><img src="/2025/12/22/0ctf2025/images/scoreboard.png" alt="scoreboard"></p>
+<p><img src="/2025/12/22/2025-0ctf/images/scoreboard.png" alt="scoreboard"></p>
 <p>Learned a lot about Sum of Four Cubes Problem this year. (Again, why you call them zkp challenges @sh1k4ku XD)</p>
 <p>@deebato so strong</p>
 <h1 id="ZKpuzzle"><a href="#ZKpuzzle" class="headerlink" title="ZKpuzzle"></a>ZKpuzzle</h1><p>In the following 3 ZKpuzzles, we will deal with Sum of Four Cubes Problem with different constraints.</p>
@@ -59,10 +59,10 @@
   </entry>
   <entry>
     <title>XCTF-ACTF 2025</title>
-    <url>/2025/04/27/actf2025/</url>
+    <url>/2025/04/27/2025-actf/</url>
     <content><![CDATA[<p>Time: 2025.04.26-27 (online)</p>
 <p>I played XCTF-ACTF 2025 with N0wayBack this weekend, and we got 1st for the first time. My teammates are sooooo strong orz</p>
-<p><img src="/2025/04/27/actf2025/images/rank.png" alt="rank.png"></p>
+<p><img src="/2025/04/27/2025-actf/images/rank.png" alt="rank.png"></p>
 <p>I with @糖醋小鸡块 solved all 4 crypto challenges. All of them are high-quality, and we actually found many interesting unintended solutions XD</p>
 <h2 id="easy-log-12-solves"><a href="#easy-log-12-solves" class="headerlink" title="easy_log (12 solves)"></a>easy_log (12 solves)</h2><blockquote>
 <ul>
@@ -97,7 +97,7 @@
 <p>In this challenge we need to find a $n$-degree small ternary polynomial $f$, with $\frac{n}{2}$ pairs of $(x_i, f(x_i))$ on $\mathbb{F_p}$. The special part is that $x_i$ is randomly picked from the roots of $x^n+1$. Here $n&#x3D;450$ and $pbit&#x3D;32$.</p>
 <h3 id="Solution-1-Unintended"><a href="#Solution-1-Unintended" class="headerlink" title="Solution 1 (Unintended)"></a>Solution 1 (Unintended)</h3><p>A direct way is to construct the primal lattice and solve $f$ with <code>flatter</code>. The main reason this worked is $pbit&#x3D;32$ is a little big for $n&#x3D;450$, and it’s enough to solve uSVP under BKZ-2 bound. One can pick a subset of the instances to get a better perfomance.</p>
 <h3 id="Solution-2-Intended"><a href="#Solution-2-Intended" class="headerlink" title="Solution 2 (Intended)"></a>Solution 2 (Intended)</h3><p>The intended solution captures the special structure of the lattice. Since $x_i$ is a root of $x^n+1$, we’re actually dealing with a subset of Vandermonde matrix columns. This is called Partial Vandermonde Knapsack Problem, and you can find a optimized solution in <a href="https://eprint.iacr.org/2024/366">this</a> from Eurocrypt 2024.</p>
-<p><img src="/2025/04/27/actf2025/images/pvkp.png" alt="pvkp.png"></p>
+<p><img src="/2025/04/27/2025-actf/images/pvkp.png" alt="pvkp.png"></p>
 <p>To make it clear, we have $x^n + 1 &#x3D; 0 \rightarrow \frac{1}{x} &#x3D; -x^{n-1} \pmod{p}$, and this builds certain connections between $f(x)$ and $f(\frac{1}{x})$. For instance, we have $f(x) &#x3D; a_{n-1} \cdot x^{n-1} + …$ and $f(\frac{1}{x}) &#x3D; a_1 \cdot \frac{1}{x} + …$, and we can sum them up to get $f(x) + f(\frac{1}{x}) &#x3D; (a_{n-1}-a_1) \cdot x^{n-1} + …$.</p>
 <p>In short, we can construct new polynomials $(\phi_+(x), \phi_-(x))$ with $(f(x), f(\frac{1}{x}))$, where $(\phi_+(x), \phi_-(x))$ are small and can be generated with a shorter (about $\lfloor \frac{n}{2} \rfloor$) basis. The following code gives a better explanation.</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_ternery_poly</span>(<span class="params">Q</span>):</span><br><span class="line">    <span class="keyword">return</span> Q([choice([-<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(Q.degree())])</span><br><span class="line"></span><br><span class="line">n = <span class="number">450</span></span><br><span class="line">p = <span class="number">3774877201</span></span><br><span class="line">t = n//<span class="number">2</span></span><br><span class="line"></span><br><span class="line">P, x = GF(p)[<span class="string">&quot;x&quot;</span>].objgen()</span><br><span class="line">g = x**n+<span class="number">1</span></span><br><span class="line">roots = [i[<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> g.roots()]</span><br><span class="line">Q = P.quotient(g)</span><br><span class="line"></span><br><span class="line">f = sample_ternery_poly(Q).lift()</span><br><span class="line">rs = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> roots:</span><br><span class="line">    <span class="keyword">if</span> r <span class="keyword">not</span> <span class="keyword">in</span> rs <span class="keyword">and</span> <span class="number">1</span>/r <span class="keyword">not</span> <span class="keyword">in</span> rs:</span><br><span class="line">        rs.append(r)</span><br><span class="line"></span><br><span class="line">xs = [[r**i + <span class="number">1</span>/r**i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n//<span class="number">2</span>+<span class="number">1</span>)] <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line">ys = [f(r) + f(<span class="number">1</span>/r) <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line"><span class="built_in">print</span>(matrix(GF(p), xs).solve_right(vector(ys)))</span><br><span class="line"></span><br><span class="line">xs = [[r**i - <span class="number">1</span>/r**i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n//<span class="number">2</span>+<span class="number">1</span>)] <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line">ys = [f(r) - f(<span class="number">1</span>/r) <span class="keyword">for</span> r <span class="keyword">in</span> rs]</span><br><span class="line"><span class="built_in">print</span>(matrix(GF(p), xs).solve_right(vector(ys)))</span><br></pre></td></tr></table></figure>
@@ -188,11 +188,11 @@
   </entry>
   <entry>
     <title>BlackHat MEA CTF 2025 Final (Riyadh, Saudi Arabia🇸🇦)</title>
-    <url>/2025/12/09/blackhatmeactffinal2025/</url>
+    <url>/2025/12/09/2025-blackhatmeactf-final/</url>
     <content><![CDATA[<p>Time: 2025.12.02-04 (onsite)</p>
 <p>I attended the Black Hat MEA CTF 2025 Final with r3kapig in Riyadh, Saudi Arabia.</p>
 <p>After three days working we got the 2nd place 🥈 in the competition, GG to all my teammates!</p>
-<p><img src="/2025/12/09/blackhatmeactffinal2025/images/scoreboard.png" alt="scoreboard"></p>
+<p><img src="/2025/12/09/2025-blackhatmeactf-final/images/scoreboard.png" alt="scoreboard"></p>
 <h1 id="day1"><a href="#day1" class="headerlink" title="day1"></a>day1</h1><h2 id="Que"><a href="#Que" class="headerlink" title="Que?"></a>Que?</h2><ul>
 <li><a href="day1/que/que.py">que.py</a></li>
 </ul>
@@ -200,7 +200,7 @@
 <h2 id="Tampering-Detection-System"><a href="#Tampering-Detection-System" class="headerlink" title="Tampering Detection System"></a>Tampering Detection System</h2><ul>
 <li><a href="day1/TDS/server.py">server.py</a></li>
 </ul>
-<h3 id="AES-GCM"><a href="#AES-GCM" class="headerlink" title="AES-GCM"></a>AES-GCM</h3><p><img src="/2025/12/09/blackhatmeactffinal2025/images/aes_gcm.png" alt="aes-gcm"></p>
+<h3 id="AES-GCM"><a href="#AES-GCM" class="headerlink" title="AES-GCM"></a>AES-GCM</h3><p><img src="/2025/12/09/2025-blackhatmeactf-final/images/aes_gcm.png" alt="aes-gcm"></p>
 <p>Some code by me for a better understanding. (I prefer $E_0$ while it’s $J_0$ in the figure.)</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sage.<span class="built_in">all</span> <span class="keyword">import</span> GF</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> long_to_bytes, bytes_to_long</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">z0 = GF(<span class="number">2</span>)[<span class="string">&quot;z0&quot;</span>].gen()</span><br><span class="line">F, z = GF(<span class="number">2</span>**<span class="number">128</span>, name=<span class="string">&quot;z&quot;</span>, modulus=z0**<span class="number">128</span> + z0**<span class="number">7</span> + z0**<span class="number">2</span> + z0 + <span class="number">1</span>).objgen()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">xor</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">bytes</span>([ai^bi <span class="keyword">for</span> ai, bi <span class="keyword">in</span> <span class="built_in">zip</span>(a, b)])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pad128</span>(<span class="params">pt</span>):</span><br><span class="line">    <span class="keyword">return</span> pt + <span class="string">b&#x27;\x00&#x27;</span> * ((<span class="number">16</span> - <span class="built_in">len</span>(pt))%<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">len64</span>(<span class="params">pt</span>):</span><br><span class="line">    <span class="keyword">return</span> long_to_bytes(<span class="built_in">len</span>(pt)*<span class="number">8</span>, <span class="number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">b2gf</span>(<span class="params">b</span>):</span><br><span class="line">    <span class="keyword">return</span> F(<span class="built_in">list</span>(<span class="built_in">bin</span>(bytes_to_long(b))[<span class="number">2</span>:].zfill(<span class="number">128</span>)))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gf2b</span>(<span class="params">g</span>):</span><br><span class="line">    <span class="keyword">return</span> long_to_bytes(<span class="built_in">int</span>(<span class="string">&#x27;&#x27;</span>.join(<span class="built_in">map</span>(<span class="built_in">str</span>, g.<span class="built_in">list</span>())), <span class="number">2</span>), <span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">TAG</span>(<span class="params">key: <span class="built_in">bytes</span>, aad: <span class="built_in">bytes</span>, nonce: <span class="built_in">bytes</span>, ct: <span class="built_in">bytes</span></span>):</span><br><span class="line">    aes = AES.new(key=key, mode=AES.MODE_ECB)</span><br><span class="line">    E0 = aes.encrypt(nonce + long_to_bytes(<span class="number">1</span>, <span class="number">4</span>))</span><br><span class="line">    H = aes.encrypt(long_to_bytes(<span class="number">0</span>, <span class="number">16</span>))</span><br><span class="line">    C = pad128(aad) + pad128(ct) + len64(aad) + len64(ct)</span><br><span class="line">    TAG = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(C), <span class="number">16</span>):</span><br><span class="line">        TAG += b2gf(C[i:i+<span class="number">16</span>])</span><br><span class="line">        TAG *= b2gf(H)</span><br><span class="line">    TAG += b2gf(E0)</span><br><span class="line">    <span class="keyword">return</span> gf2b(TAG) <span class="comment"># GHASH(H, C) + E0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">CT</span>(<span class="params">key: <span class="built_in">bytes</span>, nonce: <span class="built_in">bytes</span>, pt: <span class="built_in">bytes</span></span>):</span><br><span class="line">    aes = AES.new(key=key, mode=AES.MODE_ECB)</span><br><span class="line">    H = aes.encrypt(long_to_bytes(<span class="number">0</span>, <span class="number">16</span>))</span><br><span class="line">    ctr = nonce + long_to_bytes(<span class="number">1</span>, <span class="number">4</span>)</span><br><span class="line">    ct = <span class="string">b&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(pt), <span class="number">16</span>):</span><br><span class="line">        ctr = long_to_bytes(bytes_to_long(ctr) + <span class="number">1</span>, <span class="number">16</span>)</span><br><span class="line">        pti = pt[i: i+<span class="number">16</span>]</span><br><span class="line">        cti = xor(pti, aes.encrypt(ctr)[:<span class="built_in">len</span>(pti)])</span><br><span class="line">        ct += cti</span><br><span class="line">    <span class="keyword">return</span> ct    </span><br></pre></td></tr></table></figure>
 
@@ -331,7 +331,7 @@
 <table>
 <thead>
 <tr>
-<th><img src="/2025/12/09/blackhatmeactffinal2025/images/team1.jpg" alt="team1"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/team1.jpg" alt="team1"></th>
 </tr>
 </thead>
 </table>
@@ -340,43 +340,124 @@
 <table>
 <thead>
 <tr>
-<th><img src="/2025/12/09/blackhatmeactffinal2025/images/team2.jpg" alt="team2"></th>
-<th><img src="/2025/12/09/blackhatmeactffinal2025/images/bhmea.jpg" alt="bhmea"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/team2.jpg" alt="team2"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/bhmea.jpg" alt="bhmea"></th>
 </tr>
 </thead>
 </table>
 <table>
 <thead>
 <tr>
-<th><img src="/2025/12/09/blackhatmeactffinal2025/images/3.jpg" alt="3"></th>
-<th><img src="/2025/12/09/blackhatmeactffinal2025/images/4.jpg" alt="4"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/3.jpg" alt="3"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/4.jpg" alt="4"></th>
 </tr>
 </thead>
 </table>
 <table>
 <thead>
 <tr>
-<th><img src="/2025/12/09/blackhatmeactffinal2025/images/2.jpg" alt="2"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/2.jpg" alt="2"></th>
 </tr>
 </thead>
 </table>
 <table>
 <thead>
 <tr>
-<th><img src="/2025/12/09/blackhatmeactffinal2025/images/5.jpg" alt="5"></th>
+<th><img src="/2025/12/09/2025-blackhatmeactf-final/images/5.jpg" alt="5"></th>
 </tr>
 </thead>
 </table>
 ]]></content>
       <tags>
-        <tag>AES</tag>
+        <tag>AES-GCM</tag>
         <tag>SPN</tag>
         <tag>McEliece</tag>
       </tags>
   </entry>
   <entry>
+    <title>Codegate CTF 2025 Final (Seoul, Korea🇰🇷)</title>
+    <url>/2025/07/14/2025-codegatectf-final/</url>
+    <content><![CDATA[<p>Time: 2025.07.10-11 (onsite)</p>
+<p>I played Codegate CTF Final with r3kapig last week and we got 5th in the end. </p>
+<p>Sincere thanks to my teammates and the organizers, I really enjoyed the game.</p>
+<p><img src="/2025/07/14/2025-codegatectf-final/images/scoreboard.png" alt="scoreboard"></p>
+<h2 id="LEAk-12-solves"><a href="#LEAk-12-solves" class="headerlink" title="LEAk (12 solves)"></a>LEAk (12 solves)</h2><blockquote>
+<ul>
+<li><a href="LEAk/LEAk.py">LEAk.py</a></li>
+</ul>
+</blockquote>
+<p>This is a standard implementation of LEA, which is a ARX-style block cipher. Our target is to recover the key through 15 at maximum times of fault injection without the value of the fault.</p>
+<p>And my solution is based on <a href="https://eprint.iacr.org/2020/1534.pdf">this</a>. </p>
+<p>The core of the attack is an algebraic representation of modular addition on $\mathbb{F}_{2^n}$. In short, we have the following equations if we try to inject a fault into the modular addition.</p>
+<p>$$A \boxplus B &#x3D; C \Rightarrow A \boxplus (B \oplus \Delta B) &#x3D; C \oplus \Delta C$$</p>
+<p>$$<br>\begin{cases}<br>c_0 &#x3D; a_0 + b_0 \\<br>c_i &#x3D; a_i + b_i + a_{i-1}b_{i-1} + (a_{i-1}+b_{i-1})(a_{i-1}+b_{i-1}+c_{i-1})\\<br>c_0+\Delta c_{0} &#x3D; a_0 + b_0 + \Delta b_0 \\<br>c_i+\Delta c_{i} &#x3D; a_i + b_i + \Delta b_i + a_{i-1}(b_{i-1}+\Delta b_{i-1}) + (a_{i-1}+b_{i-1}+\Delta b_{i-1})(a_{i-1}+b_{i-1}+\Delta b_{i-1}+c_{i-1})<br>\end{cases}<br>$$</p>
+<p>With the knowledge of $(C, \Delta B, \Delta C)$, we can build a binary system with $2n$ variables, which can be solved through <code>Groebner Basis</code> or <code>z3-solver</code>. And we can recover the low $n-1$ bits of $(A, B)$ with enough samples (apparently we have no information about MSB).</p>
+<p>In the second part we just need to choose the injection points, collect the outputs and recover the internal values using the above analysis. I implemented the paper’s strategy and here is a sketch.</p>
+<ol>
+<li>$\rightarrow X_{22}[0]$ for $RK_{23}[0]$ (31bit)</li>
+<li>$\rightarrow X_{23}[1]$ for $RK_{23}[1] \oplus RK_{23}[2]$ (31bit)</li>
+<li>$\rightarrow X_{23}[2]$ for $RK_{23}[3] \oplus RK_{23}[4]$ (31bit)</li>
+<li>$\rightarrow X_{22}[0]$ (reuse stage 1) for $RK_{23}[5]$ (30bit)</li>
+</ol>
+<p>For more details you can check the original paper (and my exploit code). With some bruteforce on MSBs, we can recover the secret key.</p>
+<p>In the paper the author takes 6 samples for each steps, and here we have only 5 (we need 1 sample for the original ciphertext). This slightly influences the success rate so we need several attempts.</p>
+<blockquote>
+<ul>
+<li><a href="LEAk/exp.py">exp.py</a></li>
+</ul>
+</blockquote>
+<p>It turns out the whole challenge is z3able but whatever :)</p>
+<p>I actually enjoyed the implementation part, with snacks and classical music. Love and peace @codegate.</p>
+<h2 id="smartLock-10-solves"><a href="#smartLock-10-solves" class="headerlink" title="smartLock (10 solves)"></a>smartLock (10 solves)</h2><blockquote>
+<ul>
+<li><a href="smartLock/smartLock.zip">smartLock</a></li>
+</ul>
+</blockquote>
+<p>A tiny bug is that the server checks the answer by sending $m^d \pmod{n}$ and querying $m$, so we can just pass all the tests with the public keys. This can be figured out through the remote outputs.</p>
+<p>According to our REer, we may need to solve 10 ACDP in 50s with strict parameters. I’ve not tried it but it might be all about optimizations ig.</p>
+<blockquote>
+<ul>
+<li><a href="smartLock/exp.py">exp.py</a></li>
+</ul>
+</blockquote>
+<h2 id="In-Korea"><a href="#In-Korea" class="headerlink" title="In Korea"></a>In Korea</h2><p>Charming Seoul City. The weather is similar to that in my hometown.</p>
+<p>Kinda hot in the first two days, but it’s just pleasant after that.</p>
+<p>Glad to meet so many old and new friends :D</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/07/14/2025-codegatectf-final/images/myongtong.jpg" alt="myongtong"></th>
+<th><img src="/2025/07/14/2025-codegatectf-final/images/yondae.jpg" alt="yondae"></th>
+</tr>
+</thead>
+</table>
+<!-- ## (blockchain) DEX (8 solves)
+
+> - [DEX](DEX/DEX.zip)
+
+Later that night I tried the blockchain challenge with my teammates. Something new for me XD
+
+The structure of the challenge is well-designed and a little complicated for me. But many of them are meant for the correctness and fairness of the challenge, so I'll just focus on the core part.
+
+The initialization is done by contract `Setup`. In short there are two `DEX` contracts, deployed on `CODE` and `GATE` chain. At first there are `DEX_SUPPLY` of `tokenA/B/C` on each DEX, and our target is to possess all of them (`2*DEX_SUPPLY` of each token). And of course, we don't have enough money to do that.
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">contract <span class="title class_">Setup</span> &#123;</span><br><span class="line">    uint256 public constant <span class="variable constant_">CODE_CHAIN</span> = <span class="number">10</span>;</span><br><span class="line">    uint256 public constant <span class="variable constant_">GATE_CHAIN</span> = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    address public dex;</span><br><span class="line">    address public tokenA;</span><br><span class="line">    address public tokenB;</span><br><span class="line">    address public tokenC;</span><br><span class="line">    address public faucet;</span><br><span class="line">    address public faucetLogic;</span><br><span class="line">    bool public isSolved = <span class="literal">false</span>;</span><br><span class="line">    uint256 public constant <span class="variable constant_">DEX_SUPPLY</span> = <span class="number">600</span> ether;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address _faucet</span>) &#123;</span><br><span class="line">        </span><br><span class="line">        faucetLogic = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">FaucetLogic</span>());</span><br><span class="line">        faucet  = _faucet;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(block.<span class="property">chainid</span> == <span class="variable constant_">CODE_CHAIN</span>) &#123;</span><br><span class="line">            tokenA = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;CODE USDC&quot;</span>, <span class="string">&quot;cUSDC&quot;</span>));</span><br><span class="line">            tokenB = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;CODE PURR&quot;</span>, <span class="string">&quot;cPURR&quot;</span>));</span><br><span class="line">            tokenC = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;CODE MOODENG&quot;</span>, <span class="string">&quot;cMOODENG&quot;</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            tokenA = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;GATE USDC&quot;</span>, <span class="string">&quot;gUSDC&quot;</span>));</span><br><span class="line">            tokenB = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;GATE PURR&quot;</span>, <span class="string">&quot;gPURR&quot;</span>));</span><br><span class="line">            tokenC = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;GATE MOODENG&quot;</span>, <span class="string">&quot;gMOODENG&quot;</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="title class_">Token</span>[] memory tokens = <span class="keyword">new</span> <span class="title class_">Token</span>[](<span class="number">3</span>);</span><br><span class="line">        tokens[<span class="number">0</span>] = <span class="title class_">Token</span>(tokenA);</span><br><span class="line">        tokens[<span class="number">1</span>] = <span class="title class_">Token</span>(tokenB);</span><br><span class="line">        tokens[<span class="number">2</span>] = <span class="title class_">Token</span>(tokenC);</span><br><span class="line"></span><br><span class="line">        dex = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title function_">DEX</span>(msg.<span class="property">sender</span>, tokens));</span><br><span class="line">        <span class="title class_">Token</span>(tokenA).<span class="title function_">mint</span>(<span class="title function_">address</span>(dex), <span class="variable constant_">DEX_SUPPLY</span>);</span><br><span class="line">        <span class="title class_">Token</span>(tokenB).<span class="title function_">mint</span>(<span class="title function_">address</span>(dex), <span class="variable constant_">DEX_SUPPLY</span>);</span><br><span class="line">        <span class="title class_">Token</span>(tokenC).<span class="title function_">mint</span>(<span class="title function_">address</span>(dex), <span class="variable constant_">DEX_SUPPLY</span>);</span><br><span class="line"></span><br><span class="line">        <span class="title class_">Token</span>(tokenA).<span class="title function_">transferOwnership</span>(msg.<span class="property">sender</span>);</span><br><span class="line">        <span class="title class_">Token</span>(tokenB).<span class="title function_">transferOwnership</span>(msg.<span class="property">sender</span>);</span><br><span class="line">        <span class="title class_">Token</span>(tokenC).<span class="title function_">transferOwnership</span>(msg.<span class="property">sender</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getToken</span>(<span class="params"></span>) public &#123;</span><br><span class="line">        <span class="keyword">if</span>(block.<span class="property">chainid</span> == <span class="variable constant_">GATE_CHAIN</span>) &#123;</span><br><span class="line">            <span class="title class_">Token</span>(tokenA).<span class="title function_">transfer</span>(faucet, <span class="number">100</span> ether);</span><br><span class="line">            <span class="title class_">Token</span>(tokenB).<span class="title function_">transfer</span>(faucet, <span class="number">100</span> ether);</span><br><span class="line">            <span class="title class_">Token</span>(tokenC).<span class="title function_">transfer</span>(faucet, <span class="number">100</span> ether);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">solve</span>(<span class="params"></span>) public &#123;</span><br><span class="line">        <span class="built_in">require</span>(block.<span class="property">chainid</span> == <span class="variable constant_">CODE_CHAIN</span>, <span class="string">&quot;Can be solved only on CODE CHAIN&quot;</span>);</span><br><span class="line">        <span class="built_in">require</span>(<span class="title class_">Token</span>(tokenA).<span class="title function_">balanceOf</span>(msg.<span class="property">sender</span>) &gt;= <span class="variable constant_">DEX_SUPPLY</span> * <span class="number">2</span>, <span class="string">&quot;Not enough USDC&quot;</span>);</span><br><span class="line">        <span class="built_in">require</span>(<span class="title class_">Token</span>(tokenB).<span class="title function_">balanceOf</span>(msg.<span class="property">sender</span>) &gt;= <span class="variable constant_">DEX_SUPPLY</span> * <span class="number">2</span>, <span class="string">&quot;Not enough PURR&quot;</span>);</span><br><span class="line">        <span class="built_in">require</span>(<span class="title class_">Token</span>(tokenC).<span class="title function_">balanceOf</span>(msg.<span class="property">sender</span>) &gt;= <span class="variable constant_">DEX_SUPPLY</span> * <span class="number">2</span>, <span class="string">&quot;Not enough MOODENG&quot;</span>);</span><br><span class="line">        isSolved = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>DEX</code> is the core contract in this challenge. The main duty for a DEX (Decentralized Exchange) is the exchange service, where users can exchange some <code>tokenA</code> to <code>tokenB</code> according to current exchange rate. </p>
+<p>Two <code>DEX</code> are deployed on different chains in this challenge. If one <code>DEX</code> exhausts a certain token, it’ll initiate a transfer request for more tokens with the other <code>DEX</code>, which actually completes a cross-chain exchange. <code>Message</code> related codes are used to handle cross-chain requirements, kinda cool.</p>
+<p>Here comes the core logic of <code>DEX</code> contract.</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">_swap</span>(<span class="params">address <span class="keyword">from</span>, address receiver, uint256 amount, bytes32 srcToken, bytes32 dstToken</span>) internal &#123;</span><br><span class="line">    uint256 rate = <span class="title function_">_getRate</span>(srcToken, dstToken);</span><br><span class="line">    <span class="title class_">Token</span> srcTokenAddress = <span class="title class_">Token</span>(tokenMapping[srcToken]);</span><br><span class="line">    <span class="title class_">Token</span> dstTokenAddress = <span class="title class_">Token</span>(tokenMapping[dstToken]);</span><br><span class="line">    uint256 targetAmount = amount * rate / <span class="number">1e6</span>;</span><br><span class="line">    uint256 diffAmount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(dstTokenAddress.<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>)) &lt; targetAmount) &#123;</span><br><span class="line">        diffAmount = targetAmount - dstTokenAddress.<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">        targetAmount = dstTokenAddress.<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">        amount = <span class="title function_">_getRate</span>(dstToken, srcToken) * targetAmount / <span class="number">1e6</span>;</span><br><span class="line">        emit <span class="title class_">MessageSent</span>(<span class="title class_">Message</span>(&#123;</span><br><span class="line">            <span class="attr">messageType</span>: <span class="title class_">MessageType</span>.<span class="property">LiquidityRequest</span>,</span><br><span class="line">            <span class="attr">from</span>: <span class="title function_">address</span>(<span class="variable language_">this</span>),</span><br><span class="line">            <span class="attr">receiver</span>: receiver,</span><br><span class="line">            <span class="attr">srcToken</span>: srcToken,</span><br><span class="line">            <span class="attr">dstToken</span>: dstToken,</span><br><span class="line">            <span class="attr">srcChainId</span>: block.<span class="property">chainid</span>,</span><br><span class="line">            <span class="attr">dstChainId</span>: block.<span class="property">chainid</span> == <span class="variable constant_">CODE_CHAIN</span> ? <span class="variable constant_">GATE_CHAIN</span> : <span class="variable constant_">CODE_CHAIN</span>,</span><br><span class="line">            <span class="attr">amount</span>: diffAmount</span><br><span class="line">        &#125;));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">from</span> != <span class="title function_">address</span>(<span class="variable language_">this</span>)) &#123;</span><br><span class="line">        srcTokenAddress.<span class="title function_">transferFrom</span>(<span class="keyword">from</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amount);</span><br><span class="line">    &#125;</span><br><span class="line">    dstTokenAddress.<span class="title function_">transfer</span>(receiver, targetAmount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>There exists a small vuln in the cross-chain process. Before <code>DEX</code> initiates the request, it recalculates the <code>amount = _getRate(dstToken, srcToken) * targetAmount / 1e6</code> first. Due to integer division, this may cause a loss of precision. If the <code>targetAmount</code> is accurately controlled, we can set <code>amount</code> to 0 and get paid for free.</p>
+<p>Therefore, we control the number of <code>tokenA/B/C</code> first through the exchange service, and then trigger this vuln via a cross-chain request. By repeating this process several times we can solve this challenge. –&gt;</p>
+]]></content>
+      <tags>
+        <tag>LEA</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>These Walls::Codegate CTF 2025 Qual</title>
-    <url>/2025/04/05/codegatectf2025/</url>
+    <url>/2025/04/05/2025-codegatectf/</url>
     <content><![CDATA[<p>Time: 2025.03.29 (online)</p>
 <p>Time to learn more about elliptic curve :D</p>
 <h2 id="These-Walls-5-solves"><a href="#These-Walls-5-solves" class="headerlink" title="These Walls (5 solves)"></a>These Walls (5 solves)</h2><p><a href="https://github.com/soon-haari/my-ctf-challenges/tree/main/2025-codegate/crypto-thesewalls">https://github.com/soon-haari/my-ctf-challenges/tree/main/2025-codegate/crypto-thesewalls</a></p>
@@ -458,89 +539,8 @@
       </tags>
   </entry>
   <entry>
-    <title>Codegate CTF 2025 Final (Seoul, Korea🇰🇷)</title>
-    <url>/2025/07/14/codegatectffinal2025/</url>
-    <content><![CDATA[<p>Time: 2025.07.10-11 (onsite)</p>
-<p>I played Codegate CTF Final with r3kapig last week and we got 5th in the end. </p>
-<p>Sincere thanks to my teammates and the organizers, I really enjoyed the game.</p>
-<p><img src="/2025/07/14/codegatectffinal2025/images/scoreboard.png" alt="scoreboard"></p>
-<h2 id="LEAk-12-solves"><a href="#LEAk-12-solves" class="headerlink" title="LEAk (12 solves)"></a>LEAk (12 solves)</h2><blockquote>
-<ul>
-<li><a href="LEAk/LEAk.py">LEAk.py</a></li>
-</ul>
-</blockquote>
-<p>This is a standard implementation of LEA, which is a ARX-style block cipher. Our target is to recover the key through 15 at maximum times of fault injection without the value of the fault.</p>
-<p>And my solution is based on <a href="https://eprint.iacr.org/2020/1534.pdf">this</a>. </p>
-<p>The core of the attack is an algebraic representation of modular addition on $\mathbb{F}_{2^n}$. In short, we have the following equations if we try to inject a fault into the modular addition.</p>
-<p>$$A \boxplus B &#x3D; C \Rightarrow A \boxplus (B \oplus \Delta B) &#x3D; C \oplus \Delta C$$</p>
-<p>$$<br>\begin{cases}<br>c_0 &#x3D; a_0 + b_0 \\<br>c_i &#x3D; a_i + b_i + a_{i-1}b_{i-1} + (a_{i-1}+b_{i-1})(a_{i-1}+b_{i-1}+c_{i-1})\\<br>c_0+\Delta c_{0} &#x3D; a_0 + b_0 + \Delta b_0 \\<br>c_i+\Delta c_{i} &#x3D; a_i + b_i + \Delta b_i + a_{i-1}(b_{i-1}+\Delta b_{i-1}) + (a_{i-1}+b_{i-1}+\Delta b_{i-1})(a_{i-1}+b_{i-1}+\Delta b_{i-1}+c_{i-1})<br>\end{cases}<br>$$</p>
-<p>With the knowledge of $(C, \Delta B, \Delta C)$, we can build a binary system with $2n$ variables, which can be solved through <code>Groebner Basis</code> or <code>z3-solver</code>. And we can recover the low $n-1$ bits of $(A, B)$ with enough samples (apparently we have no information about MSB).</p>
-<p>In the second part we just need to choose the injection points, collect the outputs and recover the internal values using the above analysis. I implemented the paper’s strategy and here is a sketch.</p>
-<ol>
-<li>$\rightarrow X_{22}[0]$ for $RK_{23}[0]$ (31bit)</li>
-<li>$\rightarrow X_{23}[1]$ for $RK_{23}[1] \oplus RK_{23}[2]$ (31bit)</li>
-<li>$\rightarrow X_{23}[2]$ for $RK_{23}[3] \oplus RK_{23}[4]$ (31bit)</li>
-<li>$\rightarrow X_{22}[0]$ (reuse stage 1) for $RK_{23}[5]$ (30bit)</li>
-</ol>
-<p>For more details you can check the original paper (and my exploit code). With some bruteforce on MSBs, we can recover the secret key.</p>
-<p>In the paper the author takes 6 samples for each steps, and here we have only 5 (we need 1 sample for the original ciphertext). This slightly influences the success rate so we need several attempts.</p>
-<blockquote>
-<ul>
-<li><a href="LEAk/exp.py">exp.py</a></li>
-</ul>
-</blockquote>
-<p>It turns out the whole challenge is z3able but whatever :)</p>
-<p>I actually enjoyed the implementation part, with snacks and classical music. Love and peace @codegate.</p>
-<h2 id="smartLock-10-solves"><a href="#smartLock-10-solves" class="headerlink" title="smartLock (10 solves)"></a>smartLock (10 solves)</h2><blockquote>
-<ul>
-<li><a href="smartLock/smartLock.zip">smartLock</a></li>
-</ul>
-</blockquote>
-<p>A tiny bug is that the server checks the answer by sending $m^d \pmod{n}$ and querying $m$, so we can just pass all the tests with the public keys. This can be figured out through the remote outputs.</p>
-<p>According to our REer, we may need to solve 10 ACDP in 50s with strict parameters. I’ve not tried it but it might be all about optimizations ig.</p>
-<blockquote>
-<ul>
-<li><a href="smartLock/exp.py">exp.py</a></li>
-</ul>
-</blockquote>
-<h2 id="In-Korea"><a href="#In-Korea" class="headerlink" title="In Korea"></a>In Korea</h2><p>Charming Seoul City. The weather is similar to that in my hometown.</p>
-<p>Kinda hot in the first two days, but it’s just pleasant after that.</p>
-<p>Glad to meet so many old and new friends :D</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/07/14/codegatectffinal2025/images/myongtong.jpg" alt="myongtong"></th>
-<th><img src="/2025/07/14/codegatectffinal2025/images/yondae.jpg" alt="yondae"></th>
-</tr>
-</thead>
-</table>
-<!-- ## (blockchain) DEX (8 solves)
-
-> - [DEX](DEX/DEX.zip)
-
-Later that night I tried the blockchain challenge with my teammates. Something new for me XD
-
-The structure of the challenge is well-designed and a little complicated for me. But many of them are meant for the correctness and fairness of the challenge, so I'll just focus on the core part.
-
-The initialization is done by contract `Setup`. In short there are two `DEX` contracts, deployed on `CODE` and `GATE` chain. At first there are `DEX_SUPPLY` of `tokenA/B/C` on each DEX, and our target is to possess all of them (`2*DEX_SUPPLY` of each token). And of course, we don't have enough money to do that.
-
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">contract <span class="title class_">Setup</span> &#123;</span><br><span class="line">    uint256 public constant <span class="variable constant_">CODE_CHAIN</span> = <span class="number">10</span>;</span><br><span class="line">    uint256 public constant <span class="variable constant_">GATE_CHAIN</span> = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    address public dex;</span><br><span class="line">    address public tokenA;</span><br><span class="line">    address public tokenB;</span><br><span class="line">    address public tokenC;</span><br><span class="line">    address public faucet;</span><br><span class="line">    address public faucetLogic;</span><br><span class="line">    bool public isSolved = <span class="literal">false</span>;</span><br><span class="line">    uint256 public constant <span class="variable constant_">DEX_SUPPLY</span> = <span class="number">600</span> ether;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address _faucet</span>) &#123;</span><br><span class="line">        </span><br><span class="line">        faucetLogic = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">FaucetLogic</span>());</span><br><span class="line">        faucet  = _faucet;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(block.<span class="property">chainid</span> == <span class="variable constant_">CODE_CHAIN</span>) &#123;</span><br><span class="line">            tokenA = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;CODE USDC&quot;</span>, <span class="string">&quot;cUSDC&quot;</span>));</span><br><span class="line">            tokenB = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;CODE PURR&quot;</span>, <span class="string">&quot;cPURR&quot;</span>));</span><br><span class="line">            tokenC = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;CODE MOODENG&quot;</span>, <span class="string">&quot;cMOODENG&quot;</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            tokenA = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;GATE USDC&quot;</span>, <span class="string">&quot;gUSDC&quot;</span>));</span><br><span class="line">            tokenB = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;GATE PURR&quot;</span>, <span class="string">&quot;gPURR&quot;</span>));</span><br><span class="line">            tokenC = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title class_">Token</span>(<span class="string">&quot;GATE MOODENG&quot;</span>, <span class="string">&quot;gMOODENG&quot;</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="title class_">Token</span>[] memory tokens = <span class="keyword">new</span> <span class="title class_">Token</span>[](<span class="number">3</span>);</span><br><span class="line">        tokens[<span class="number">0</span>] = <span class="title class_">Token</span>(tokenA);</span><br><span class="line">        tokens[<span class="number">1</span>] = <span class="title class_">Token</span>(tokenB);</span><br><span class="line">        tokens[<span class="number">2</span>] = <span class="title class_">Token</span>(tokenC);</span><br><span class="line"></span><br><span class="line">        dex = <span class="title function_">address</span>(<span class="keyword">new</span> <span class="title function_">DEX</span>(msg.<span class="property">sender</span>, tokens));</span><br><span class="line">        <span class="title class_">Token</span>(tokenA).<span class="title function_">mint</span>(<span class="title function_">address</span>(dex), <span class="variable constant_">DEX_SUPPLY</span>);</span><br><span class="line">        <span class="title class_">Token</span>(tokenB).<span class="title function_">mint</span>(<span class="title function_">address</span>(dex), <span class="variable constant_">DEX_SUPPLY</span>);</span><br><span class="line">        <span class="title class_">Token</span>(tokenC).<span class="title function_">mint</span>(<span class="title function_">address</span>(dex), <span class="variable constant_">DEX_SUPPLY</span>);</span><br><span class="line"></span><br><span class="line">        <span class="title class_">Token</span>(tokenA).<span class="title function_">transferOwnership</span>(msg.<span class="property">sender</span>);</span><br><span class="line">        <span class="title class_">Token</span>(tokenB).<span class="title function_">transferOwnership</span>(msg.<span class="property">sender</span>);</span><br><span class="line">        <span class="title class_">Token</span>(tokenC).<span class="title function_">transferOwnership</span>(msg.<span class="property">sender</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getToken</span>(<span class="params"></span>) public &#123;</span><br><span class="line">        <span class="keyword">if</span>(block.<span class="property">chainid</span> == <span class="variable constant_">GATE_CHAIN</span>) &#123;</span><br><span class="line">            <span class="title class_">Token</span>(tokenA).<span class="title function_">transfer</span>(faucet, <span class="number">100</span> ether);</span><br><span class="line">            <span class="title class_">Token</span>(tokenB).<span class="title function_">transfer</span>(faucet, <span class="number">100</span> ether);</span><br><span class="line">            <span class="title class_">Token</span>(tokenC).<span class="title function_">transfer</span>(faucet, <span class="number">100</span> ether);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">solve</span>(<span class="params"></span>) public &#123;</span><br><span class="line">        <span class="built_in">require</span>(block.<span class="property">chainid</span> == <span class="variable constant_">CODE_CHAIN</span>, <span class="string">&quot;Can be solved only on CODE CHAIN&quot;</span>);</span><br><span class="line">        <span class="built_in">require</span>(<span class="title class_">Token</span>(tokenA).<span class="title function_">balanceOf</span>(msg.<span class="property">sender</span>) &gt;= <span class="variable constant_">DEX_SUPPLY</span> * <span class="number">2</span>, <span class="string">&quot;Not enough USDC&quot;</span>);</span><br><span class="line">        <span class="built_in">require</span>(<span class="title class_">Token</span>(tokenB).<span class="title function_">balanceOf</span>(msg.<span class="property">sender</span>) &gt;= <span class="variable constant_">DEX_SUPPLY</span> * <span class="number">2</span>, <span class="string">&quot;Not enough PURR&quot;</span>);</span><br><span class="line">        <span class="built_in">require</span>(<span class="title class_">Token</span>(tokenC).<span class="title function_">balanceOf</span>(msg.<span class="property">sender</span>) &gt;= <span class="variable constant_">DEX_SUPPLY</span> * <span class="number">2</span>, <span class="string">&quot;Not enough MOODENG&quot;</span>);</span><br><span class="line">        isSolved = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>DEX</code> is the core contract in this challenge. The main duty for a DEX (Decentralized Exchange) is the exchange service, where users can exchange some <code>tokenA</code> to <code>tokenB</code> according to current exchange rate. </p>
-<p>Two <code>DEX</code> are deployed on different chains in this challenge. If one <code>DEX</code> exhausts a certain token, it’ll initiate a transfer request for more tokens with the other <code>DEX</code>, which actually completes a cross-chain exchange. <code>Message</code> related codes are used to handle cross-chain requirements, kinda cool.</p>
-<p>Here comes the core logic of <code>DEX</code> contract.</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">_swap</span>(<span class="params">address <span class="keyword">from</span>, address receiver, uint256 amount, bytes32 srcToken, bytes32 dstToken</span>) internal &#123;</span><br><span class="line">    uint256 rate = <span class="title function_">_getRate</span>(srcToken, dstToken);</span><br><span class="line">    <span class="title class_">Token</span> srcTokenAddress = <span class="title class_">Token</span>(tokenMapping[srcToken]);</span><br><span class="line">    <span class="title class_">Token</span> dstTokenAddress = <span class="title class_">Token</span>(tokenMapping[dstToken]);</span><br><span class="line">    uint256 targetAmount = amount * rate / <span class="number">1e6</span>;</span><br><span class="line">    uint256 diffAmount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(dstTokenAddress.<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>)) &lt; targetAmount) &#123;</span><br><span class="line">        diffAmount = targetAmount - dstTokenAddress.<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">        targetAmount = dstTokenAddress.<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">        amount = <span class="title function_">_getRate</span>(dstToken, srcToken) * targetAmount / <span class="number">1e6</span>;</span><br><span class="line">        emit <span class="title class_">MessageSent</span>(<span class="title class_">Message</span>(&#123;</span><br><span class="line">            <span class="attr">messageType</span>: <span class="title class_">MessageType</span>.<span class="property">LiquidityRequest</span>,</span><br><span class="line">            <span class="attr">from</span>: <span class="title function_">address</span>(<span class="variable language_">this</span>),</span><br><span class="line">            <span class="attr">receiver</span>: receiver,</span><br><span class="line">            <span class="attr">srcToken</span>: srcToken,</span><br><span class="line">            <span class="attr">dstToken</span>: dstToken,</span><br><span class="line">            <span class="attr">srcChainId</span>: block.<span class="property">chainid</span>,</span><br><span class="line">            <span class="attr">dstChainId</span>: block.<span class="property">chainid</span> == <span class="variable constant_">CODE_CHAIN</span> ? <span class="variable constant_">GATE_CHAIN</span> : <span class="variable constant_">CODE_CHAIN</span>,</span><br><span class="line">            <span class="attr">amount</span>: diffAmount</span><br><span class="line">        &#125;));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">from</span> != <span class="title function_">address</span>(<span class="variable language_">this</span>)) &#123;</span><br><span class="line">        srcTokenAddress.<span class="title function_">transferFrom</span>(<span class="keyword">from</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amount);</span><br><span class="line">    &#125;</span><br><span class="line">    dstTokenAddress.<span class="title function_">transfer</span>(receiver, targetAmount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>There exists a small vuln in the cross-chain process. Before <code>DEX</code> initiates the request, it recalculates the <code>amount = _getRate(dstToken, srcToken) * targetAmount / 1e6</code> first. Due to integer division, this may cause a loss of precision. If the <code>targetAmount</code> is accurately controlled, we can set <code>amount</code> to 0 and get paid for free.</p>
-<p>Therefore, we control the number of <code>tokenA/B/C</code> first through the exchange service, and then trigger this vuln via a cross-chain request. By repeating this process several times we can solve this challenge. –&gt;</p>
-]]></content>
-      <tags>
-        <tag>LEA</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>fairy-ring::Dice CTF 2025 Qual</title>
-    <url>/2025/04/01/dicectf2025/</url>
+    <url>/2025/04/01/2025-dicectf/</url>
     <content><![CDATA[<p>Time: 2025.03.29-31 (online)</p>
 <h2 id="fairy-ring-7-solves"><a href="#fairy-ring-7-solves" class="headerlink" title="fairy-ring (7 solves)"></a>fairy-ring (7 solves)</h2><p><a href="https://priv.pub/posts/dicectf-quals-2025/#fairy-ring">Original Writeup</a></p>
 <p><a href="https://github.com/defund/ctf/tree/master/dicectf-quals-2025/fairy-ring">https://github.com/defund/ctf/tree/master/dicectf-quals-2025/fairy-ring</a></p>
@@ -591,8 +591,755 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
       </tags>
   </entry>
   <entry>
+    <title>Let me tell you a story about 2025</title>
+    <url>/2025/12/31/2025-rec/</url>
+    <content><![CDATA[<p>Time: 2025 (onsite)</p>
+<h2 id="CTF-2025"><a href="#CTF-2025" class="headerlink" title="CTF 2025"></a>CTF 2025</h2><p>2025 年我参加了许多 CTF 竞赛，与 @N0wayBack 和 @r3kapig 度过了许多有趣的时光。我见识了许多新颖有趣的技术，但是还没能全都学会，再给我一些时间。</p>
+<p>2025 年，学习使用先进的 LLM 成为一件不能再被推迟的事，这扯不扯。</p>
+<p>不过兄弟 CTF 才是最好的 CTF，我明白了。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/memes/friend.jpg" alt="friend"></th>
+<th><img src="/2025/12/31/2025-rec/memes/friend.jpg" alt="friend"></th>
+<th><img src="/2025/12/31/2025-rec/memes/friend.jpg" alt="friend"></th>
+</tr>
+</thead>
+</table>
+<p>我有幸 onsite 参加了许多国际赛事决赛：</p>
+<ul>
+<li><a href="/2025/03/04/secconctffinal2025/">SECCON CTF (Tokyo, Japan 🇯🇵)</a></li>
+<li><a href="/2025/07/14/codegatectffinal2025/">CodeGate CTF (Seoul, Korea 🇰🇷)</a></li>
+<li><a href="/2025/09/29/srdnlenctffinal2025/">SrdnLen CTF (Sardinia, Italy 🇮🇹)</a></li>
+<li><a href="/2025/12/09/blackhatmeactffinal2025/">BlackHat MEA CTF (Riyadh, Saudi Arabia 🇸🇦)</a> ⬅️ 猜猜是谁取得了亚军🥈</li>
+</ul>
+<p>我度过了忙碌而充实的 2025 年，这也是我最大的收获之一，感谢 @r3kapig 的同时感谢 @rec 我自己。我得以见到许多有趣的事，认识许多有趣的人，这对我来说意义非凡。</p>
+<p>哦，猜猜 2025 年的 ctftime 排名第一的是？</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/ctftime.jpg" alt="ctftime"></th>
+</tr>
+</thead>
+</table>
+<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
+
+<p>如果你感兴趣的话，我们在 2025 年夺冠了 XCTF-ACTF，欢迎加入 @N0wayBack 战队。</p>
+<p>年轻的师傅们越来越厉害了，好像逐渐没我什么事，感动。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/ACTF.png" alt="ACTF"></th>
+</tr>
+</thead>
+</table>
+<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
+
+<p>2025 年的夏天尤其比较忙碌。</p>
+<p>六月底在千岛湖线下参加了 Google CTF（三个老东西 @deebato @等风 @rec 什么也没做出来，都怪 @k1rito），紧接着到首尔 CodeGate CTF。回来之后到重庆参加了熵密杯（兄！弟！@狗墩子），后面又到西安和 @oc 老大参加了密码挑战决赛。</p>
+<p>这中间还穿插了一次旅行，2025 年的夏天尤其比较忙碌</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/SMB.jpg" alt="SMB"></th>
+<th><img src="/2025/12/31/2025-rec/images/SMB2.jpg" alt="SMB2"></th>
+</tr>
+</thead>
+</table>
+<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
+
+<p>2025 年和 NJU 的朋友们参加了不少竞赛。</p>
+<p>猜猜谁今年又被 @Dawn_Whisper 老板邀请了？NUAA 的校赛今年给办到华为南研所了，玩得很开心。</p>
+<p>是的，国际中央大学今年出了两个队。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/NUAA.jpg" alt="NUAA"></th>
+</tr>
+</thead>
+</table>
+<p>10 月举办了 NJU 时隔多年来第一次 CTF 校赛；12 月就见证了 NJU-Trinity 战队拿下 HITCTF 冠军，泪目。</p>
+<h2 id="ByteDance-2025"><a href="#ByteDance-2025" class="headerlink" title="ByteDance 2025"></a>ByteDance 2025</h2><p>2025 年的秋天在深圳 ByteDance 开始了第一份实习。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/%E5%AD%97%E8%8A%821.jpg" alt="字节1"></th>
+</tr>
+</thead>
+</table>
+<p>跟着各位老师学到了很多东西（虽然我学得很慢），感恩。</p>
+<p>我在每天的通勤地铁上反复播放 NMIXX。我看了很多日落，深圳有很多海。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/%E6%B7%B1%E5%9C%B34.jpg" alt="深圳4"></th>
+<th><img src="/2025/12/31/2025-rec/images/%E6%B7%B1%E5%9C%B36.jpg" alt="深圳6"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/%E6%B7%B1%E5%9C%B33.jpg" alt="深圳3"></th>
+<th><img src="/2025/12/31/2025-rec/images/%E6%B7%B1%E5%9C%B35.jpg" alt="深圳5"></th>
+</tr>
+</thead>
+</table>
+<h2 id="Travel-2025"><a href="#Travel-2025" class="headerlink" title="Travel 2025"></a>Travel 2025</h2><h3 id="江南"><a href="#江南" class="headerlink" title="江南"></a>江南</h3><p>2025 年的生日是 @Cain 和 @糖醋小鸡块 一起过的。</p>
+<p>两位大弟说来就来，非常靠谱。然后我们一起找奕叔林哥聚餐（蹭饭）。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/%E7%8E%84%E6%AD%A6%E6%B9%96.jpg" alt="玄武湖"></th>
+<th><img src="/2025/12/31/2025-rec/images/%E7%8E%84%E6%AD%A6%E6%B9%962.jpg" alt="玄武湖2"></th>
+<th><img src="/2025/12/31/2025-rec/images/food.jpg" alt="food"></th>
+</tr>
+</thead>
+</table>
+<p>继 Palworld 之后，Rockay City 和 Darker and Darker 或将成为新的“短时间内再也不会打开的游戏”。</p>
+<p>明年还订电竞酒店吗？</p>
+<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
+
+<p>2025 年的夏天在苏杭组织了一次旅行，为了庆祝朋友考试通过。</p>
+<p>短时间内大家应该不想再吃南方菜了，但是螃蟹很好吃。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/%E8%8B%8F%E5%B7%9E.jpg" alt="苏州"></th>
+<th><img src="/2025/12/31/2025-rec/images/%E6%9D%AD%E5%B7%9E.jpg" alt="杭州"></th>
+<th><img src="/2025/12/31/2025-rec/images/%E8%8B%8F%E5%B7%9E2.jpg" alt="苏州2"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/%E5%8D%97%E4%BA%AC.jpg" alt="南京"></th>
+<th><img src="/2025/12/31/2025-rec/images/%E8%8B%8F%E5%B7%9E3.jpg" alt="苏州3"></th>
+</tr>
+</thead>
+</table>
+<p>我发现找不到什么照片来纪念这为期一周的旅行，当时只顾吃饭了？</p>
+<h3 id="日本"><a href="#日本" class="headerlink" title="日本"></a>日本</h3><p>2025 年的夏天计划了一次日本旅行，与男性友人双排“坂进东出”。</p>
+<p>这个时间正好是 Osaka EXPO 2025，人生中第一次参观世博会。</p>
+<p>好热，好多人，哈哈。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/expo1.jpg" alt="expo1"></th>
+</tr>
+</thead>
+</table>
+<p>好天气其实是非常理想而幸运的事。而且大屋根真的蛮凉快的，实用的设计。</p>
+<p>但是 EXPO 的排队体验有点差。场馆预约机制本身还算合理，但是预约系统并不好用（我们甚至没能参观日本馆）。</p>
+<p>与此同时，有些场馆大家排队很久进去之后，被带着看个视频就放出来了，但是我不打算点名批评。 XD</p>
+<p>不过绝大部分场馆的设计都很漂亮，这里包括中国馆。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/expo2.jpg" alt="expo2"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo3.jpg" alt="expo3"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo4.jpg" alt="expo4"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/expo7.jpg" alt="expo7"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo8.jpg" alt="expo8"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo6.jpg" alt="expo6"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo5.jpg" alt="expo5"></th>
+</tr>
+</thead>
+</table>
+<p>黄昏时候的大屋根漂亮到不行，我拍得不好看。</p>
+<p>据说这个时候是参观各个场馆的绝佳时机，但是 EXPO 还准备了烟火表演，这扯不扯。</p>
+<p>到最后没有捡漏几个场馆，只能在外面拍拍照。不过我们抢到法国馆面包店的最后两个名额，蛮诙谐的。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/expo9.jpg" alt="expo9"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo10.jpg" alt="expo10"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo11.jpg" alt="expo11"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/expo14.jpg" alt="expo12"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo13.jpg" alt="expo13"></th>
+<th><img src="/2025/12/31/2025-rec/japan/expo12.jpg" alt="expo12"></th>
+</tr>
+</thead>
+</table>
+<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
+
+<p>在京都留下的记忆主要围绕着清水寺、京都大学、鸭川。</p>
+<p>真安静啊，这个地方。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B8%85%E6%B0%B4%E5%AF%BA1.jpg" alt="清水寺1"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B8%85%E6%B0%B4%E5%AF%BA2.jpg" alt="清水寺2"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B8%85%E6%B0%B4%E5%AF%BA3.jpg" alt="清水寺3"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E4%BA%AC%E9%83%BD%E5%A4%A7%E5%AD%A61.jpg" alt="京都大学1"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E4%BA%AC%E9%83%BD%E5%A4%A7%E5%AD%A62.jpg" alt="京都大学2"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E9%B8%AD%E5%B7%9D.jpg" alt="鸭川"></th>
+</tr>
+</thead>
+</table>
+<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
+
+<p>我将简单概括在东京的旅行，因为我已经认不全自己拍照的内容了。</p>
+<p>Tower Record 是世界上最好的地方之一。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E4%B8%9C%E4%BA%AC1.jpg" alt="东京1"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E4%B8%9C%E4%BA%AC2.jpg" alt="东京2"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E4%B8%9C%E4%BA%AC3.jpg" alt="东京3"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E4%B8%9C%E4%BA%AC4.jpg" alt="东京4"></th>
+</tr>
+</thead>
+</table>
+<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
+
+<p>镰仓-江之岛，我们度过了此行最令人记忆深刻的时间。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E9%95%B0%E4%BB%931.jpg" alt="镰仓1"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E9%95%B0%E4%BB%932.jpg" alt="镰仓2"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E9%95%B0%E4%BB%933.jpg" alt="镰仓3"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B1.jpg" alt="江之岛1"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B2.jpg" alt="江之岛2"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B8.jpg" alt="江之岛8"></th>
+</tr>
+</thead>
+</table>
+<p>镰仓的天气在合适的时间放晴了，我们在许多合适的时间节点做了许多合适的事。</p>
+<p>我们就在江之岛的尽头看着太阳落下去，我再不会经历一次一模一样的体验。</p>
+<p>不过我当天犯了严重的偏头痛，蛮诙谐的。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B4.jpg" alt="江之岛4"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B11.jpg" alt="江之岛11"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B9.jpg" alt="江之岛9"></th>
+<th><img src="/2025/12/31/2025-rec/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B10.jpg" alt="江之岛10"></th>
+</tr>
+</thead>
+</table>
+<p>下一次再能够去旅行会是什么时候了。</p>
+<h2 id="Mood-2025"><a href="#Mood-2025" class="headerlink" title="Mood 2025"></a>Mood 2025</h2><blockquote>
+<p>Anxiety</p>
+</blockquote>
+<p>——是贯穿 2025 年始终的强烈色彩，不幸地。</p>
+<p>我没觉得从中学到了什么，没找到办法能够战胜它，接下来的日子不会有什么变化。</p>
+<p>不过大家好像都是这样。</p>
+<blockquote>
+<p>Courage</p>
+</blockquote>
+<p>“明知道不可能但还是硬着头皮去做了”</p>
+<p>我失败了许多许多次，然后我觉得勇气当真是可贵的。</p>
+<blockquote>
+<p>Money</p>
+</blockquote>
+<p><strong>我没有钱。</strong></p>
+<h2 id="The-End-of-2025"><a href="#The-End-of-2025" class="headerlink" title="The End of 2025"></a>The End of 2025</h2><p>2025 最好的三张新专辑，有两张来自 NMIXX。</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/12/31/2025-rec/images/%E9%9F%B3%E4%B9%901.jpg" alt="音乐1"></th>
+<th><img src="/2025/12/31/2025-rec/images/%E9%9F%B3%E4%B9%902.jpg" alt="音乐2"></th>
+</tr>
+</thead>
+</table>
+<p>2025 年结束了，我做了许多有趣的事，这成就了更好的我 @rec。</p>
+<p>我还没想好对 2026 年应该抱有什么样的期待，钱会从天上飞来吗（？）。</p>
+<p>或许我先去休息一下，然后学习一点新东西。</p>
+]]></content>
+      <tags>
+        <tag>rec</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SECCON CTF 2025 Final (Tokyo, Japan🇯🇵)</title>
+    <url>/2025/03/04/2025-secconctf-final/</url>
+    <content><![CDATA[<p>Time: 2025.03.01-02 (onsite)</p>
+<p><a href="https://github.com/SECCON/SECCON13_final_CTF/tree/main/crypto">https://github.com/SECCON/SECCON13_final_CTF/tree/main/crypto</a></p>
+<p>I participated SECCON 13th Final as a member of P1G SEKAI this weekend, and we finally got 4th among international teams.</p>
+<p><img src="/2025/03/04/2025-secconctf-final/images/2.jpg" alt="rank"></p>
+<p>Nice crypto challenges, and I solved 3 out of 4. IF ONLY I’d ever taken some time to study UOV.</p>
+<p><img src="/2025/03/04/2025-secconctf-final/images/1.png" alt="solve"></p>
+<p>Or maybe I was just too nervous.</p>
+<p>XO</p>
+<h2 id="RSA-8-solves"><a href="#RSA-8-solves" class="headerlink" title="RSA+ (8 solves)"></a>RSA+ (8 solves)</h2><blockquote>
+<ul>
+<li><a href="RSA+/task.py">task.py</a></li>
+</ul>
+</blockquote>
+<p>It turns out that we can send two composite number $(p, q)$, both smaller than 512 bits. Then we can just find all the solutions on $p_i$ and combine them with CRT.</p>
+<blockquote>
+<p>solution: <a href="RSA+/exp.py">exp.py</a></p>
+</blockquote>
+<p>I believe there exists a better way though.</p>
+<h2 id="DLP-7-solves"><a href="#DLP-7-solves" class="headerlink" title="DLP+ (7 solves)"></a>DLP+ (7 solves)</h2><blockquote>
+<ul>
+<li><a href="DLP+/task.py">task.py</a></li>
+</ul>
+</blockquote>
+<p>A simple idea is that we try to control $g^x$ (or $h^x$) to be small. Then we can get $h^x$ with some bruteforce and solve DLP to get $x$. I found some luck on Mersenne Prime $p &#x3D; 2^n - 1$, where $g^x \pmod{p}$ is very small. Finally I chose M2281 for effective DLP solver. </p>
+<p>Which took me a lot of time and luck, definitely NOT that effective.</p>
+<blockquote>
+<p>solution: <a href="DLP+/exp.py">exp.py</a></p>
+</blockquote>
+<p>@Sceleri and @soon_haari used $p &#x3D; 2^a \cdot 3^b + 1$. It does make more sense since $g &#x3D; 2^{a-1} \cdot 3^b$ and $h &#x3D; 2^a \cdot 3^{b-1}$ (same in our solution). But I donot want to go through it again so just let it go.</p>
+<p><img src="/2025/03/04/2025-secconctf-final/images/3.png" alt="image"></p>
+<h2 id="hell-summon-6-solves"><a href="#hell-summon-6-solves" class="headerlink" title="hell_summon (6 solves)"></a>hell_summon (6 solves)</h2><blockquote>
+<ul>
+<li><a href="hell_summon/task.py">task.py</a></li>
+</ul>
+</blockquote>
+<p>I spent the whole afternoon day 1 on this one.</p>
+<p>We have 42 pairs of $(m_i, c_i &#x3D; r \cdot (m_i  \oplus H) + e_i \pmod{p})$, where $e_i$ is due to the truncation. We rewrite $m_i \oplus H$ as $\Sigma_{j&#x3D;0}^{39} (m_{i, j} + H_{j} - 2 \cdot m_{i, j} \cdot H_{j}) \cdot 2^{j}$. </p>
+<p>$$\Rightarrow \Sigma_{j&#x3D;0}^{39} r \cdot H_{j} \cdot ((1 - 2 \cdot m_{i, j}) \cdot 2^{j}) + r \cdot m_i  + e_i \pmod{p}$$</p>
+<p>Orthogonal Lattice seems to be an adorable choice, and it worked well. On the first attempt I found one short vector $v$ where $\vec{v} \cdot \vec{c} &#x3D; \vec{v} \cdot \vec{e} \pmod{p}$, and it’s small enough to omit $p$. But I didn’t manage to solve $\vec{e}$.</p>
+<p>On another attempt at midnight, I used vectors $(v_0, v_1)$ orthogonal to $\Sigma_{j&#x3D;0}^{39} r \cdot H_{j} \cdot ((1 - 2 \cdot m_{i, j}) \cdot 2^{j})$. Then we have two equations $r \cdot (\vec{v_i} \cdot \vec{m}) + \vec{v_i} \cdot \vec{e} \pmod{p}$, where $\vec{v_i} \cdot \vec{e}$ is small. Now we can solve it as a simple HNP.</p>
+<blockquote>
+<p>solution: <a href="hell_summon/exp.py">exp.py</a></p>
+</blockquote>
+<p>Definitely not a pleasing code but whatever.</p>
+<h2 id="x-x-4-solves"><a href="#x-x-4-solves" class="headerlink" title="*x_x (4 solves)"></a>*x_x (4 solves)</h2><blockquote>
+<ul>
+<li><a href="x_x/task.sage">task.sage</a></li>
+</ul>
+</blockquote>
+<p>Working on it. UOV and sth bluhbluhbluh.</p>
+<h2 id="In-Japan"><a href="#In-Japan" class="headerlink" title="In Japan"></a>In Japan</h2><p>My first time to Japan, also my first time abroad. Not bad actually.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/03/04/2025-secconctf-final/images/seccon.jpg" alt="seccon"></th>
+<th><img src="/2025/03/04/2025-secconctf-final/images/view.jpg" alt="view"></th>
+<th><img src="/2025/03/04/2025-secconctf-final/images/food.jpg" alt="food"></th>
+</tr>
+</thead>
+</table>
+<p>My teammates are very strong! Glad to work with them XD<br>And also great to meet many friends from P1G SEKAI.</p>
+<p><img src="/2025/03/04/2025-secconctf-final/images/view1.jpg" alt="view1"></p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/03/04/2025-secconctf-final/images/view2.jpg" alt="view2"></th>
+<th><img src="/2025/03/04/2025-secconctf-final/images/view3.jpg" alt="view3"></th>
+</tr>
+</thead>
+</table>
+<p>Sincere thanks to @crazyman :D (Wish I could go to Mt. Fuji.)<br>I realy enjoyed Tokyo. It’d be better if I can hang out for one or two two more days.</p>
+]]></content>
+      <tags>
+        <tag>LLL</tag>
+        <tag>UOV</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Srdnlen CTF 2025 Final (Sardinia, Italy🇮🇹)</title>
+    <url>/2025/09/29/2025-srdnlenctf-final/</url>
+    <content><![CDATA[<p>Time: 2025.09.25-26 (onsite)</p>
+<p>I attended the first Srdnlen CTF Final with r3kapig, and we ended up as rk7.</p>
+<p>We really enjoyed the whole event, sincere thanks to all srdnlen fellas :D</p>
+<p><img src="/2025/09/29/2025-srdnlenctf-final/images/scoreboard.png" alt="scoreboard"></p>
+<p><img src="/2025/09/29/2025-srdnlenctf-final/images/solves.jpg" alt="solves"></p>
+<h2 id="lone-ranger-10-solves"><a href="#lone-ranger-10-solves" class="headerlink" title="lone-ranger (10 solves)"></a>lone-ranger (10 solves)</h2><blockquote>
+<ul>
+<li><a href="lone-ranger/ecc.py">ecc.py</a></li>
+<li><a href="lone-ranger/field.py">field.py</a></li>
+<li><a href="lone-ranger/kzg.py">kzg.py</a></li>
+<li><a href="lone-ranger/prover.py">prover.py</a></li>
+<li><a href="lone-ranger/transcript.py">transcript.py</a></li>
+<li><a href="lone-ranger/output.json">output.json</a></li>
+<li><a href="lone-ranger/srs.json">srs.json</a></li>
+</ul>
+</blockquote>
+<p>People solving this challenge insanely fast, so we assumed it’s easier than it looks like. Then gpt-5 cooked the challenge in minutes.</p>
+<p>I should still go through the whole challenge later, maybe.</p>
+<h2 id="multiple-issues-4-solves"><a href="#multiple-issues-4-solves" class="headerlink" title="multiple-issues (4 solves)"></a>multiple-issues (4 solves)</h2><blockquote>
+<ul>
+<li><a href="multiple-issues/server.py">server.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to forge a valid UOV signature with a 256-time oracle.</p>
+<h3 id="Vuln"><a href="#Vuln" class="headerlink" title="Vuln"></a>Vuln</h3><p>Let’s take a deeper look into the funciton <code>sign</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UOV</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">expand_from_seed</span>(<span class="params">self, seed: <span class="built_in">bytes</span>, shape: <span class="built_in">tuple</span></span>) -&gt; np.ndarray:</span><br><span class="line">        a = np.frombuffer(hashlib.shake_256(seed).digest(np.prod(shape)), dtype=np.uint8)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.F(a % <span class="variable language_">self</span>.q).reshape(shape)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">sign</span>(<span class="params">self, msg: <span class="built_in">bytes</span></span>) -&gt; <span class="built_in">bytes</span>:</span><br><span class="line">        h = <span class="variable language_">self</span>.expand_from_seed(msg, (<span class="variable language_">self</span>.m,))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># deterministic signature thanks to Fiat-Shamir With Aborts</span></span><br><span class="line">        k = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            v = <span class="variable language_">self</span>.expand_from_seed(<span class="variable language_">self</span>.sigma + msg + int_to_bytes(k), (<span class="variable language_">self</span>.n,))     <span class="comment"># &lt;-----</span></span><br><span class="line">            M = <span class="variable language_">self</span>.F([v @ <span class="variable language_">self</span>.priv[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)])</span><br><span class="line">            u = h - <span class="variable language_">self</span>.F([v @ <span class="variable language_">self</span>.pub[i] @ v <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)])</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                o = <span class="variable language_">self</span>.O @ np.linalg.solve(M, u)</span><br><span class="line">                <span class="keyword">return</span> (o + v).tobytes()</span><br><span class="line">            <span class="keyword">except</span> np.linalg.LinAlgError:</span><br><span class="line">                k += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>If we can find two signatures with the same $v$ but different $o$, we can extract a vector $o \in \mathcal{O}$. So the core idea is to find the collision of <code>self.expand_from_seed(self.sigma + msg + int_to_bytes(k), (self.n,))</code>.</p>
+<p>An interesting fact is <code>int_to_bytes(0) = &#39;&#39;</code>. Suppose we have <code>msg0</code> and <code>msg1 = msg0+int_to_bytes(k0)</code>. If we have: </p>
+<ul>
+<li><code>v0 = expand(sigma+msg0+int_to_bytes(k))</code> aborts at <code>k = k0</code>. </li>
+<li><code>v1 = expand(sigma+msg1+int_to_bytes(k))</code> aborts at <code>k = 0</code>.</li>
+</ul>
+<p>This constructs a collision: </p>
+<ul>
+<li><code>v1 = expand(sigma+msg1+&#39;&#39;) = expand(sigma+msg0+int_to_bytes(k0)) = v0</code>.</li>
+</ul>
+<p>Our strategy is to set a random <code>msg[0]</code> and let <code>msg[i+1] = msg[i] + int_to_bytes(1)</code> (you can also use other <code>k</code>). The collision will take place when <code>msg[i]</code> aborts at <code>k = 1</code>, and <code>msg[i+1]</code> aborts at <code>k = 0</code>. You can find the answer with the fact that $\mathcal{O}$ is the kernel space of the public key.</p>
+<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>For convenience, I may use quadratic mapping style expression:</p>
+<ul>
+<li>$\mathcal{P}_i(v) &#x3D; v \cdot P_i \cdot v$.</li>
+<li>$\mathcal{P}_i’(v_i, v_j) &#x3D; v_i \cdot P_i \cdot v_j$.</li>
+</ul>
+<p>With a single nontrivial vector $o \in \mathcal{O}$ leaked, we can recover the whole kernel space $\mathcal{O}$. For this part, we used <a href="https://affine.group/writeup/2023-07-CorCTF-OilSpill">Hellman’s writeup</a>.</p>
+<p>The general idea is to extract the kernel space of $\mathcal{K} &#x3D; \ker(\{ o \cdot P_i \}_i)$ first, where $\dim(\mathcal{K}) &#x3D; n-m$. Here we have $\mathcal{P}_i(v) &#x3D; 0$ for any $v \in \mathcal{K}$. This also works for $\mathcal{O}$ but stronger: we have $\mathcal{P}_i’(v_i, v_j) &#x3D; 0$ for any $v_i, v_j \in \mathcal{O}$. So $\mathcal{O} \subset \mathcal{K}$ and $\dim(\mathcal{O}) &#x3D; m$.</p>
+<p>Consider the basis set $\mathcal{K} &#x3D; \operatorname{span}(K_{n, n-m})$ and $\mathcal{O} &#x3D; \operatorname{span}(O_{n, m})$. We can always find a linear transformation $B_{n-m, m}$ s.t. $O &#x3D; K \cdot B$. Then we have $O^T \cdot P_i \cdot O &#x3D; B^T \cdot (K^T \cdot P_i \cdot K) \cdot B &#x3D; 0$, and we can extract such $B$ from $\ker(K^T \cdot P_i \cdot K)$, thus recovering the whole $\mathcal{O}$.</p>
+<h2 id="pqke-2-solves"><a href="#pqke-2-solves" class="headerlink" title="pqke (2 solves)"></a>pqke (2 solves)</h2><blockquote>
+<ul>
+<li><a href="pqke/ring.py">ring.py</a></li>
+<li><a href="pqke/server.py">server.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to crack a MLWE-based KE scheme.</p>
+<h3 id="Tricky-Trick"><a href="#Tricky-Trick" class="headerlink" title="Tricky Trick"></a>Tricky Trick</h3><p>The parameters used in this challenge is slightly weaker than Kyber256 (consider RLWE in Kyber512), with a larger modulus $q &#x3D; 65537$. But this still does NOT give us enough advantage to solve the RLWE.</p>
+<p>The key part of this challenge is a tricky way to generate uniform polynomials:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ring</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">binomial</span>(<span class="params">self, f: <span class="built_in">callable</span> = <span class="literal">None</span></span>) -&gt; <span class="string">&quot;RingElem&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> f <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            f = <span class="keyword">lambda</span>: secrets.randbits(<span class="variable language_">self</span>.s).bit_count() - secrets.randbits(<span class="variable language_">self</span>.s).bit_count()</span><br><span class="line">        <span class="keyword">return</span> RingElem(<span class="variable language_">self</span>, coeffs=<span class="variable language_">self</span>.Zq(np.array([f() % <span class="variable language_">self</span>.q <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n)])))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">uniform</span>(<span class="params">self</span>) -&gt; <span class="string">&quot;RingElem&quot;</span>:</span><br><span class="line">        elem = <span class="variable language_">self</span>.binomial()</span><br><span class="line">        <span class="keyword">return</span> RingElem(<span class="variable language_">self</span>, evals=elem.coeffs)</span><br></pre></td></tr></table></figure>
+
+<p>The challenge use <code>binomial</code> to generate small polynomials, the same way as in Kyber and Dilithium. But it calls <code>binomial</code> first and use the evaluations to generate uniform polynomials. This means the evaluations of the uniform polynomial $f(x_i)$ on the NTT points $x_i$ are small. If the evaluation $f(x_i) &#x3D; 0$ (with a non-negligible probability), $f$ contains $(x-x_i)$ as a factor, which serves as a common factor with $x^n+1 &#x3D; \Pi_i (x - x_i)$.</p>
+<p>Based on experiments, we can get a 45-degree common factor on average.</p>
+<h3 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h3><p>What can we do with this? Basically we can use the common factors to eliminate some variables and leak information about the others.</p>
+<p>Consider a single part of the MLWE as a RLWE instance: $b(x) &#x3D; s_0(x) \cdot m_0(x) + s_1(x) \cdot m_1(x) + e(x) \pmod{x^n+1}$. Let $g_{0, 1}(x) &#x3D; \gcd(m_0(x), m_1(x), x^n+1)$, we have $b(x) &#x3D; e(x) \pmod{g_{0, 1}(x)}$, which leads to a easier scenario (compared to the original one). And we can solve $e(x)$ with lattice reduction if the degree of $g(x)$ is big enough.</p>
+<p>Then we can solve the secret polynomials $(s_0(x), s_1(x))$ with $e(x)$. This time we use $g_0(x) &#x3D; \gcd(m_0(x), x^n + 1)$, and $b(x) - e(x) &#x3D; s_1(x) \cdot m_1(x) \pmod{g_0(x)}$. Now we can solve $s_1(x)$ (and $s_0(x)$ similarly).</p>
+<h2 id="aes-3-solves"><a href="#aes-3-solves" class="headerlink" title="(*)aes (3 solves)"></a>(*)aes (3 solves)</h2><blockquote>
+<ul>
+<li><a href="aes/server.py">server.py</a></li>
+<li><a href="aes/sboxes.json">sboxes.json</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to crack a cursed AES with a decryption oracle.</p>
+<h3 id="Cursed-Key-Expansion"><a href="#Cursed-Key-Expansion" class="headerlink" title="Cursed Key Expansion"></a>Cursed Key Expansion</h3><p>Apart from the cipher structure, the main change in the challenge is <code>expand_key</code>, with a strange series of sboxes. It can be noticed that the new sboxes contain several n-to-1 mappings. With deeper experiments, we found that this leads to the round keys gradually converging to a fixed value.</p>
+<p>Converging to the love for Sardinia, yay.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> server <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">aes = AES(key=os.urandom(<span class="number">16</span>))</span><br><span class="line"><span class="keyword">for</span> i, ki <span class="keyword">in</span> <span class="built_in">enumerate</span>(aes.round_keys):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;ki&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x802&lt;\xc7\xa7]\xc97u\x0f\xed@\xd2\x0c\xdd\x0c&#x27;</span></span><br><span class="line"><span class="string">b&#x27;9\x06:\x9b)\xb4&#123;&#125;\x10=sX&quot;n\xb2\x17&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x14\x9d\x1c\xc5\xa8\x0fa\x91\x80\xd0j9un1\x18&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x1b\xf19y\xc2\xc3\x1c\x88\\4\x0f~)n1D&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\xd6\xd2\xe0\x940\xa6\xa3\xd3\xe74\xe0\x9din1b&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3\xddl0ve\x04\x0c4r\xfbin1\xf6&#x27;               &lt;-----</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>The 6 round still has uncertainties, but it converges with an acceptable probability (1&#x2F;1024 approximately). This gives us a chance to extract a 4-round AES-style cipher from the original one. With a decryption oracle, square attack is a good choice.</p>
+<p>I didn’t have time to implement the attack when I figured it out, however.</p>
+<h3 id="4-Round-Square-Attack"><a href="#4-Round-Square-Attack" class="headerlink" title="4-Round Square Attack"></a>4-Round Square Attack</h3><p>For this attack you may find <a href="https://www.davidwong.fr/blockbreakers/">this</a> helpful. The last time I implemented the attack was in 2023, for Blocky challenges in PBCTF and 0CTF. </p>
+<p>In square attack we need a $\Lambda$-set, like <code>[bytes([i] + [0]*15) for i in range(256)]</code>, where all elements have only one different byte. An interesting fact is that <code>sub_bytes</code> and <code>add_round_key</code> does not disrupt the structure of the set, while <code>mix_columns</code> combined with <code>shift_rows</code> does.</p>
+<p><img src="/2025/09/29/2025-srdnlenctf-final/aes/4-r-square-attack.jpg" alt="4-r-square-attack"></p>
+<p>Let’s conduct a brief analysis on how the $\Lambda$-set changes (with this famous and clear flowchart by david). At the very beginning, there’s only one <strong>active</strong> byte. After the first <code>mix_columns</code>, the corresponding bytes in the other rows also get activated. And with the effect of <code>shift_rows</code>, the next <code>mix_columns</code> makes it even more chaotic.</p>
+<p>After the <strong>third</strong> <code>mix_columns</code>, our $\Lambda$-set does not exist anymore, but our adventure’s not over yet. At this point, each byte of the element is a linear combination of 4 previous active bytes, and we can get a linear combination of 4 zero if we sum them up (for “sum them up” I mean <code>pt[0][i] ^ pt[1][i]...</code>).</p>
+<p>The core of the attack is the fact that, the phenomenon described above provides us a key distinguisher.</p>
+<p>The following <code>add_round_key</code> does not change anything, but after <code>sub_byte</code> things will be different. For each byte of the last <code>round_keys[-1]</code> we can bruteforce it, step back to before the last <code>sub_bytes</code>, and recover <code>round_keys[-1]</code> by checking whether the property of the $\Lambda$-set holds. People should know that this is a parallel-friendly strategy.</p>
+<h3 id="5-Round-Square-Attack"><a href="#5-Round-Square-Attack" class="headerlink" title="5-Round Square Attack"></a>5-Round Square Attack</h3><p>One more round added, but there’re no significant changes actually.</p>
+<p><img src="/2025/09/29/2025-srdnlenctf-final/aes/5-r-square-attack.jpg" alt="5-r-square-attack"></p>
+<p>We still need the distinguisher, which means more effort to reverse the output backward to the point. Since there lies another <code>mix_columns</code> between the output and our target, we may have to recover 4 bytes of states in a group (bruteforcing 4 bytes of <code>round_keys[-1]</code>) at one time. The positions of the bytes are determined by <code>shift_rows</code>, as shown in the figure. </p>
+<p>An interesting trick is that we can always swap <code>mix_columns</code> and <code>add_round_key</code>. In this way, we only need to bruteforce <code>round_keys[-2]</code> byte by byte (instead of in groups of 4). Then we can recover <code>round_keys[-1]</code> with the distinguisher.</p>
+<p>The overall computational cost for a group of 4 keys is $\mathcal{O}(2^{40})$ (4+1 bytes). This is also highly parallelizable, thus leading to a $\mathcal{O}(k \cdot 2^{32})$. For implementation we may have to use cpp (or golang).</p>
+<h2 id="it-hiding"><a href="#it-hiding" class="headerlink" title="(*)it-hiding"></a>(*)it-hiding</h2><p>This challenge is for speed-run on the second day.</p>
+<blockquote>
+<ul>
+<li><a href="it-hiding/server.py">server.py</a></li>
+</ul>
+</blockquote>
+<p>In this challenge we need to solve a Pedersen Commitment decision problem.</p>
+<h3 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h3><p>Curve W25519 in this challenge is isomorphic to curve ed25519, with the curve order $8 \cdot q$. Since <code>fastecdsa</code> use a $q$-order generator $G$, an apparent solution is to integrate a point in another subgroup, thus changing the order of the commitment $C$. People can be inspired by the Schnorr part ig, which forces the user to send a point generated by $G$.</p>
+<p>Consider we’re taking a 2-order point $B$, how can we by pass the Schnorr part? In Schnorr proof, we need to send $B, (z, c)$ satisfying $\operatorname{challenge}(z \cdot G-c \cdot B, B) &#x3D; c$. Though we’re not able to predict $c$, we know the fact that $c \cdot B &#x3D; O$ for any even $c$ (since $B$ is a 2-order point). Thus we can randomly pick $z$ for several times and compute $c &#x3D; \operatorname{challenge}(z \cdot G, B)$, and we can successfully forge a valid proof $(z, c)$ when we get an even $c$. This may lead to a 50% success rate, acceptable.</p>
+<blockquote>
+<ul>
+<li><a href="it-hiding/exp.py">exp.py</a></li>
+</ul>
+</blockquote>
+<p>One team used the time difference to do the decision, which seems to work locally. But I think this may be influenced badly by network delay and <code>fastecdsa</code>.</p>
+<p>Yeah I didn’t manage to solve it in time, cuz I misused $8 \cdot q$ instead of $q$ while forging a proof, disappointment.</p>
+<h2 id="Milan-Sardinia-Rome"><a href="#Milan-Sardinia-Rome" class="headerlink" title="Milan -&gt; Sardinia -&gt; Rome"></a>Milan -&gt; Sardinia -&gt; Rome</h2><p>My first time to EU, fascinated.</p>
+<p>Painful that I had to spend 30 hours on the plane, with bad sleep and endless plane food. But you always need to pay something ig.</p>
+<table>
+<thead>
+<tr>
+<th><img src="images/flight1.jpg" height="200"></th>
+<th><img src="images/flight2.jpg" height="200"></th>
+</tr>
+</thead>
+</table>
+<p>My body arrived in Milan early in the morning (while my soul arrived after hours), and honestly the weather was very cold, gloomy and frustrating. But when we landed in Sardinia, things got better. I myself is kinda weather-sensitive so that was such a relief.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/milan.jpg" alt="milan"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia.jpg" alt="sardinia"></th>
+</tr>
+</thead>
+</table>
+<p>No so sure I had Linguine or Spaghetti that night.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/day1dinner.jpg" alt="day1dinner"></th>
+</tr>
+</thead>
+</table>
+<p>The CTF event’s just impressive. We really enjoyed all crypto challenges (it’d be better if we cleared them XD).</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event1.jpg" alt="event1"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event2.jpg" alt="event2"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/event3.jpg" alt="event3"></th>
+</tr>
+</thead>
+</table>
+<p>I had to refresh myself from time to time because of jet lag, taking a glimpse of the local life. I may spend more days on the island next time, if possible.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia1.jpg" alt="sardinia1"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia2.jpg" alt="sardinia2"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia3.jpg" alt="sardinia3"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/sardinia4.jpg" alt="sardinia4"></th>
+</tr>
+</thead>
+</table>
+<p>The first night’s pizza was on the host, and I had Spaghetti and Macaroni on the second day.</p>
+<p>Of courese I had things other than noodles lmao. It’s just fun trying to pick up different pastas.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/spaghetti.jpg" alt="spaghetti"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/macaroni.jpg" alt="macaroni"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/pizza.jpg" alt="pizza"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/food.jpg" alt="food"></th>
+</tr>
+</thead>
+</table>
+<p>Shouldn’t post the photo of them ig. But I think it’s a cool one XD</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/bar.jpg" alt="bar"></th>
+</tr>
+</thead>
+</table>
+<p>We spent one day and a half in Rome after the event. Here comes Rome’s Day and Night.</p>
+<p>I love pleasant weathers.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome1.jpg" alt="dayrome1"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome3.jpg" alt="dayrome3"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome2.jpg" alt="dayrome2"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome4.jpg" alt="dayrome4"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/dayrome5.jpg" alt="dayrome5"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome1.jpg" alt="nightrome1"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome3.jpg" alt="nightrome3"></th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome2.jpg" alt="nightrome2"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/nightrome4.jpg" alt="nightrome4"></th>
+</tr>
+</thead>
+</table>
+<p>A lemon🍋</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/lemon.jpg" alt="lemon"></th>
+</tr>
+</thead>
+</table>
+<p>I had Fettuccine for my last meal before leaving. They’re all tasty, but noodles will not be an option for my next month ig.</p>
+<table>
+<thead>
+<tr>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/fettuccine.jpg" alt="fettuccine"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/beef.jpg" alt="beef"></th>
+<th><img src="/2025/09/29/2025-srdnlenctf-final/images/chicken.jpg" alt="chicken"></th>
+</tr>
+</thead>
+</table>
+]]></content>
+      <tags>
+        <tag>LLL</tag>
+        <tag>ECC</tag>
+        <tag>UOV</tag>
+        <tag>ZKP</tag>
+        <tag>AES</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>zk-Openings::Srdnlen CTF 2025 Qual</title>
+    <url>/2025/03/24/2025-srdnlenctf/</url>
+    <content><![CDATA[<p>Time: 2025.01.19-20 (online)</p>
+<p>Interesting challenge, but I didn’t have enough time to solve it during the contest XDDD</p>
+<h2 id="zk-Openings-0-solve"><a href="#zk-Openings-0-solve" class="headerlink" title="zk-Openings (0 solve)"></a>zk-Openings (0 solve)</h2><blockquote>
+<ul>
+<li><a href="https://github.com/srdnlen/srdnlenctf-2025_public/tree/main/crypto_zk-openings/src">https://github.com/srdnlen/srdnlenctf-2025_public&#x2F;tree&#x2F;main&#x2F;crypto_zk-openings&#x2F;src</a></li>
+</ul>
+</blockquote>
+<p>I actually learnt a lot from the implementation, thank you @lrnzsir.</p>
+<h3 id="KZG-Commitment"><a href="#KZG-Commitment" class="headerlink" title="KZG Commitment"></a>KZG Commitment</h3><p>KZG commitment is a polynomial commitment scheme proposed by <a href="https://www.iacr.org/archive/asiacrypt2010/6477178/6477178.pdf">Kate et al in 2010</a>.</p>
+<p>While the original paper used a symmertric type-1 pairing, we prefer to use type-3 pairing these days. Basically we have three groups $(G_1, G_2, G_T)$ , two generators $(g_1 \in G_1, g_2 \in G_2)$, and a bilinear pairing function $e: G_1 \times G_2 \rightarrow G_T$. </p>
+<ol>
+<li>$\mathcal{Setup}(d) \rightarrow srs$: randomly samples a secret value $x$, and computes $srs &#x3D; (g_1^{x}, …, g_1^{x^d}, g_2^{x})$. While $x$ is considered to be “toxic waste”, it must be generated by trusted authority and deleted properly after use.</li>
+<li>$\mathcal{Commit}(srs, f) \rightarrow com$: computes the commitment $com &#x3D; g_1^{\Sigma_{i&#x3D;0}^d f_i \cdot x^i} &#x3D; \Pi_{i&#x3D;0}^{d} (g_1^{x^i})^{f_i}$ for the polynomial.</li>
+<li>$\mathcal{EvalProve}(srs, f, z) \rightarrow (\pi, f(z))$: computes a polynomial $q(x) &#x3D; \frac{f(x) - f(z)}{x-z}$. Then it computes the proof $\pi &#x3D; g_1^{\Sigma_{i&#x3D;0}^d q_i \cdot x^i} &#x3D; \Pi_{i&#x3D;0}^{d} (g_1^{x^i})^{q_i}$, proving that one knows the evaluation of $f$ over $z$.</li>
+<li>$\mathcal{EvalVerify}(srs, com, \pi, z, f(z)) \rightarrow 0&#x2F;1$: verifies the proof by checking $e(com \cdot g_1^{-f(z)}, g_2) \overset{?}{&#x3D;} e(\pi, g_2^{s} \cdot g_2^{-z})$.</li>
+</ol>
+<blockquote>
+<p>Note that KZG is a commitment (instead of ZKP) scheme. </p>
+</blockquote>
+<h3 id="The-Challenge"><a href="#The-Challenge" class="headerlink" title="The Challenge"></a>The Challenge</h3><p>For this challenge, we performs the KZG process on some secret polynomial $f$ and ended up with <code>opening.json</code>. Considering the difficulty of DLP under standard parameters, I actually just skip the content related to curve points. So basically we have $k&#x3D;20$ pairs of $(x_i, y_i&#x3D;f(x_i))$.</p>
+<p>And here is how we get the secret polynomial. </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">assert</span> n <span class="keyword">in</span> AES.key_size <span class="comment"># 32</span></span><br><span class="line">key = os.urandom(n)</span><br><span class="line">evals = <span class="built_in">list</span>(key)</span><br><span class="line">poly = P(intt(evals))</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">all</span>(poly(H[i]) == key[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">lcg</span>(<span class="params">m: <span class="built_in">int</span>, a: <span class="built_in">int</span>, c: <span class="built_in">int</span>, x: <span class="built_in">int</span></span>) -&gt; <span class="string">&quot;Generator[int, None, None]&quot;</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Linear Congruential Generator &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        x = (a * x + c) % m</span><br><span class="line">        <span class="keyword">yield</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a, c, x = [secrets.randbelow(p) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line">rng = lcg(p, a, c, x)</span><br><span class="line"></span><br><span class="line">k = <span class="number">20</span></span><br><span class="line">hiding_poly = P([<span class="built_in">next</span>(rng) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k)])</span><br><span class="line">hidden_poly = poly + hiding_poly * Z_H</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">all</span>(hidden_poly(H[i]) == key[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n))</span><br></pre></td></tr></table></figure>
+
+<p>In short, we have a 32-degree polynomial $f(x)$ and a 20-degree polynomial $g(x)$, where $f(H_i) &#x3D; key_i$ and $g_i$ is generated successively by a secret LCG. Then we have our secret polynomial $h(x) &#x3D; f(x) + g(x) \cdot (x^n-1)$ satisfying $h(H_i) &#x3D; f(H_i) &#x3D; key_i$ since $H_i^n &#x3D; 1$.</p>
+<p>According to previous discussion, we have 20 pairs of random points $(x_i, h(x_i))$, which is apparently not enough to recover $h(x)$. Considering $key_i$ is very small compared to $p$, LLL is our option. </p>
+<p>We can’t construct the Lattice directly, but we can resort to $g(x)$. The first step is to establish a linear representation between $g(x)$ and $key_i$, which is quite simple, since <code>ntt</code>, <code>intt</code> and <code>polynomial_evaluation</code> are all linear transformations. </p>
+<ul>
+<li>$\vec{key} &#x3D; NTT_{n \times n} \cdot \vec{f}$</li>
+<li>$\vec{y} &#x3D; X_{k \times (n+k)} \cdot \vec{h} &#x3D; FX_{k \times n} \cdot \vec{f}+ GX_{k \times k} \cdot \vec{g}$</li>
+</ul>
+<p>$\Rightarrow \vec{g} &#x3D; GX^{-1} \cdot (\vec{y} - FX \cdot NTT^{-1} \cdot \vec{key})$</p>
+<p>For $NTT^{-1}$, you can also compute $iNTT$.</p>
+<h3 id="Linearization-for-Unknown-LCG"><a href="#Linearization-for-Unknown-LCG" class="headerlink" title="Linearization for Unknown LCG"></a>Linearization for Unknown LCG</h3><p>We know that $g_{i+1} &#x3D; a \cdot g_i + b$, but $(a, b)$ are randomly chosen on $GF_p$. To get rid of them, we construct equations like $(g_{i+d_0} - g_{i}) \cdot (g_{j+d_1} - g_{j}) &#x3D; (g_{i+d_1} - g_{i}) \cdot (g_{j+d_0} - g_{j})$.</p>
+<p>Here comes an interesting (maybe) question: how many linearly independent equations can we get? Well this did appealled to me and @糖醋小鸡块. Since we can get $k-2$ equations like $y_{i+1} &#x3D; a \cdot y_i$, we can choose any two of them to eliminate $a$, and thus we have $C(k-2, 2)$ equations.</p>
+<p>For @lrnzsir’s strategy, he iterates $(g_{i+2}-g_{i+1}) \cdot (g_{j+1}-g_j) &#x3D; (g_{i+1}-g_i) \cdot (g_{j+2}-g_{j+1})$ for all $i, j \in [k - 2]$ and $i &lt; j$. We can get exactly $C(k-2, 2)$ equations and each equation contains a unique binomial (thus linear independent). So this is the best we can get.</p>
+<blockquote>
+<p>We (@糖醋小鸡块) believe there exists a better way for theoratical analysis.</p>
+</blockquote>
+<p>With linear transformation, we have $C(k-2, 2)$ quadratic equations about $key_i$ now, containing $n + C(n+1, 2)$ monomials. Then we can do LLL on the linearized system to recover the key. One can ignore some equations and utilize <code>flatter</code> for better efficiency.</p>
+<blockquote>
+<p><a href="zk-Openings/exp.py">exp.py</a></p>
+</blockquote>
+<p>There maybe some difference in my code since it’s implemented months ago XD</p>
+]]></content>
+      <tags>
+        <tag>LLL</tag>
+        <tag>KZG</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Aliyun CTF 2026</title>
+    <url>/2026/02/02/2026-aliyunctf/</url>
+    <content><![CDATA[<p>Nice challenges from @hash_hash and @AquaCat, all of which are short enough but hard enough.</p>
+<h2 id="Griffin"><a href="#Griffin" class="headerlink" title="Griffin"></a>Griffin</h2><ul>
+<li><a href="griffin/chal.sage">chal.sage</a></li>
+</ul>
+<h3 id="Curve-Stuff"><a href="#Curve-Stuff" class="headerlink" title="Curve Stuff"></a>Curve Stuff</h3><p>First things first we need to recover the curve and do some basic analysis.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a, b = ZZ[<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>].gens()</span><br><span class="line">Fs = [x**<span class="number">3</span> + a*x + b - y**<span class="number">2</span> <span class="keyword">for</span> x, y <span class="keyword">in</span> Griffin[<span class="number">0</span>][:<span class="number">10</span>]]</span><br><span class="line">B = Ideal(Fs).groebner_basis()</span><br><span class="line">p = B[-<span class="number">1</span>]</span><br><span class="line">a = ZZ(-B[<span class="number">0</span>].univariate_polynomial()(<span class="number">0</span>) % p)</span><br><span class="line">b = ZZ(-B[<span class="number">1</span>].univariate_polynomial()(<span class="number">0</span>) % p)</span><br><span class="line"></span><br><span class="line">E = EllipticCurve(GF(p), [a, b])</span><br><span class="line">G = E.lift_x(GF(p)(<span class="number">3137</span>))</span><br><span class="line">order = G.order()</span><br><span class="line">facs = [<span class="number">66179</span>, <span class="number">67247</span>, <span class="number">70271</span>, <span class="number">76679</span>, <span class="number">78803</span>, <span class="number">86693</span>, <span class="number">107791</span>, <span class="number">116273</span>, <span class="number">119677</span>, <span class="number">121309</span>]</span><br><span class="line"><span class="keyword">assert</span> prod(facs) == order</span><br></pre></td></tr></table></figure>
+
+<p>Turns out the curve is smooth enough to solve the DLPs, so from now on we just need to consider operations on $\mathbb{Z}_n$.</p>
+<p>Actually we just need to recover some specific DLPs based on our needs, saving a lot of time.</p>
+<h3 id="Reed-Solomon-Code-Distinction"><a href="#Reed-Solomon-Code-Distinction" class="headerlink" title="Reed-Solomon Code Distinction"></a>Reed-Solomon Code Distinction</h3><p>Let’s consider the problem on $\mathbb{F}_q$ where $ q | n $. What we’re supposed to do here is to distinguish all $2 \cdot d$ of the Reed-Solomon codes, combined with $k$ junks. It’s worth noting the degree of the polynomials is $d-1$.</p>
+<p>Since I am not familiar with RS Code, I’ll just give a solution based on linear algebra. Consider $x_i$ and the code vector $ \vec{v_i} &#x3D; [f_{0}(x_i), …, f_{m-1}(x_i)] &#x3D; [1, x_i, …, x_i^{d-1}] \cdot F_{d \times m} $. For the linear space $\mathcal{C} &#x3D; Span( \{ \vec{v_0}, …, \vec{v_{2 \cdot d - 1}} \} )\subset \mathbb{F}_q^m $, we have $\dim(\mathcal{C}) &#x3D; d$. We can construct a distinguisher leveraging the dimension property:</p>
+<blockquote>
+<p>For a vector set $\mathcal{V} \subseteq \{ \vec{v_0}, …, \vec{v_{2 \cdot d - 1}} \} $ uniformly sampled from <code>Griffin</code>, which contains $h$ <code>Hawk</code> vectors and $t-h$ <code>Lion</code> vectors (s.t. $| \mathcal{V} | &#x3D; t$), we have $\dim(Span(\mathcal{V})) &#x3D; \min(m, t-\max(h-d, 0))$.</p>
+</blockquote>
+<p>We only pick up $t \in [m, m+d) \cap \mathbb{Z}$ to construct the distinguisher, which also leads to different success rate (I used $t&#x3D;m$ during the competition and it’s acceptable). My strategy goes as follows:</p>
+<ol>
+<li>Uniformly sample $\mathcal{V}$, where $| \mathcal{V} | &#x3D; m$. </li>
+<li>Check $1[\dim(Span( \mathcal{V}) &lt; m]$, which indicates whether the number of <code>Hawk</code> vectors is larger than $d$. </li>
+<li>For a vector $\vec{v}$ from <code>Griffin</code>, $\vec{v}$ is a <code>Hawk</code> vector if and only if:<ul>
+<li>$\vec{v} \notin \mathcal{V} \Rightarrow \dim(Span( \mathcal{V} \cup \{ \vec{v} \} )) &#x3D; \dim(Span( \mathcal{V} ))$, or the dimension will increase by 1.</li>
+<li>$\vec{v} \in \mathcal{V} \Rightarrow \dim(Span( \mathcal{V} \setminus \{ \vec{v} \} )) &#x3D; \dim(Span( \mathcal{V} ))$, or the dimension will decrease by 1.</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">q = <span class="number">66179</span> <span class="comment"># facs[0]</span></span><br><span class="line">F = GF(q)</span><br><span class="line"></span><br><span class="line">G0 = G*(order // q)</span><br><span class="line">griffin = [[E(Griffin[i][j])*(order // q).log(G0) <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Griffin[i]))] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Griffin))]</span><br><span class="line"></span><br><span class="line">hawk_inds = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    pos = sample(<span class="built_in">range</span>(k+<span class="number">2</span>*d), m)</span><br><span class="line">    <span class="keyword">if</span> matrix(F, [griffin[i] <span class="keyword">for</span> i <span class="keyword">in</span> pos]).T.rank() == m-<span class="number">1</span>:</span><br><span class="line">        <span class="keyword">for</span> ind <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(griffin)):</span><br><span class="line">            now = pos[:]</span><br><span class="line">            <span class="keyword">if</span> ind <span class="keyword">in</span> pos:</span><br><span class="line">                now.remove(ind)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                now.append(ind)</span><br><span class="line">            <span class="keyword">if</span> matrix(F, [griffin[i] <span class="keyword">for</span> i <span class="keyword">in</span> now]).T.rank() == m-<span class="number">1</span>:</span><br><span class="line">                hawk_inds.append(ind)</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">len</span>(hawk_inds) == <span class="number">2</span>*d</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Polynomial-Recovery"><a href="#Polynomial-Recovery" class="headerlink" title="Polynomial Recovery"></a>Polynomial Recovery</h3><p>We need to solve <code>xs</code> for the recovery of the secret polynomials. I used Orthongonal Lattice since <code>xs</code> is sampled from <code>range(1, 257)</code>. An all-1s vector is contained in the lattice so we need to bruteforce an offset, thus leading to many candidate <code>xs</code>.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">hawk = [[E(Griffin[ind][j]).log(G) <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Griffin[ind]))] <span class="keyword">for</span> ind <span class="keyword">in</span> hawk_inds]</span><br><span class="line">ys = [i[<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> hawk]</span><br><span class="line"></span><br><span class="line">K = <span class="number">2</span>**<span class="number">256</span></span><br><span class="line">L = block_matrix(ZZ, [</span><br><span class="line">    [<span class="number">1</span>, K*matrix(ZZ, hawk)],</span><br><span class="line">    [<span class="number">0</span>, K*order]</span><br><span class="line">]).LLL()[:<span class="number">2</span>*d-d, :<span class="number">2</span>*d]</span><br><span class="line">L = block_matrix(ZZ, [</span><br><span class="line">    [<span class="number">1</span>, K*L.T]</span><br><span class="line">]).LLL()[:d, :<span class="number">2</span>*d]</span><br><span class="line"></span><br><span class="line">cand_xs = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> a <span class="keyword">in</span> <span class="built_in">range</span>(-<span class="number">257</span>, <span class="number">257</span>):</span><br><span class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> <span class="built_in">range</span>(-<span class="number">2</span>, <span class="number">2</span>):</span><br><span class="line">        xs = (a*L[<span class="number">0</span>] + b*L[<span class="number">1</span>]).<span class="built_in">list</span>()</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">all</span>([(<span class="number">1</span> &lt;= x <span class="keyword">and</span> x &lt;= <span class="number">257</span>) <span class="keyword">for</span> x <span class="keyword">in</span> xs]) <span class="keyword">and</span> <span class="built_in">len</span>(<span class="built_in">set</span>(xs)) == <span class="number">2</span>*d:</span><br><span class="line">            cand_xs.append(xs)</span><br><span class="line"></span><br><span class="line">cand_ct = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> xs <span class="keyword">in</span> cand_xs:</span><br><span class="line">    pts = [(x, y) <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(xs, ys)]</span><br><span class="line">    res = <span class="built_in">list</span>()</span><br><span class="line">    <span class="keyword">for</span> fac <span class="keyword">in</span> facs:</span><br><span class="line">        R = GF(fac)[<span class="string">&quot;x&quot;</span>]</span><br><span class="line">        f = R.lagrange_polynomial(pts)</span><br><span class="line">        ans = (f - flagct).roots()</span><br><span class="line">        res.append([ZZ(i[<span class="number">0</span>]) <span class="keyword">for</span> i <span class="keyword">in</span> ans])</span><br><span class="line">    <span class="keyword">for</span> tab <span class="keyword">in</span> itertools.product(*res):</span><br><span class="line">        cand_ct.append(crt(<span class="built_in">list</span>(tab), facs))</span><br></pre></td></tr></table></figure>
+
+<p>The intended solution from @hash_hash is to decompose the RS Code public key.</p>
+<h3 id="Last-But-Not-Least"><a href="#Last-But-Not-Least" class="headerlink" title="Last But Not Least"></a>Last But Not Least</h3><p>You’ll find out flag is much bigger than the 160-bits <code>p</code>, so we’re not able to get the flag directly. Luckily there lies specific properties of the flag:</p>
+<ol>
+<li>The template of the flag is known.</li>
+<li>The content of the flag is a uuid4 string, which is a fixed-format hexadecimal string.</li>
+</ol>
+<p>Here we can use a special trick for hexadecimal strings. The only unknown part in the flag is the hex characters, each of which can we consider as two variables: high 4-bits and low 4-bits. Taking a deep look, you will find out that the high 4-bits has only 2 possible values.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> <span class="string">&#x27;0123456789abcdef&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(ch, <span class="built_in">bin</span>(<span class="built_in">ord</span>(ch))[<span class="number">2</span>:].zfill(<span class="number">8</span>))</span><br><span class="line"><span class="number">0</span> 00110000</span><br><span class="line"><span class="number">1</span> 00110001</span><br><span class="line"><span class="number">2</span> 00110010</span><br><span class="line"><span class="number">3</span> 00110011</span><br><span class="line"><span class="number">4</span> 00110100</span><br><span class="line"><span class="number">5</span> 00110101</span><br><span class="line"><span class="number">6</span> 00110110</span><br><span class="line"><span class="number">7</span> 00110111</span><br><span class="line"><span class="number">8</span> 00111000</span><br><span class="line"><span class="number">9</span> 00111001</span><br><span class="line">a 01100001</span><br><span class="line">b 01100010</span><br><span class="line">c 01100011</span><br><span class="line">d 01100100</span><br><span class="line">e 01100101</span><br><span class="line">f 01100110</span><br></pre></td></tr></table></figure>
+
+<p>So we can transform the possible values of high&#x2F;low 4-bits into $[0, 1]\cap \mathbb{Z}$ and $[-5, 4]\cap \mathbb{Z}$, and build a linear system optimized for LLL-based attack. The parsing stuff is painful so I managed to implement an abstract way to build the linear system, which seems to be helpful in many similar conditions.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">s2v</span>(<span class="params">s: <span class="built_in">str</span></span>):</span><br><span class="line">    v = <span class="built_in">list</span>()</span><br><span class="line">    <span class="keyword">for</span> si <span class="keyword">in</span> s:</span><br><span class="line">        x = (<span class="built_in">ord</span>(si) &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0xf</span> <span class="comment"># 3, 6</span></span><br><span class="line">        x = (x - <span class="number">3</span>) * inverse_mod(<span class="number">3</span>, order) % order</span><br><span class="line">        v.append(x) <span class="comment"># 0, 1</span></span><br><span class="line"></span><br><span class="line">        y = <span class="built_in">ord</span>(si) &amp; <span class="number">0xf</span> <span class="comment"># 0, ..., 9</span></span><br><span class="line">        y = (y - <span class="number">5</span>) % order</span><br><span class="line">        v.append(y) <span class="comment"># -5, ... 4</span></span><br><span class="line">    <span class="keyword">return</span> v</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">v2s</span>(<span class="params">v: <span class="built_in">list</span></span>):</span><br><span class="line">    s = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(v), <span class="number">2</span>):</span><br><span class="line">        x = v[i]</span><br><span class="line">        x = (x * <span class="number">3</span> + <span class="number">3</span>) % order</span><br><span class="line"></span><br><span class="line">        y = v[i+<span class="number">1</span>]</span><br><span class="line">        y = (y + <span class="number">5</span>) % order</span><br><span class="line"></span><br><span class="line">        s += <span class="built_in">chr</span>((x &lt;&lt; <span class="number">4</span>) | y)</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">X, Y = <span class="built_in">list</span>(), <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">    FLAG = <span class="string">&quot;alictf&#123;&quot;</span>+<span class="built_in">str</span>(uuid4())+<span class="string">&quot;&#125;&quot;</span></span><br><span class="line">    X.append(s2v(FLAG[<span class="number">7</span>:-<span class="number">1</span>].replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>)))</span><br><span class="line">    Y.append(<span class="built_in">int</span>(FLAG.encode().<span class="built_in">hex</span>(), <span class="number">16</span>) % order)</span><br><span class="line">X, Y = matrix(Zmod(order), X), vector(Zmod(order), Y)</span><br><span class="line">H = (X[:-<span class="number">1</span>] - X[<span class="number">1</span>:]).solve_right(Y[:-<span class="number">1</span>] - Y[<span class="number">1</span>:])</span><br><span class="line">Y0 = Y[<span class="number">0</span>] - X[<span class="number">0</span>]*H</span><br><span class="line"></span><br><span class="line"><span class="comment"># check</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    FLAG = <span class="string">&quot;alictf&#123;&quot;</span>+<span class="built_in">str</span>(uuid4())+<span class="string">&quot;&#125;&quot;</span></span><br><span class="line">    v = vector(Zmod(G_order), s2v(FLAG[<span class="number">7</span>:-<span class="number">1</span>].replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    ct = <span class="built_in">int</span>(FLAG.encode().<span class="built_in">hex</span>(), <span class="number">16</span>) % G_order</span><br><span class="line">    <span class="keyword">assert</span> v*H + Y0 == ct</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>It’s such a relief that BKZ-22 is enough for this challenge, gg.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">A = matrix(ZZ, H.<span class="built_in">list</span>()[:<span class="number">24</span>] + H.<span class="built_in">list</span>()[<span class="number">26</span>:]).T <span class="comment"># remove 0 element, since uuid4 has a fixed &#x27;4&#x27; in the middle</span></span><br><span class="line">bounds = <span class="built_in">sum</span>([[<span class="number">1</span>, <span class="number">4</span>]]*<span class="number">31</span>, []) + [<span class="number">1</span>]</span><br><span class="line">Q = diagonal_matrix(ZZ, [order // bound <span class="keyword">for</span> bound <span class="keyword">in</span> bounds])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        s = v2s(x.<span class="built_in">list</span>())</span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">all</span>(ch <span class="keyword">in</span> <span class="string">&quot;0123456789abcdef&quot;</span> <span class="keyword">for</span> ch <span class="keyword">in</span> s)</span><br><span class="line">        s = <span class="string">&quot;alictf&#123;&quot;</span> + s[<span class="number">0</span>:<span class="number">8</span>] + <span class="string">&#x27;-&#x27;</span> + s[<span class="number">8</span>:<span class="number">12</span>] + <span class="string">&#x27;-&#x27;</span> + <span class="string">&#x27;4&#x27;</span> + s[<span class="number">12</span>:<span class="number">15</span>] + <span class="string">&#x27;-&#x27;</span> + s[<span class="number">15</span>:<span class="number">19</span>] + <span class="string">&#x27;-&#x27;</span> + s[<span class="number">19</span>:] + <span class="string">&quot;&#125;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;s = &#125;</span>\n<span class="subst">&#123;ct = &#125;</span>\n<span class="subst">&#123;<span class="built_in">float</span>(x.norm()) = &#125;</span>\n<span class="subst">&#123;x = &#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm.trange(<span class="built_in">len</span>(cts)):</span><br><span class="line">    ct = cts[i]</span><br><span class="line">    b = matrix(ZZ, [ct - Y0]).T</span><br><span class="line">    L = block_matrix(ZZ, [</span><br><span class="line">        [<span class="number">1</span>, -A[:-<span class="number">1</span>]*inverse_mod(A[-<span class="number">1</span>, <span class="number">0</span>], order), <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, order, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, b*inverse_mod(A[-<span class="number">1</span>, <span class="number">0</span>], order), <span class="number">1</span>]</span><br><span class="line">    ])</span><br><span class="line">    L = (L*Q).BKZ(block_size=<span class="number">22</span>)</span><br><span class="line">    L = (L/Q).change_ring(ZZ)</span><br><span class="line">    <span class="keyword">for</span> v <span class="keyword">in</span> L:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">abs</span>(v[-<span class="number">1</span>]) == <span class="number">1</span>:</span><br><span class="line">            func(v[:-<span class="number">1</span>])</span><br><span class="line">            func(-v[:-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+
+<h2 id="DiceG-me"><a href="#DiceG-me" class="headerlink" title="(*)DiceG@me+"></a>(*)DiceG@me+</h2><ul>
+<li><a href="dice/task.py">task.py</a></li>
+</ul>
+<h2 id="Schrodinger’s-AEAD"><a href="#Schrodinger’s-AEAD" class="headerlink" title="(*)Schrödinger’s AEAD"></a>(*)Schrödinger’s AEAD</h2><ul>
+<li><a href="aead/server.py">server.py</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>AES-GCM</tag>
+        <tag>ZKP</tag>
+        <tag>ChaCha20-Poly1305</tag>
+        <tag>Reed-Solomon</tag>
+        <tag>MT19937</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hitcon CTF 2025</title>
-    <url>/2025/08/25/hitconctf2025/</url>
+    <url>/2025/08/25/2025-hitconctf/</url>
     <content><![CDATA[<p>I played Hitcon CTF last weekend with r3kapig, enjoyed.</p>
 <h2 id="MRSA"><a href="#MRSA" class="headerlink" title="MRSA"></a>MRSA</h2><blockquote>
 <ul>
@@ -660,7 +1407,7 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
   </entry>
   <entry>
     <title>ZZKAoK::Kalmar CTF 2025</title>
-    <url>/2025/03/10/kalmarctf2025/</url>
+    <url>/2025/03/10/2025-kalmarctf/</url>
     <content><![CDATA[<p>Time: 2025.03.09-10 (online)</p>
 <p>I played with r3kapig last weekend, and we managed to solve 5 out of 8 crypto challs. </p>
 <h2 id="ZZKAoK-6-solves"><a href="#ZZKAoK-6-solves" class="headerlink" title="ZZKAoK (6 solves)"></a>ZZKAoK (6 solves)</h2><blockquote>
@@ -744,8 +1491,8 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
 <table>
 <thead>
 <tr>
-<th><img src="/2025/03/10/kalmarctf2025/images/1.png" alt="image"></th>
-<th><img src="/2025/03/10/kalmarctf2025/images/2.png" alt="image"></th>
+<th><img src="/2025/03/10/2025-kalmarctf/images/1.png" alt="image"></th>
+<th><img src="/2025/03/10/2025-kalmarctf/images/2.png" alt="image"></th>
 </tr>
 </thead>
 </table>
@@ -753,311 +1500,6 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
 ]]></content>
       <tags>
         <tag>ZKP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Let me tell you a story about 2025</title>
-    <url>/2025/12/31/rec2025/</url>
-    <content><![CDATA[<p>Time: 2025 (onsite)</p>
-<h2 id="CTF-2025"><a href="#CTF-2025" class="headerlink" title="CTF 2025"></a>CTF 2025</h2><p>2025 年我参加了许多 CTF 竞赛，与 @N0wayBack 和 @r3kapig 度过了许多有趣的时光。我见识了许多新颖有趣的技术，但是还没能全都学会，再给我一些时间。</p>
-<p>2025 年，学习使用先进的 LLM 成为一件不能再被推迟的事，这扯不扯。</p>
-<p>不过兄弟 CTF 才是最好的 CTF，我明白了。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/memes/friend.jpg" alt="friend"></th>
-<th><img src="/2025/12/31/rec2025/memes/friend.jpg" alt="friend"></th>
-<th><img src="/2025/12/31/rec2025/memes/friend.jpg" alt="friend"></th>
-</tr>
-</thead>
-</table>
-<p>我有幸 onsite 参加了许多国际赛事决赛：</p>
-<ul>
-<li><a href="/2025/03/04/secconctffinal2025/">SECCON CTF (Tokyo, Japan 🇯🇵)</a></li>
-<li><a href="/2025/07/14/codegatectffinal2025/">CodeGate CTF (Seoul, Korea 🇰🇷)</a></li>
-<li><a href="/2025/09/29/srdnlenctffinal2025/">SrdnLen CTF (Sardinia, Italy 🇮🇹)</a></li>
-<li><a href="/2025/12/09/blackhatmeactffinal2025/">BlackHat MEA CTF (Riyadh, Saudi Arabia 🇸🇦)</a> ⬅️ 猜猜是谁取得了亚军🥈</li>
-</ul>
-<p>我度过了忙碌而充实的 2025 年，这也是我最大的收获之一，感谢 @r3kapig 的同时感谢 @rec 我自己。我得以见到许多有趣的事，认识许多有趣的人，这对我来说意义非凡。</p>
-<p>哦，猜猜 2025 年的 ctftime 排名第一的是？</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/ctftime.jpg" alt="ctftime"></th>
-</tr>
-</thead>
-</table>
-<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
-
-<p>如果你感兴趣的话，我们在 2025 年夺冠了 XCTF-ACTF，欢迎加入 @N0wayBack 战队。</p>
-<p>年轻的师傅们越来越厉害了，好像逐渐没我什么事，感动。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/ACTF.png" alt="ACTF"></th>
-</tr>
-</thead>
-</table>
-<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
-
-<p>2025 年的夏天尤其比较忙碌。</p>
-<p>六月底在千岛湖线下参加了 Google CTF（三个老东西 @deebato @等风 @rec 什么也没做出来，都怪 @k1rito），紧接着到首尔 CodeGate CTF。回来之后到重庆参加了熵密杯（兄！弟！@狗墩子），后面又到西安和 @oc 老大参加了密码挑战决赛。</p>
-<p>这中间还穿插了一次旅行，2025 年的夏天尤其比较忙碌</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/SMB.jpg" alt="SMB"></th>
-<th><img src="/2025/12/31/rec2025/images/SMB2.jpg" alt="SMB2"></th>
-</tr>
-</thead>
-</table>
-<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
-
-<p>2025 年和 NJU 的朋友们参加了不少竞赛。</p>
-<p>猜猜谁今年又被 @Dawn_Whisper 老板邀请了？NUAA 的校赛今年给办到华为南研所了，玩得很开心。</p>
-<p>是的，国际中央大学今年出了两个队。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/NUAA.jpg" alt="NUAA"></th>
-</tr>
-</thead>
-</table>
-<p>10 月举办了 NJU 时隔多年来第一次 CTF 校赛；12 月就见证了 NJU-Trinity 战队拿下 HITCTF 冠军，泪目。</p>
-<h2 id="ByteDance-2025"><a href="#ByteDance-2025" class="headerlink" title="ByteDance 2025"></a>ByteDance 2025</h2><p>2025 年的秋天在深圳 ByteDance 开始了第一份实习。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/%E5%AD%97%E8%8A%821.jpg" alt="字节1"></th>
-</tr>
-</thead>
-</table>
-<p>跟着各位老师学到了很多东西（虽然我学得很慢），感恩。</p>
-<p>我在每天的通勤地铁上反复播放 NMIXX。我看了很多日落，深圳有很多海。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/%E6%B7%B1%E5%9C%B34.jpg" alt="深圳4"></th>
-<th><img src="/2025/12/31/rec2025/images/%E6%B7%B1%E5%9C%B36.jpg" alt="深圳6"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/%E6%B7%B1%E5%9C%B33.jpg" alt="深圳3"></th>
-<th><img src="/2025/12/31/rec2025/images/%E6%B7%B1%E5%9C%B35.jpg" alt="深圳5"></th>
-</tr>
-</thead>
-</table>
-<h2 id="Travel-2025"><a href="#Travel-2025" class="headerlink" title="Travel 2025"></a>Travel 2025</h2><h3 id="江南"><a href="#江南" class="headerlink" title="江南"></a>江南</h3><p>2025 年的生日是 @Cain 和 @糖醋小鸡块 一起过的。</p>
-<p>两位大弟说来就来，非常靠谱。然后我们一起找奕叔林哥聚餐（蹭饭）。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/%E7%8E%84%E6%AD%A6%E6%B9%96.jpg" alt="玄武湖"></th>
-<th><img src="/2025/12/31/rec2025/images/%E7%8E%84%E6%AD%A6%E6%B9%962.jpg" alt="玄武湖2"></th>
-<th><img src="/2025/12/31/rec2025/images/food.jpg" alt="food"></th>
-</tr>
-</thead>
-</table>
-<p>继 Palworld 之后，Rockay City 和 Darker and Darker 或将成为新的“短时间内再也不会打开的游戏”。</p>
-<p>明年还订电竞酒店吗？</p>
-<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
-
-<p>2025 年的夏天在苏杭组织了一次旅行，为了庆祝朋友考试通过。</p>
-<p>短时间内大家应该不想再吃南方菜了，但是螃蟹很好吃。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/%E8%8B%8F%E5%B7%9E.jpg" alt="苏州"></th>
-<th><img src="/2025/12/31/rec2025/images/%E6%9D%AD%E5%B7%9E.jpg" alt="杭州"></th>
-<th><img src="/2025/12/31/rec2025/images/%E8%8B%8F%E5%B7%9E2.jpg" alt="苏州2"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/%E5%8D%97%E4%BA%AC.jpg" alt="南京"></th>
-<th><img src="/2025/12/31/rec2025/images/%E8%8B%8F%E5%B7%9E3.jpg" alt="苏州3"></th>
-</tr>
-</thead>
-</table>
-<p>我发现找不到什么照片来纪念这为期一周的旅行，当时只顾吃饭了？</p>
-<h3 id="日本"><a href="#日本" class="headerlink" title="日本"></a>日本</h3><p>2025 年的夏天计划了一次日本旅行，与男性友人双排“坂进东出”。</p>
-<p>这个时间正好是 Osaka EXPO 2025，人生中第一次参观世博会。</p>
-<p>好热，好多人，哈哈。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/expo1.jpg" alt="expo1"></th>
-</tr>
-</thead>
-</table>
-<p>好天气其实是非常理想而幸运的事。而且大屋根真的蛮凉快的，实用的设计。</p>
-<p>但是 EXPO 的排队体验有点差。场馆预约机制本身还算合理，但是预约系统并不好用（我们甚至没能参观日本馆）。</p>
-<p>与此同时，有些场馆大家排队很久进去之后，被带着看个视频就放出来了，但是我不打算点名批评。 XD</p>
-<p>不过绝大部分场馆的设计都很漂亮，这里包括中国馆。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/expo2.jpg" alt="expo2"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo3.jpg" alt="expo3"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo4.jpg" alt="expo4"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/expo7.jpg" alt="expo7"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo8.jpg" alt="expo8"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo6.jpg" alt="expo6"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo5.jpg" alt="expo5"></th>
-</tr>
-</thead>
-</table>
-<p>黄昏时候的大屋根漂亮到不行，我拍得不好看。</p>
-<p>据说这个时候是参观各个场馆的绝佳时机，但是 EXPO 还准备了烟火表演，这扯不扯。</p>
-<p>到最后没有捡漏几个场馆，只能在外面拍拍照。不过我们抢到法国馆面包店的最后两个名额，蛮诙谐的。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/expo9.jpg" alt="expo9"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo10.jpg" alt="expo10"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo11.jpg" alt="expo11"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/expo14.jpg" alt="expo12"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo13.jpg" alt="expo13"></th>
-<th><img src="/2025/12/31/rec2025/japan/expo12.jpg" alt="expo12"></th>
-</tr>
-</thead>
-</table>
-<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
-
-<p>在京都留下的记忆主要围绕着清水寺、京都大学、鸭川。</p>
-<p>真安静啊，这个地方。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B8%85%E6%B0%B4%E5%AF%BA1.jpg" alt="清水寺1"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B8%85%E6%B0%B4%E5%AF%BA2.jpg" alt="清水寺2"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B8%85%E6%B0%B4%E5%AF%BA3.jpg" alt="清水寺3"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E4%BA%AC%E9%83%BD%E5%A4%A7%E5%AD%A61.jpg" alt="京都大学1"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E4%BA%AC%E9%83%BD%E5%A4%A7%E5%AD%A62.jpg" alt="京都大学2"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E9%B8%AD%E5%B7%9D.jpg" alt="鸭川"></th>
-</tr>
-</thead>
-</table>
-<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
-
-<p>我将简单概括在东京的旅行，因为我已经认不全自己拍照的内容了。</p>
-<p>Tower Record 是世界上最好的地方之一。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E4%B8%9C%E4%BA%AC1.jpg" alt="东京1"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E4%B8%9C%E4%BA%AC2.jpg" alt="东京2"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E4%B8%9C%E4%BA%AC3.jpg" alt="东京3"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E4%B8%9C%E4%BA%AC4.jpg" alt="东京4"></th>
-</tr>
-</thead>
-</table>
-<hr style="height: 3px; border: none; background: linear-gradient(to right, #f0f0f0, #888, #f0f0f0);">
-
-<p>镰仓-江之岛，我们度过了此行最令人记忆深刻的时间。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E9%95%B0%E4%BB%931.jpg" alt="镰仓1"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E9%95%B0%E4%BB%932.jpg" alt="镰仓2"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E9%95%B0%E4%BB%933.jpg" alt="镰仓3"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B1.jpg" alt="江之岛1"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B2.jpg" alt="江之岛2"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B8.jpg" alt="江之岛8"></th>
-</tr>
-</thead>
-</table>
-<p>镰仓的天气在合适的时间放晴了，我们在许多合适的时间节点做了许多合适的事。</p>
-<p>我们就在江之岛的尽头看着太阳落下去，我再不会经历一次一模一样的体验。</p>
-<p>不过我当天犯了严重的偏头痛，蛮诙谐的。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B4.jpg" alt="江之岛4"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B11.jpg" alt="江之岛11"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B9.jpg" alt="江之岛9"></th>
-<th><img src="/2025/12/31/rec2025/japan/%E6%B1%9F%E4%B9%8B%E5%B2%9B10.jpg" alt="江之岛10"></th>
-</tr>
-</thead>
-</table>
-<p>下一次再能够去旅行会是什么时候了。</p>
-<h2 id="Mood-2025"><a href="#Mood-2025" class="headerlink" title="Mood 2025"></a>Mood 2025</h2><blockquote>
-<p>Anxiety</p>
-</blockquote>
-<p>——是贯穿 2025 年始终的强烈色彩，不幸地。</p>
-<p>我没觉得从中学到了什么，没找到办法能够战胜它，接下来的日子不会有什么变化。</p>
-<p>不过大家好像都是这样。</p>
-<blockquote>
-<p>Courage</p>
-</blockquote>
-<p>“明知道不可能但还是硬着头皮去做了”</p>
-<p>我失败了许多许多次，然后我觉得勇气当真是可贵的。</p>
-<blockquote>
-<p>Money</p>
-</blockquote>
-<p><strong>我没有钱。</strong></p>
-<h2 id="The-End-of-2025"><a href="#The-End-of-2025" class="headerlink" title="The End of 2025"></a>The End of 2025</h2><p>2025 最好的三张新专辑，有两张来自 NMIXX。</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/12/31/rec2025/images/%E9%9F%B3%E4%B9%901.jpg" alt="音乐1"></th>
-<th><img src="/2025/12/31/rec2025/images/%E9%9F%B3%E4%B9%902.jpg" alt="音乐2"></th>
-</tr>
-</thead>
-</table>
-<p>2025 年结束了，我做了许多有趣的事，这成就了更好的我 @rec。</p>
-<p>我还没想好对 2026 年应该抱有什么样的期待，钱会从天上飞来吗（？）。</p>
-<p>或许我先去休息一下，然后学习一点新东西。</p>
-]]></content>
-      <tags>
-        <tag>rec</tag>
       </tags>
   </entry>
   <entry>
@@ -1121,387 +1563,7 @@ The initialization is done by contract `Setup`. In short there are two `DEX` con
 <p>Uhh, the end. I thought there’ll be more to share but it turns out to be simple. Hope you enjoy this!</p>
 ]]></content>
       <tags>
-        <tag>sagemath</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SECCON CTF 2025 Final (Tokyo, Japan🇯🇵)</title>
-    <url>/2025/03/04/secconctffinal2025/</url>
-    <content><![CDATA[<p>Time: 2025.03.01-02 (onsite)</p>
-<p><a href="https://github.com/SECCON/SECCON13_final_CTF/tree/main/crypto">https://github.com/SECCON/SECCON13_final_CTF/tree/main/crypto</a></p>
-<p>I participated SECCON 13th Final as a member of P1G SEKAI this weekend, and we finally got 4th among international teams.</p>
-<p><img src="/2025/03/04/secconctffinal2025/images/2.jpg" alt="rank"></p>
-<p>Nice crypto challenges, and I solved 3 out of 4. IF ONLY I’d ever taken some time to study UOV.</p>
-<p><img src="/2025/03/04/secconctffinal2025/images/1.png" alt="solve"></p>
-<p>Or maybe I was just too nervous.</p>
-<p>XO</p>
-<h2 id="RSA-8-solves"><a href="#RSA-8-solves" class="headerlink" title="RSA+ (8 solves)"></a>RSA+ (8 solves)</h2><blockquote>
-<ul>
-<li><a href="RSA+/task.py">task.py</a></li>
-</ul>
-</blockquote>
-<p>It turns out that we can send two composite number $(p, q)$, both smaller than 512 bits. Then we can just find all the solutions on $p_i$ and combine them with CRT.</p>
-<blockquote>
-<p>solution: <a href="RSA+/exp.py">exp.py</a></p>
-</blockquote>
-<p>I believe there exists a better way though.</p>
-<h2 id="DLP-7-solves"><a href="#DLP-7-solves" class="headerlink" title="DLP+ (7 solves)"></a>DLP+ (7 solves)</h2><blockquote>
-<ul>
-<li><a href="DLP+/task.py">task.py</a></li>
-</ul>
-</blockquote>
-<p>A simple idea is that we try to control $g^x$ (or $h^x$) to be small. Then we can get $h^x$ with some bruteforce and solve DLP to get $x$. I found some luck on Mersenne Prime $p &#x3D; 2^n - 1$, where $g^x \pmod{p}$ is very small. Finally I chose M2281 for effective DLP solver. </p>
-<p>Which took me a lot of time and luck, definitely NOT that effective.</p>
-<blockquote>
-<p>solution: <a href="DLP+/exp.py">exp.py</a></p>
-</blockquote>
-<p>@Sceleri and @soon_haari used $p &#x3D; 2^a \cdot 3^b + 1$. It does make more sense since $g &#x3D; 2^{a-1} \cdot 3^b$ and $h &#x3D; 2^a \cdot 3^{b-1}$ (same in our solution). But I donot want to go through it again so just let it go.</p>
-<p><img src="/2025/03/04/secconctffinal2025/images/3.png" alt="image"></p>
-<h2 id="hell-summon-6-solves"><a href="#hell-summon-6-solves" class="headerlink" title="hell_summon (6 solves)"></a>hell_summon (6 solves)</h2><blockquote>
-<ul>
-<li><a href="hell_summon/task.py">task.py</a></li>
-</ul>
-</blockquote>
-<p>I spent the whole afternoon day 1 on this one.</p>
-<p>We have 42 pairs of $(m_i, c_i &#x3D; r \cdot (m_i  \oplus H) + e_i \pmod{p})$, where $e_i$ is due to the truncation. We rewrite $m_i \oplus H$ as $\Sigma_{j&#x3D;0}^{39} (m_{i, j} + H_{j} - 2 \cdot m_{i, j} \cdot H_{j}) \cdot 2^{j}$. </p>
-<p>$$\Rightarrow \Sigma_{j&#x3D;0}^{39} r \cdot H_{j} \cdot ((1 - 2 \cdot m_{i, j}) \cdot 2^{j}) + r \cdot m_i  + e_i \pmod{p}$$</p>
-<p>Orthogonal Lattice seems to be an adorable choice, and it worked well. On the first attempt I found one short vector $v$ where $\vec{v} \cdot \vec{c} &#x3D; \vec{v} \cdot \vec{e} \pmod{p}$, and it’s small enough to omit $p$. But I didn’t manage to solve $\vec{e}$.</p>
-<p>On another attempt at midnight, I used vectors $(v_0, v_1)$ orthogonal to $\Sigma_{j&#x3D;0}^{39} r \cdot H_{j} \cdot ((1 - 2 \cdot m_{i, j}) \cdot 2^{j})$. Then we have two equations $r \cdot (\vec{v_i} \cdot \vec{m}) + \vec{v_i} \cdot \vec{e} \pmod{p}$, where $\vec{v_i} \cdot \vec{e}$ is small. Now we can solve it as a simple HNP.</p>
-<blockquote>
-<p>solution: <a href="hell_summon/exp.py">exp.py</a></p>
-</blockquote>
-<p>Definitely not a pleasing code but whatever.</p>
-<h2 id="x-x-4-solves"><a href="#x-x-4-solves" class="headerlink" title="*x_x (4 solves)"></a>*x_x (4 solves)</h2><blockquote>
-<ul>
-<li><a href="x_x/task.sage">task.sage</a></li>
-</ul>
-</blockquote>
-<p>Working on it. UOV and sth bluhbluhbluh.</p>
-<h2 id="In-Japan"><a href="#In-Japan" class="headerlink" title="In Japan"></a>In Japan</h2><p>My first time to Japan, also my first time abroad. Not bad actually.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/03/04/secconctffinal2025/images/seccon.jpg" alt="seccon"></th>
-<th><img src="/2025/03/04/secconctffinal2025/images/view.jpg" alt="view"></th>
-<th><img src="/2025/03/04/secconctffinal2025/images/food.jpg" alt="food"></th>
-</tr>
-</thead>
-</table>
-<p>My teammates are very strong! Glad to work with them XD<br>And also great to meet many friends from P1G SEKAI.</p>
-<p><img src="/2025/03/04/secconctffinal2025/images/view1.jpg" alt="view1"></p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/03/04/secconctffinal2025/images/view2.jpg" alt="view2"></th>
-<th><img src="/2025/03/04/secconctffinal2025/images/view3.jpg" alt="view3"></th>
-</tr>
-</thead>
-</table>
-<p>Sincere thanks to @crazyman :D (Wish I could go to Mt. Fuji.)<br>I realy enjoyed Tokyo. It’d be better if I can hang out for one or two two more days.</p>
-]]></content>
-      <tags>
-        <tag>LLL</tag>
-        <tag>UOV</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>zk-Openings::Srdnlen CTF 2025 Qual</title>
-    <url>/2025/03/24/srdnlenctf2025/</url>
-    <content><![CDATA[<p>Time: 2025.01.19-20 (online)</p>
-<p>Interesting challenge, but I didn’t have enough time to solve it during the contest XDDD</p>
-<h2 id="zk-Openings-0-solve"><a href="#zk-Openings-0-solve" class="headerlink" title="zk-Openings (0 solve)"></a>zk-Openings (0 solve)</h2><blockquote>
-<ul>
-<li><a href="https://github.com/srdnlen/srdnlenctf-2025_public/tree/main/crypto_zk-openings/src">https://github.com/srdnlen/srdnlenctf-2025_public&#x2F;tree&#x2F;main&#x2F;crypto_zk-openings&#x2F;src</a></li>
-</ul>
-</blockquote>
-<p>I actually learnt a lot from the implementation, thank you @lrnzsir.</p>
-<h3 id="KZG-Commitment"><a href="#KZG-Commitment" class="headerlink" title="KZG Commitment"></a>KZG Commitment</h3><p>KZG commitment is a polynomial commitment scheme proposed by <a href="https://www.iacr.org/archive/asiacrypt2010/6477178/6477178.pdf">Kate et al in 2010</a>.</p>
-<p>While the original paper used a symmertric type-1 pairing, we prefer to use type-3 pairing these days. Basically we have three groups $(G_1, G_2, G_T)$ , two generators $(g_1 \in G_1, g_2 \in G_2)$, and a bilinear pairing function $e: G_1 \times G_2 \rightarrow G_T$. </p>
-<ol>
-<li>$\mathcal{Setup}(d) \rightarrow srs$: randomly samples a secret value $x$, and computes $srs &#x3D; (g_1^{x}, …, g_1^{x^d}, g_2^{x})$. While $x$ is considered to be “toxic waste”, it must be generated by trusted authority and deleted properly after use.</li>
-<li>$\mathcal{Commit}(srs, f) \rightarrow com$: computes the commitment $com &#x3D; g_1^{\Sigma_{i&#x3D;0}^d f_i \cdot x^i} &#x3D; \Pi_{i&#x3D;0}^{d} (g_1^{x^i})^{f_i}$ for the polynomial.</li>
-<li>$\mathcal{EvalProve}(srs, f, z) \rightarrow (\pi, f(z))$: computes a polynomial $q(x) &#x3D; \frac{f(x) - f(z)}{x-z}$. Then it computes the proof $\pi &#x3D; g_1^{\Sigma_{i&#x3D;0}^d q_i \cdot x^i} &#x3D; \Pi_{i&#x3D;0}^{d} (g_1^{x^i})^{q_i}$, proving that one knows the evaluation of $f$ over $z$.</li>
-<li>$\mathcal{EvalVerify}(srs, com, \pi, z, f(z)) \rightarrow 0&#x2F;1$: verifies the proof by checking $e(com \cdot g_1^{-f(z)}, g_2) \overset{?}{&#x3D;} e(\pi, g_2^{s} \cdot g_2^{-z})$.</li>
-</ol>
-<blockquote>
-<p>Note that KZG is a commitment (instead of ZKP) scheme. </p>
-</blockquote>
-<h3 id="The-Challenge"><a href="#The-Challenge" class="headerlink" title="The Challenge"></a>The Challenge</h3><p>For this challenge, we performs the KZG process on some secret polynomial $f$ and ended up with <code>opening.json</code>. Considering the difficulty of DLP under standard parameters, I actually just skip the content related to curve points. So basically we have $k&#x3D;20$ pairs of $(x_i, y_i&#x3D;f(x_i))$.</p>
-<p>And here is how we get the secret polynomial. </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">assert</span> n <span class="keyword">in</span> AES.key_size <span class="comment"># 32</span></span><br><span class="line">key = os.urandom(n)</span><br><span class="line">evals = <span class="built_in">list</span>(key)</span><br><span class="line">poly = P(intt(evals))</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">all</span>(poly(H[i]) == key[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">lcg</span>(<span class="params">m: <span class="built_in">int</span>, a: <span class="built_in">int</span>, c: <span class="built_in">int</span>, x: <span class="built_in">int</span></span>) -&gt; <span class="string">&quot;Generator[int, None, None]&quot;</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Linear Congruential Generator &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        x = (a * x + c) % m</span><br><span class="line">        <span class="keyword">yield</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a, c, x = [secrets.randbelow(p) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line">rng = lcg(p, a, c, x)</span><br><span class="line"></span><br><span class="line">k = <span class="number">20</span></span><br><span class="line">hiding_poly = P([<span class="built_in">next</span>(rng) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k)])</span><br><span class="line">hidden_poly = poly + hiding_poly * Z_H</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">all</span>(hidden_poly(H[i]) == key[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n))</span><br></pre></td></tr></table></figure>
-
-<p>In short, we have a 32-degree polynomial $f(x)$ and a 20-degree polynomial $g(x)$, where $f(H_i) &#x3D; key_i$ and $g_i$ is generated successively by a secret LCG. Then we have our secret polynomial $h(x) &#x3D; f(x) + g(x) \cdot (x^n-1)$ satisfying $h(H_i) &#x3D; f(H_i) &#x3D; key_i$ since $H_i^n &#x3D; 1$.</p>
-<p>According to previous discussion, we have 20 pairs of random points $(x_i, h(x_i))$, which is apparently not enough to recover $h(x)$. Considering $key_i$ is very small compared to $p$, LLL is our option. </p>
-<p>We can’t construct the Lattice directly, but we can resort to $g(x)$. The first step is to establish a linear representation between $g(x)$ and $key_i$, which is quite simple, since <code>ntt</code>, <code>intt</code> and <code>polynomial_evaluation</code> are all linear transformations. </p>
-<ul>
-<li>$\vec{key} &#x3D; NTT_{n \times n} \cdot \vec{f}$</li>
-<li>$\vec{y} &#x3D; X_{k \times (n+k)} \cdot \vec{h} &#x3D; FX_{k \times n} \cdot \vec{f}+ GX_{k \times k} \cdot \vec{g}$</li>
-</ul>
-<p>$\Rightarrow \vec{g} &#x3D; GX^{-1} \cdot (\vec{y} - FX \cdot NTT^{-1} \cdot \vec{key})$</p>
-<p>For $NTT^{-1}$, you can also compute $iNTT$.</p>
-<h3 id="Linearization-for-Unknown-LCG"><a href="#Linearization-for-Unknown-LCG" class="headerlink" title="Linearization for Unknown LCG"></a>Linearization for Unknown LCG</h3><p>We know that $g_{i+1} &#x3D; a \cdot g_i + b$, but $(a, b)$ are randomly chosen on $GF_p$. To get rid of them, we construct equations like $(g_{i+d_0} - g_{i}) \cdot (g_{j+d_1} - g_{j}) &#x3D; (g_{i+d_1} - g_{i}) \cdot (g_{j+d_0} - g_{j})$.</p>
-<p>Here comes an interesting (maybe) question: how many linearly independent equations can we get? Well this did appealled to me and @糖醋小鸡块. Since we can get $k-2$ equations like $y_{i+1} &#x3D; a \cdot y_i$, we can choose any two of them to eliminate $a$, and thus we have $C(k-2, 2)$ equations.</p>
-<p>For @lrnzsir’s strategy, he iterates $(g_{i+2}-g_{i+1}) \cdot (g_{j+1}-g_j) &#x3D; (g_{i+1}-g_i) \cdot (g_{j+2}-g_{j+1})$ for all $i, j \in [k - 2]$ and $i &lt; j$. We can get exactly $C(k-2, 2)$ equations and each equation contains a unique binomial (thus linear independent). So this is the best we can get.</p>
-<blockquote>
-<p>We (@糖醋小鸡块) believe there exists a better way for theoratical analysis.</p>
-</blockquote>
-<p>With linear transformation, we have $C(k-2, 2)$ quadratic equations about $key_i$ now, containing $n + C(n+1, 2)$ monomials. Then we can do LLL on the linearized system to recover the key. One can ignore some equations and utilize <code>flatter</code> for better efficiency.</p>
-<blockquote>
-<p><a href="zk-Openings/exp.py">exp.py</a></p>
-</blockquote>
-<p>There maybe some difference in my code since it’s implemented months ago XD</p>
-]]></content>
-      <tags>
-        <tag>LLL</tag>
-        <tag>KZG</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Srdnlen CTF 2025 Final (Sardinia, Italy🇮🇹)</title>
-    <url>/2025/09/29/srdnlenctffinal2025/</url>
-    <content><![CDATA[<p>Time: 2025.09.25-26 (onsite)</p>
-<p>I attended the first Srdnlen CTF Final with r3kapig, and we ended up as rk7.</p>
-<p>We really enjoyed the whole event, sincere thanks to all srdnlen fellas :D</p>
-<p><img src="/2025/09/29/srdnlenctffinal2025/images/scoreboard.png" alt="scoreboard"></p>
-<p><img src="/2025/09/29/srdnlenctffinal2025/images/solves.jpg" alt="solves"></p>
-<h2 id="lone-ranger-10-solves"><a href="#lone-ranger-10-solves" class="headerlink" title="lone-ranger (10 solves)"></a>lone-ranger (10 solves)</h2><blockquote>
-<ul>
-<li><a href="lone-ranger/ecc.py">ecc.py</a></li>
-<li><a href="lone-ranger/field.py">field.py</a></li>
-<li><a href="lone-ranger/kzg.py">kzg.py</a></li>
-<li><a href="lone-ranger/prover.py">prover.py</a></li>
-<li><a href="lone-ranger/transcript.py">transcript.py</a></li>
-<li><a href="lone-ranger/output.json">output.json</a></li>
-<li><a href="lone-ranger/srs.json">srs.json</a></li>
-</ul>
-</blockquote>
-<p>People solving this challenge insanely fast, so we assumed it’s easier than it looks like. Then gpt-5 cooked the challenge in minutes.</p>
-<p>I should still go through the whole challenge later, maybe.</p>
-<h2 id="multiple-issues-4-solves"><a href="#multiple-issues-4-solves" class="headerlink" title="multiple-issues (4 solves)"></a>multiple-issues (4 solves)</h2><blockquote>
-<ul>
-<li><a href="multiple-issues/server.py">server.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to forge a valid UOV signature with a 256-time oracle.</p>
-<h3 id="Vuln"><a href="#Vuln" class="headerlink" title="Vuln"></a>Vuln</h3><p>Let’s take a deeper look into the funciton <code>sign</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UOV</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">expand_from_seed</span>(<span class="params">self, seed: <span class="built_in">bytes</span>, shape: <span class="built_in">tuple</span></span>) -&gt; np.ndarray:</span><br><span class="line">        a = np.frombuffer(hashlib.shake_256(seed).digest(np.prod(shape)), dtype=np.uint8)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.F(a % <span class="variable language_">self</span>.q).reshape(shape)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">sign</span>(<span class="params">self, msg: <span class="built_in">bytes</span></span>) -&gt; <span class="built_in">bytes</span>:</span><br><span class="line">        h = <span class="variable language_">self</span>.expand_from_seed(msg, (<span class="variable language_">self</span>.m,))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># deterministic signature thanks to Fiat-Shamir With Aborts</span></span><br><span class="line">        k = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            v = <span class="variable language_">self</span>.expand_from_seed(<span class="variable language_">self</span>.sigma + msg + int_to_bytes(k), (<span class="variable language_">self</span>.n,))     <span class="comment"># &lt;-----</span></span><br><span class="line">            M = <span class="variable language_">self</span>.F([v @ <span class="variable language_">self</span>.priv[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)])</span><br><span class="line">            u = h - <span class="variable language_">self</span>.F([v @ <span class="variable language_">self</span>.pub[i] @ v <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)])</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                o = <span class="variable language_">self</span>.O @ np.linalg.solve(M, u)</span><br><span class="line">                <span class="keyword">return</span> (o + v).tobytes()</span><br><span class="line">            <span class="keyword">except</span> np.linalg.LinAlgError:</span><br><span class="line">                k += <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>If we can find two signatures with the same $v$ but different $o$, we can extract a vector $o \in \mathcal{O}$. So the core idea is to find the collision of <code>self.expand_from_seed(self.sigma + msg + int_to_bytes(k), (self.n,))</code>.</p>
-<p>An interesting fact is <code>int_to_bytes(0) = &#39;&#39;</code>. Suppose we have <code>msg0</code> and <code>msg1 = msg0+int_to_bytes(k0)</code>. If we have: </p>
-<ul>
-<li><code>v0 = expand(sigma+msg0+int_to_bytes(k))</code> aborts at <code>k = k0</code>. </li>
-<li><code>v1 = expand(sigma+msg1+int_to_bytes(k))</code> aborts at <code>k = 0</code>.</li>
-</ul>
-<p>This constructs a collision: </p>
-<ul>
-<li><code>v1 = expand(sigma+msg1+&#39;&#39;) = expand(sigma+msg0+int_to_bytes(k0)) = v0</code>.</li>
-</ul>
-<p>Our strategy is to set a random <code>msg[0]</code> and let <code>msg[i+1] = msg[i] + int_to_bytes(1)</code> (you can also use other <code>k</code>). The collision will take place when <code>msg[i]</code> aborts at <code>k = 1</code>, and <code>msg[i+1]</code> aborts at <code>k = 0</code>. You can find the answer with the fact that $\mathcal{O}$ is the kernel space of the public key.</p>
-<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>For convenience, I may use quadratic mapping style expression:</p>
-<ul>
-<li>$\mathcal{P}_i(v) &#x3D; v \cdot P_i \cdot v$.</li>
-<li>$\mathcal{P}_i’(v_i, v_j) &#x3D; v_i \cdot P_i \cdot v_j$.</li>
-</ul>
-<p>With a single nontrivial vector $o \in \mathcal{O}$ leaked, we can recover the whole kernel space $\mathcal{O}$. For this part, we used <a href="https://affine.group/writeup/2023-07-CorCTF-OilSpill">Hellman’s writeup</a>.</p>
-<p>The general idea is to extract the kernel space of $\mathcal{K} &#x3D; \ker(\{ o \cdot P_i \}_i)$ first, where $\dim(\mathcal{K}) &#x3D; n-m$. Here we have $\mathcal{P}_i(v) &#x3D; 0$ for any $v \in \mathcal{K}$. This also works for $\mathcal{O}$ but stronger: we have $\mathcal{P}_i’(v_i, v_j) &#x3D; 0$ for any $v_i, v_j \in \mathcal{O}$. So $\mathcal{O} \subset \mathcal{K}$ and $\dim(\mathcal{O}) &#x3D; m$.</p>
-<p>Consider the basis set $\mathcal{K} &#x3D; \operatorname{span}(K_{n, n-m})$ and $\mathcal{O} &#x3D; \operatorname{span}(O_{n, m})$. We can always find a linear transformation $B_{n-m, m}$ s.t. $O &#x3D; K \cdot B$. Then we have $O^T \cdot P_i \cdot O &#x3D; B^T \cdot (K^T \cdot P_i \cdot K) \cdot B &#x3D; 0$, and we can extract such $B$ from $\ker(K^T \cdot P_i \cdot K)$, thus recovering the whole $\mathcal{O}$.</p>
-<h2 id="pqke-2-solves"><a href="#pqke-2-solves" class="headerlink" title="pqke (2 solves)"></a>pqke (2 solves)</h2><blockquote>
-<ul>
-<li><a href="pqke/ring.py">ring.py</a></li>
-<li><a href="pqke/server.py">server.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to crack a MLWE-based KE scheme.</p>
-<h3 id="Tricky-Trick"><a href="#Tricky-Trick" class="headerlink" title="Tricky Trick"></a>Tricky Trick</h3><p>The parameters used in this challenge is slightly weaker than Kyber256 (consider RLWE in Kyber512), with a larger modulus $q &#x3D; 65537$. But this still does NOT give us enough advantage to solve the RLWE.</p>
-<p>The key part of this challenge is a tricky way to generate uniform polynomials:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ring</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">binomial</span>(<span class="params">self, f: <span class="built_in">callable</span> = <span class="literal">None</span></span>) -&gt; <span class="string">&quot;RingElem&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> f <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            f = <span class="keyword">lambda</span>: secrets.randbits(<span class="variable language_">self</span>.s).bit_count() - secrets.randbits(<span class="variable language_">self</span>.s).bit_count()</span><br><span class="line">        <span class="keyword">return</span> RingElem(<span class="variable language_">self</span>, coeffs=<span class="variable language_">self</span>.Zq(np.array([f() % <span class="variable language_">self</span>.q <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n)])))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">uniform</span>(<span class="params">self</span>) -&gt; <span class="string">&quot;RingElem&quot;</span>:</span><br><span class="line">        elem = <span class="variable language_">self</span>.binomial()</span><br><span class="line">        <span class="keyword">return</span> RingElem(<span class="variable language_">self</span>, evals=elem.coeffs)</span><br></pre></td></tr></table></figure>
-
-<p>The challenge use <code>binomial</code> to generate small polynomials, the same way as in Kyber and Dilithium. But it calls <code>binomial</code> first and use the evaluations to generate uniform polynomials. This means the evaluations of the uniform polynomial $f(x_i)$ on the NTT points $x_i$ are small. If the evaluation $f(x_i) &#x3D; 0$ (with a non-negligible probability), $f$ contains $(x-x_i)$ as a factor, which serves as a common factor with $x^n+1 &#x3D; \Pi_i (x - x_i)$.</p>
-<p>Based on experiments, we can get a 45-degree common factor on average.</p>
-<h3 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h3><p>What can we do with this? Basically we can use the common factors to eliminate some variables and leak information about the others.</p>
-<p>Consider a single part of the MLWE as a RLWE instance: $b(x) &#x3D; s_0(x) \cdot m_0(x) + s_1(x) \cdot m_1(x) + e(x) \pmod{x^n+1}$. Let $g_{0, 1}(x) &#x3D; \gcd(m_0(x), m_1(x), x^n+1)$, we have $b(x) &#x3D; e(x) \pmod{g_{0, 1}(x)}$, which leads to a easier scenario (compared to the original one). And we can solve $e(x)$ with lattice reduction if the degree of $g(x)$ is big enough.</p>
-<p>Then we can solve the secret polynomials $(s_0(x), s_1(x))$ with $e(x)$. This time we use $g_0(x) &#x3D; \gcd(m_0(x), x^n + 1)$, and $b(x) - e(x) &#x3D; s_1(x) \cdot m_1(x) \pmod{g_0(x)}$. Now we can solve $s_1(x)$ (and $s_0(x)$ similarly).</p>
-<h2 id="aes-3-solves"><a href="#aes-3-solves" class="headerlink" title="(*)aes (3 solves)"></a>(*)aes (3 solves)</h2><blockquote>
-<ul>
-<li><a href="aes/server.py">server.py</a></li>
-<li><a href="aes/sboxes.json">sboxes.json</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to crack a cursed AES with a decryption oracle.</p>
-<h3 id="Cursed-Key-Expansion"><a href="#Cursed-Key-Expansion" class="headerlink" title="Cursed Key Expansion"></a>Cursed Key Expansion</h3><p>Apart from the cipher structure, the main change in the challenge is <code>expand_key</code>, with a strange series of sboxes. It can be noticed that the new sboxes contain several n-to-1 mappings. With deeper experiments, we found that this leads to the round keys gradually converging to a fixed value.</p>
-<p>Converging to the love for Sardinia, yay.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> server <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">aes = AES(key=os.urandom(<span class="number">16</span>))</span><br><span class="line"><span class="keyword">for</span> i, ki <span class="keyword">in</span> <span class="built_in">enumerate</span>(aes.round_keys):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;ki&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x802&lt;\xc7\xa7]\xc97u\x0f\xed@\xd2\x0c\xdd\x0c&#x27;</span></span><br><span class="line"><span class="string">b&#x27;9\x06:\x9b)\xb4&#123;&#125;\x10=sX&quot;n\xb2\x17&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x14\x9d\x1c\xc5\xa8\x0fa\x91\x80\xd0j9un1\x18&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\x1b\xf19y\xc2\xc3\x1c\x88\\4\x0f~)n1D&#x27;</span></span><br><span class="line"><span class="string">b&#x27;\xd6\xd2\xe0\x940\xa6\xa3\xd3\xe74\xe0\x9din1b&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3\xddl0ve\x04\x0c4r\xfbin1\xf6&#x27;               &lt;-----</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">b&#x27;W3_l0ve_$4rdin1@&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>The 6 round still has uncertainties, but it converges with an acceptable probability (1&#x2F;1024 approximately). This gives us a chance to extract a 4-round AES-style cipher from the original one. With a decryption oracle, square attack is a good choice.</p>
-<p>I didn’t have time to implement the attack when I figured it out, however.</p>
-<h3 id="4-Round-Square-Attack"><a href="#4-Round-Square-Attack" class="headerlink" title="4-Round Square Attack"></a>4-Round Square Attack</h3><p>For this attack you may find <a href="https://www.davidwong.fr/blockbreakers/">this</a> helpful. The last time I implemented the attack was in 2023, for Blocky challenges in PBCTF and 0CTF. </p>
-<p>In square attack we need a $\Lambda$-set, like <code>[bytes([i] + [0]*15) for i in range(256)]</code>, where all elements have only one different byte. An interesting fact is that <code>sub_bytes</code> and <code>add_round_key</code> does not disrupt the structure of the set, while <code>mix_columns</code> combined with <code>shift_rows</code> does.</p>
-<p><img src="/2025/09/29/srdnlenctffinal2025/aes/4-r-square-attack.jpg" alt="4-r-square-attack"></p>
-<p>Let’s conduct a brief analysis on how the $\Lambda$-set changes (with this famous and clear flowchart by david). At the very beginning, there’s only one <strong>active</strong> byte. After the first <code>mix_columns</code>, the corresponding bytes in the other rows also get activated. And with the effect of <code>shift_rows</code>, the next <code>mix_columns</code> makes it even more chaotic.</p>
-<p>After the <strong>third</strong> <code>mix_columns</code>, our $\Lambda$-set does not exist anymore, but our adventure’s not over yet. At this point, each byte of the element is a linear combination of 4 previous active bytes, and we can get a linear combination of 4 zero if we sum them up (for “sum them up” I mean <code>pt[0][i] ^ pt[1][i]...</code>).</p>
-<p>The core of the attack is the fact that, the phenomenon described above provides us a key distinguisher.</p>
-<p>The following <code>add_round_key</code> does not change anything, but after <code>sub_byte</code> things will be different. For each byte of the last <code>round_keys[-1]</code> we can bruteforce it, step back to before the last <code>sub_bytes</code>, and recover <code>round_keys[-1]</code> by checking whether the property of the $\Lambda$-set holds. People should know that this is a parallel-friendly strategy.</p>
-<h3 id="5-Round-Square-Attack"><a href="#5-Round-Square-Attack" class="headerlink" title="5-Round Square Attack"></a>5-Round Square Attack</h3><p>One more round added, but there’re no significant changes actually.</p>
-<p><img src="/2025/09/29/srdnlenctffinal2025/aes/5-r-square-attack.jpg" alt="5-r-square-attack"></p>
-<p>We still need the distinguisher, which means more effort to reverse the output backward to the point. Since there lies another <code>mix_columns</code> between the output and our target, we may have to recover 4 bytes of states in a group (bruteforcing 4 bytes of <code>round_keys[-1]</code>) at one time. The positions of the bytes are determined by <code>shift_rows</code>, as shown in the figure. </p>
-<p>An interesting trick is that we can always swap <code>mix_columns</code> and <code>add_round_key</code>. In this way, we only need to bruteforce <code>round_keys[-2]</code> byte by byte (instead of in groups of 4). Then we can recover <code>round_keys[-1]</code> with the distinguisher.</p>
-<p>The overall computational cost for a group of 4 keys is $\mathcal{O}(2^{40})$ (4+1 bytes). This is also highly parallelizable, thus leading to a $\mathcal{O}(k \cdot 2^{32})$. For implementation we may have to use cpp (or golang).</p>
-<h2 id="it-hiding"><a href="#it-hiding" class="headerlink" title="(*)it-hiding"></a>(*)it-hiding</h2><p>This challenge is for speed-run on the second day.</p>
-<blockquote>
-<ul>
-<li><a href="it-hiding/server.py">server.py</a></li>
-</ul>
-</blockquote>
-<p>In this challenge we need to solve a Pedersen Commitment decision problem.</p>
-<h3 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h3><p>Curve W25519 in this challenge is isomorphic to curve ed25519, with the curve order $8 \cdot q$. Since <code>fastecdsa</code> use a $q$-order generator $G$, an apparent solution is to integrate a point in another subgroup, thus changing the order of the commitment $C$. People can be inspired by the Schnorr part ig, which forces the user to send a point generated by $G$.</p>
-<p>Consider we’re taking a 2-order point $B$, how can we by pass the Schnorr part? In Schnorr proof, we need to send $B, (z, c)$ satisfying $\operatorname{challenge}(z \cdot G-c \cdot B, B) &#x3D; c$. Though we’re not able to predict $c$, we know the fact that $c \cdot B &#x3D; O$ for any even $c$ (since $B$ is a 2-order point). Thus we can randomly pick $z$ for several times and compute $c &#x3D; \operatorname{challenge}(z \cdot G, B)$, and we can successfully forge a valid proof $(z, c)$ when we get an even $c$. This may lead to a 50% success rate, acceptable.</p>
-<blockquote>
-<ul>
-<li><a href="it-hiding/exp.py">exp.py</a></li>
-</ul>
-</blockquote>
-<p>One team used the time difference to do the decision, which seems to work locally. But I think this may be influenced badly by network delay and <code>fastecdsa</code>.</p>
-<p>Yeah I didn’t manage to solve it in time, cuz I misused $8 \cdot q$ instead of $q$ while forging a proof, disappointment.</p>
-<h2 id="Milan-Sardinia-Rome"><a href="#Milan-Sardinia-Rome" class="headerlink" title="Milan -&gt; Sardinia -&gt; Rome"></a>Milan -&gt; Sardinia -&gt; Rome</h2><p>My first time to EU, fascinated.</p>
-<p>Painful that I had to spend 30 hours on the plane, with bad sleep and endless plane food. But you always need to pay something ig.</p>
-<table>
-<thead>
-<tr>
-<th><img src="images/flight1.jpg" height="200"></th>
-<th><img src="images/flight2.jpg" height="200"></th>
-</tr>
-</thead>
-</table>
-<p>My body arrived in Milan early in the morning (while my soul arrived after hours), and honestly the weather was very cold, gloomy and frustrating. But when we landed in Sardinia, things got better. I myself is kinda weather-sensitive so that was such a relief.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/milan.jpg" alt="milan"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/sardinia.jpg" alt="sardinia"></th>
-</tr>
-</thead>
-</table>
-<p>No so sure I had Linguine or Spaghetti that night.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/day1dinner.jpg" alt="day1dinner"></th>
-</tr>
-</thead>
-</table>
-<p>The CTF event’s just impressive. We really enjoyed all crypto challenges (it’d be better if we cleared them XD).</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/event1.jpg" alt="event1"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/event2.jpg" alt="event2"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/event3.jpg" alt="event3"></th>
-</tr>
-</thead>
-</table>
-<p>I had to refresh myself from time to time because of jet lag, taking a glimpse of the local life. I may spend more days on the island next time, if possible.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/sardinia1.jpg" alt="sardinia1"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/sardinia2.jpg" alt="sardinia2"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/sardinia3.jpg" alt="sardinia3"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/sardinia4.jpg" alt="sardinia4"></th>
-</tr>
-</thead>
-</table>
-<p>The first night’s pizza was on the host, and I had Spaghetti and Macaroni on the second day.</p>
-<p>Of courese I had things other than noodles lmao. It’s just fun trying to pick up different pastas.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/spaghetti.jpg" alt="spaghetti"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/macaroni.jpg" alt="macaroni"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/pizza.jpg" alt="pizza"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/food.jpg" alt="food"></th>
-</tr>
-</thead>
-</table>
-<p>Shouldn’t post the photo of them ig. But I think it’s a cool one XD</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/bar.jpg" alt="bar"></th>
-</tr>
-</thead>
-</table>
-<p>We spent one day and a half in Rome after the event. Here comes Rome’s Day and Night.</p>
-<p>I love pleasant weathers.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/dayrome1.jpg" alt="dayrome1"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/dayrome3.jpg" alt="dayrome3"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/dayrome2.jpg" alt="dayrome2"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/dayrome4.jpg" alt="dayrome4"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/dayrome5.jpg" alt="dayrome5"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/nightrome1.jpg" alt="nightrome1"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/nightrome3.jpg" alt="nightrome3"></th>
-</tr>
-</thead>
-</table>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/nightrome2.jpg" alt="nightrome2"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/nightrome4.jpg" alt="nightrome4"></th>
-</tr>
-</thead>
-</table>
-<p>A lemon🍋</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/lemon.jpg" alt="lemon"></th>
-</tr>
-</thead>
-</table>
-<p>I had Fettuccine for my last meal before leaving. They’re all tasty, but noodles will not be an option for my next month ig.</p>
-<table>
-<thead>
-<tr>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/fettuccine.jpg" alt="fettuccine"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/beef.jpg" alt="beef"></th>
-<th><img src="/2025/09/29/srdnlenctffinal2025/images/chicken.jpg" alt="chicken"></th>
-</tr>
-</thead>
-</table>
-]]></content>
-      <tags>
-        <tag>LLL</tag>
-        <tag>AES</tag>
-        <tag>ECC</tag>
-        <tag>UOV</tag>
-        <tag>ZKP</tag>
+        <tag>SageMath</tag>
       </tags>
   </entry>
 </search>
