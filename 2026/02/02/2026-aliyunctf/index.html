@@ -14,10 +14,10 @@
 <meta property="og:description" content="Nice challenges from @hash_hash and @AquaCat, all of which are short enough but hard enough. Official Writeup Griffin chal.sage  Curve StuffFirst things first we need to reconstruct the curve and do s">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-02-02T04:34:35.000Z">
-<meta property="article:modified_time" content="2026-02-22T04:19:04.206Z">
+<meta property="article:modified_time" content="2026-02-22T15:26:38.344Z">
 <meta property="article:author" content="rec">
-<meta property="article:tag" content="ZKP">
 <meta property="article:tag" content="AES-GCM">
+<meta property="article:tag" content="ZKP">
 <meta property="article:tag" content="ChaCha20-Poly1305">
 <meta property="article:tag" content="Reed-Solomon">
 <meta property="article:tag" content="MT19937">
@@ -156,7 +156,7 @@
       
         <time datetime="2026-02-02T04:34:35.000Z" class="dt-published" itemprop="datePublished">2026-02-02</time>
         
-        (Updated: <time datetime="2026-02-22T04:19:04.206Z" class="dt-updated" itemprop="dateModified">2026-02-22</time>)
+        (Updated: <time datetime="2026-02-22T15:26:38.344Z" class="dt-updated" itemprop="dateModified">2026-02-22</time>)
         
       
     </div>
@@ -232,7 +232,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">aead</span>(<span class="params">mode, nonce=os.urandom(<span class="params"><span class="number">24</span></span>)</span>):</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 
 <h3 id="AES-GCM"><a href="#AES-GCM" class="headerlink" title="AES-GCM"></a>AES-GCM</h3><p>A brief discussion here, since I didn’t implemented this part of the chall.</p>
-<p>One may notice that AES-GCM works with xor-friendly operations: For an xor difference $\epsilon$, if we send a plaintext pair $(p, p \oplus \epsilon)$, we can extract a certain tag difference $\Delta_{\oplus} t &#x3D; f(\epsilon)$ (same with a truncated leakage).</p>
+<p>One may notice that AES-GCM works on $\mathbb{F}<em>{2^{128}}$ with xor-friendly operations: For an xor difference $\epsilon$, if we send a plaintext pair $(p, p \oplus \epsilon)$, we can extract a certain tag difference $\Delta</em>{\oplus} t &#x3D; f(\epsilon)$ (same with a truncated leakage).</p>
 <p>So we can construct several pairs for a fixed $\epsilon$, and locate the AES-GCM pairs by checking the recurring $\Delta_{\oplus} t$. With a single pair, we can efficiently extract a linear leakage $a \otimes H$. We can fully recover $H$ by repeating this process for multiple well-chosen $\epsilon$.</p>
 <p>Next we need to recover the keystream. Consider a plaintext $p$ and the 1-byte extended plaintext $p’ &#x3D; p || ch$. If the last byte $ch$ is encrypted as a null byte, the tag difference will be determinted by the length of the plaintext. In fact we have $\Delta_{\oplus} t &#x3D; f(len(p)) &#x3D; (len(p||ch) \oplus len(p)) \otimes H$, which is known to us. So based on this we can construct an oracle and brute-force the keystream byte by byte. It’s worth mentioning that the first byte of each block is not recoverable since we are not allowed to encrypt an empty block.</p>
 <p>Then we can recover the $aad$. For two plaintexts with different lengths, we can extract a linear leakage as $aad \otimes (H^i \oplus H^j) \oplus b$, where $b$ is determined by the difference of 1) content and 2) length. Since we know $H$ and the ciphertexts, we can compute $b$ and recover $aad$ in the same way as $H$.</p>
@@ -252,13 +252,14 @@
 <ul>
 <li><a href="aead/r_attack_with_keystream.py">r_attack_with_keystream.py</a></li>
 </ul>
-<p>With everything except $s$ recovered, we can construct any $t &#x3D; X + s$ as needed. Unlike AES-GCM here we can recover $s$ through binary search (by checking the carry bit of the leakage).</p>
+<p>With everything except $s$ recovered, we can construct any $t &#x3D; X + s$ as needed (LLL-based attack appears necessary). Unlike AES-GCM here we can recover $s$ through binary search (by checking the carry bit of the leakage).</p>
 <h3 id="Double-Forgery"><a href="#Double-Forgery" class="headerlink" title="Double Forgery"></a>Double Forgery</h3><p>With the full recovery of AES-GCM and Chacha20-Poly1305 secrets, our final step is to forge a valid payload for both two AEADs. We have the following tricks:</p>
 <ol>
-<li>For AES-GCM, $x \otimes H^t$ on the i-th block &#x2F; $x \otimes H^{t+i-j}$ on the j-th block, leads to the same effect on the tag.</li>
-<li>For Chacha20-Poly1305, $x \cdot r^t$ on the i-th block &#x2F; $x \cdot r^{t+i-j}$ on the j-th block, leads to the same effect on the tag.</li>
+<li>For AES-GCM, $x \otimes H^{t+j}$ on the i-th block &#x2F; $x \otimes H^{t+i}$ on the j-th block, leads to the same effect on the tag.</li>
+<li>For Chacha20-Poly1305, $x \cdot r^{t+j}$ on the i-th block &#x2F; $x \cdot r^{t+i}$ on the j-th block, leads to the same effect on the tag.</li>
 </ol>
-<p>This provides us with the opportunity to modify the ciphertext such that the tag of one AEAD remains unchanged, while introducing a controllable change into the tag of the other.</p>
+<p>This provides us with the opportunity to modify the ciphertext such that the tag of one AEAD remains unchanged, while introducing an <strong>uncontrollable</strong> change into the tag of the other.</p>
+<p>With trick 2, we can find a valid answer by solving a linear system on $\mathbb{F}_2^{128}$. But we need a long enough ciphertext for an appropriate linear space, and <code>1337</code> in this challenge is too strict. So instead we may have to use trick 1 to formalize a k-sum problem on $\mathbb{F}_q$, and use wagner algorithm to solve it.</p>
 <h2 id="DiceG-me"><a href="#DiceG-me" class="headerlink" title="(*)DiceG@me+"></a>(*)DiceG@me+</h2><ul>
 <li><a href="dice/task.py">task.py</a></li>
 </ul>
@@ -269,7 +270,7 @@
 <p>We can make some collisions by injecting <code>.</code> into <code>ri</code>. For example the result of <code>Hash([ b2l(b&#39;1&#39;), b2l(b&#39;2&#39;) ])</code> and <code>Hash([ b2l(b&#39;1.2&#39;) ])</code> are exactly the same.</p>
 <p>Our target here is to construct a valid proof for <code>(h1, 1)</code>. We can fix some <code>k</code> and let <code>r = b2l(b&#39;.&#39;.join([b&#39;\x01&#39;]*k))</code>, then we set <code>h1 = r**-1 % N</code> and construct <code>ri</code> by sampling <code>ri[i]</code> from <code>1</code> and <code>r</code>. You may notice that <code>c</code> will not change if we rearrange the order of <code>ri</code>, and if the number of <code>1</code> in <code>ri</code> is equal to the number of <code>0</code> in <code>c</code>, we can always find a valid proof.</p>
 <h3 id="MT19937-Seed-Construction"><a href="#MT19937-Seed-Construction" class="headerlink" title="MT19937: Seed Construction"></a>MT19937: Seed Construction</h3><p>With <code>h2 = 1</code>, we can extract <code>entropy</code> from the commitment by solving DLP solving and LLL attack, predicting the whole <code>roll</code> list on the server. Then we need to construct a valid <code>seed</code> for MT19937 with certain prefix and suffix.</p>
-<p>The technical details may be omitted here, happy new year :D</p>
+<p>Here I may just omit the technical details and wish you a happy new year :D</p>
 
   </div>
 </article>
